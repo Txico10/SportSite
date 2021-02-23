@@ -76,8 +76,7 @@
   <livewire:management.buildings-form :id="$building->id" />    
   @else
   <livewire:management.buildings-form/>
-  @endif
-  
+  @endif  
 </x-modal>  
 
 

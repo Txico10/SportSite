@@ -120,7 +120,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return $this->morphMany(Contact::class, 'contactable');
     }
-
+    
+    /**
+     * Employees
+     *
+     * @return void
+     */
     public function employees()
     {
         return $this->belongsToMany(Employee::class, EmployeeContract::class)

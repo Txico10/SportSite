@@ -236,6 +236,10 @@
     }
   );
 
+  Livewire.on('alert', param => {
+        toastr[param['type']](param['message']);
+    });
+
   $("#showpasswd").on("click", function (event) {
     event.preventDefault;
     var password = $("#managerPassword").val();
