@@ -161,29 +161,6 @@
       },
     });
     
-
-    // $('#managerEmail').inputmask('email', {
-    //   tabThrough:true,
-    //   clearIncomplete: true,
-    //   oncomplete: function(){
-    //     var formID = document.getElementById("myclient-form");
-    //     //console.log($(this).val());
-    //     Livewire.find(formID.getAttribute('wire:id')).set('managerEmail', $(this).val());
-    //     $(this).addClass('is-valid').removeClass('is-invalid');
-    //   },
-    //   onincomplete:function() {
-    //     if($(this).val()==="") {
-    //       $(this).removeClass('is-invalid');
-    //       $(this).removeClass('is-valid');
-    //     } else {
-    //       var formID = document.getElementById("myclient-form");
-    //       //console.log($(this).val());
-    //       Livewire.find(formID.getAttribute('wire:id')).set('managerEmail', null);
-    //       $(this).addClass('is-invalid').removeClass('is-valid');
-    //     }
-    //   },
-    // });
-
     $("#modal-createcompany").on('hidden.bs.modal', function(){
         Livewire.emit('resetNewCompanyInputFields');
         $("#neq").val("").trigger('change');
@@ -199,6 +176,9 @@
       }
     );
 
+    window.addEventListener('closeClientModal', event => {
+      $("#modal-createcompany").modal('hide');
+    });
 
   });
 

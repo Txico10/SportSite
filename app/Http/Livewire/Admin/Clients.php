@@ -30,6 +30,7 @@ class Clients extends Component
     use WithPagination;
     use WithSorting;
 
+    protected $listeners = ['refreshClient'=>'$refresh'];
     /**
      * Render the livewire users view
      * 

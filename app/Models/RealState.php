@@ -75,13 +75,7 @@ class RealState extends Model
     public function employees()
     {
         return $this->belongsToMany(Employee::class, EmployeeContract::class)
-            ->withPivot(
-                [
-                    'start_date',
-                    'end_date',
-                    'status'
-                ]
-            )
+            ->withPivot(['user_id', 'start_date', 'end_date', 'status'])
             ->withTimestamps();
     }
 }

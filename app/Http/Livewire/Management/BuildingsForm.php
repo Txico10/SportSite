@@ -18,7 +18,8 @@ class BuildingsForm extends Component
 {
     public $building_id;
 
-    public function mount($id)
+
+    public function mount($id = null)
     {
         $this->building_id = $id;
     }
@@ -26,4 +27,5 @@ class BuildingsForm extends Component
     {
         return view('livewire.management.buildings-form');
     }
+
 }

@@ -33,7 +33,7 @@
           </tr>
         </thead>
         <tbody>
-          @foreach($buildings as $building)
+          @forelse($buildings as $building)
           <tr>
             <td>{{$building->lot}}</td>
             <td>
@@ -59,8 +59,10 @@
                 <button class="btn btn-sm btn-outline-danger" type="button"><i class="fas fa-trash-alt"></i></button>
               @endpermission
             </td>
-          </tr>  
-          @endforeach
+          </tr>            
+          @empty
+            <p>No building registred</p>
+          @endforelse
         </tbody>
       </table>
     </div>
@@ -68,7 +70,14 @@
     {{ $buildings->links() }}
     <!-- /.card-footer-->
 </div>
-<!-- /.card -->    
+<!-- /.card -->
 <x-modal title="Building" id="modal-building" type="">
-  <livewire:management.buildings-form :id="$building->id" />
-</x-modal>
+  @if (isset($building))
+  <livewire:management.buildings-form :id="$building->id" />    
+  @else
+  <livewire:management.buildings-form/>
+  @endif
+  
+</x-modal>  
+
+

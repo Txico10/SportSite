@@ -31,7 +31,7 @@ class Employee extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'birth_date', 'nas', 'image'
+        'name', 'birthdate', 'gender', 'image'
     ];
 
     /**

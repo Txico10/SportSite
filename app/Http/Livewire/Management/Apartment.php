@@ -47,7 +47,10 @@ class Apartment extends Component
     {
         $this->myBuildings = Building::where('real_state_id', '=', $company)
             ->orderByRaw('lot', 'ASC')->get();
-        $this->building_id = $this->myBuildings->first()->id;
+        if ($this->myBuildings->count()>0) {
+            $this->building_id = $this->myBuildings->first()->id;
+        }
+            
     }
 
     /**

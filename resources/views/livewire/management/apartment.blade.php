@@ -1,9 +1,11 @@
 <div class="card" id="apartmentsList">
     <div class="card-header">
-      <select name="myBuildings" id="myBuildings" wire:ignore data-width="110px">
-        @foreach($myBuildings as $myBuilding)
+      <select name="myBuildings" id="myBuildings" wire:ignore data-width="150px">
+        @forelse($myBuildings as $myBuilding)
           <option value="{{$myBuilding->id}}">{{$myBuilding->lot}}</option>
-        @endforeach
+        @empty
+          <option value="-1">No Building</option>
+        @endforelse
       </select>
       <div class="card-tools">
         <div class="input-group input-group-sm" style="width: 150px;">
@@ -34,7 +36,7 @@
           </tr>
         </thead>
         <tbody>
-          @foreach($apartments as $apartment)
+          @forelse($apartments as $apartment)
           <tr>
             <td>{{$apartment->number}}</td>
             <td>
@@ -56,7 +58,9 @@
               @endpermission
             </td>
           </tr>  
-          @endforeach
+          @empty
+            <p>No Appartment registred</p>
+          @endforelse
         </tbody>
       </table>
     </div>

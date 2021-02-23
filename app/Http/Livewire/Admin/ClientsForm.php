@@ -20,6 +20,7 @@ use App\Models\User;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
@@ -52,7 +53,7 @@ class ClientsForm extends Component
     public $zip;
     public $managerName;
     public $managerBirth;
-    public $managerNas;
+    //public $managerNas;
     public $managerGender;
     public $managerEmail;
     public $managerMobile;
@@ -372,7 +373,7 @@ class ClientsForm extends Component
                 'zip',
                 'managerName',
                 'managerBirth',
-                'managerNas',
+                //'managerNas',
                 'managerGender',
                 'managerEmail',
                 'managerMobile',
@@ -532,6 +533,8 @@ class ClientsForm extends Component
             'country' => $this->country,
             //'pc' => $this->zip,
             'email' => $this->managerEmail,
+            'mobile' => $this->managerMobile,
+            'type' => 'primary'
         ];
 
         if (!empty($this->suite)) {
@@ -552,7 +555,7 @@ class ClientsForm extends Component
         $employee = [
             'name' => $this->managerName,
             'birthdate' => $this->managerBirth,
-            'nas' => '',//remove NAS from database
+            //'nas' => '',//remove NAS from database
             'gender' => $this->managerGender,
         ];
 
@@ -562,6 +565,7 @@ class ClientsForm extends Component
         $employeeContact = [
             'mobile' => $this->managerMobile,
             'email'  => $this->managerEmail,
+            'type' => 'primary',
         ];
 
         $newEmployee->contact()->create($employeeContact);
@@ -571,12 +575,16 @@ class ClientsForm extends Component
             [
                 'name' => $this->managerName,
                 'email' => $this->managerEmail,
-                'password' => $this->managerPassword
+                'password' => Hash::make($this->managerPassword),
             ]
         );
+
+        $newUser->sendEmailVerificationNotification();
+
         $newUser->attachRole(3);
         //Register employee on enterprise and give role
         $client->employees()->attach(
+            $newEmployee->id,
             [
                 'user_id' => $newUser->id,
                 'start_date' => Carbon::now()->format('Y-m-d'),
@@ -586,7 +594,7 @@ class ClientsForm extends Component
         );
         
         //close form, reset vars
-        $this->resetInputFields();
+        //$this->resetInputFields();
         // Success message
         $this->dispatchBrowserEvent('closeClientModal');
         $this->emit('refreshClient');
