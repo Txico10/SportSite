@@ -26,7 +26,8 @@ use Livewire\Component;
  * */
 class ContactForm extends Component
 {
-    public $submit_btn_title = "save";
+    public $submit_btn_title = "update";
+    public $oldContact;
     public $contact_id;
     public $suite;
     public $num;
@@ -43,13 +44,14 @@ class ContactForm extends Component
     /**
      * Mount function.
      * 
-     * @param $id id contact
+     * @param $contact contact
      *
      * @return \Illuminate\Http\Response
      */
-    public function mount($id)
+    public function mount($contact)
     {
-        $contact = Contact::findOrFail($id);
+        //$contact = Contact::findOrFail($id);
+        $this->oldContact = $contact;
         $this->contact_id = $contact->id;
         $this->suite = $contact->suite;
         $this->num = $contact->num;
@@ -86,7 +88,7 @@ class ContactForm extends Component
         $op = '';
         $type = '';
 
-        $contact = Contact::findOrFail($this->contact_id);
+        $contact = $this->oldContact;
 
         if (strcmp($contact->suite, $this->suite)!=0) {
             $contact->suite = $this->suite;
@@ -228,7 +230,7 @@ class ContactForm extends Component
      */
     public function edit($contactid)
     {
-        $contact = Contact::findOrFail($contactid);
+        $contact = $this->oldContact;
         $this->contact_id = $contact->id;
         $this->suite = $contact->suite;
         $this->num = $contact->num;

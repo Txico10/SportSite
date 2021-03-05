@@ -1,6 +1,7 @@
 <div class="card" id="apartmentsList">
-    <div class="card-header">
-      <select name="myBuildings" id="myBuildings" wire:ignore data-width="150px">
+    <div class="card-header"> 
+      Building: 
+      <select name="myBuildings" id="myBuildings" wire:ignore data-width="100px">
         @forelse($myBuildings as $myBuilding)
           <option value="{{$myBuilding->id}}">{{$myBuilding->lot}}</option>
         @empty
@@ -20,11 +21,18 @@
       <table class="table table-hover text-wrap">
         <thead>
           <tr>
+            @if(!empty($apartments) && $apartments->count()>0)
             <th>
               <a wire:click.prevent="sortBy('number')" role="button" href="#">Apt
                 @include('includes._sort-icon', ['field' => 'number'])
               </a>
             </th>
+            @else
+            <th>
+              Apt
+            </th>
+            @endif
+            
             <th>Type</th>
             <th>Building</th>
             <th>Locataire</th>
@@ -36,6 +44,7 @@
           </tr>
         </thead>
         <tbody>
+          @if(!empty($apartments))
           @forelse($apartments as $apartment)
           <tr>
             <td>{{$apartment->number}}</td>
@@ -61,11 +70,16 @@
           @empty
             <p>No Appartment registred</p>
           @endforelse
+          @else
+          <p>No Appartment registred</p>
+          @endif
         </tbody>
       </table>
     </div>
     <!-- /.card-body -->
+    @if(!empty($apartments) && $apartments->count()>0)
     {{ $apartments->links() }}
+    @endif    
     <!-- /.card-footer-->
 </div>
   <!-- /.card -->    

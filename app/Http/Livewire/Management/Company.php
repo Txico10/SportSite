@@ -25,7 +25,7 @@ use Livewire\Component;
  * */
 class Company extends Component
 {
-    public $company_id;
+    public $company;
 
     protected $listeners = [
         'refreshCompany'=> '$refresh',
@@ -38,9 +38,9 @@ class Company extends Component
      *
      * @return view
      */
-    public function mount($company)
+    public function mount(RealState $company)
     {
-        $this->company_id = $company;
+        $this->company = $company;
     }
 
     /**
@@ -53,7 +53,7 @@ class Company extends Component
         return view(
             'livewire.management.company', 
             [
-                'company' => RealState::findOrFail($this->company_id),
+                'company' => $this->company, 
             ]
         );
     }

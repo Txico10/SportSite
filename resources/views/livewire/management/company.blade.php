@@ -20,7 +20,7 @@
       <button class="btn btn-primary btn-block" role="button" wire:click="$emit('editCompany',{{ $company->id }})"><b>Edit</b></button>
     </div>
     <!-- /.card-body -->
+    <x-modal title="Company" id="modal-company" type="">
+      <livewire:management.company-form :company="$company" />
+  </x-modal>
 </div>
-<x-modal title="Company" id="modal-company" type="">
-    <livewire:management.company-form :id="$company->id" />
-</x-modal>

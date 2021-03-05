@@ -21,8 +21,8 @@
 @section('content')
 <div class="row">
   <div class="col-md-3">
-    <livewire:management.company :company="$company->id" />
-    <livewire:management.contact :company="$company->id" />
+    <livewire:management.company :company="$company" />
+    <livewire:management.contact :company="$company" />
   </div>
   <div class="col-md-9">
     <div class="card">
@@ -52,7 +52,7 @@
           <div class="tab-pane active" id="buildings">
             <div class="row">
               <div class="col-md-12">
-                <livewire:management.buildings :company="$company->id"/>
+                <livewire:management.buildings :company="$company"/>
               </div>
             </div>
           </div>
@@ -60,7 +60,7 @@
           <div class="tab-pane" id="apartments">
             <div class="row">
               <div class="col-md-12">
-                <livewire:management.apartment :company="$company->id"/>
+                <livewire:management.apartment :buildings="$company->buildings"/>
               </div>
             </div>
           </div>
@@ -95,16 +95,23 @@
 <script>
 
   $(document).ready(function(){
-    $('#legalform').select2();
-    $('#myBuildings').select2();
+    $('#legalform').select2({
+      theme: 'bootstrap4',
+      width: 'resolve'
+    });
+    $('#myBuildings').select2({
+      theme: 'bootstrap4',
+      width: 'resolve'
+    });
     $("#modal-company").on('hidden.bs.modal', function(){
         Livewire.emit('resetCompanyInputFields');      
       }
     );
+
     $("#myBuildings").on('select2:select', function(event){
           var data = $(this).select2("val");
           var formID = document.getElementById("apartmentsList");
-          Livewire.find(formID.getAttribute('wire:id')).set('building_id', data);
+          Livewire.find(formID.getAttribute('wire:id')).set('buildingId', data.toString());
           //console.log(data);
     });
 
@@ -112,7 +119,10 @@
 
   document.addEventListener("livewire:load", () => {
       Livewire.hook('message.processed', (message, component) => {
-        $('#myBuildings').select2();
+        $('#myBuildings').select2({
+          theme: 'bootstrap4',
+          width: 'resolve'
+        });
       }); 
     }
   );
@@ -134,6 +144,11 @@
 
   window.addEventListener('openCompanyModal', event => {
       $("#modal-company").modal('show');
+    }
+  );
+
+  window.addEventListener('openBuildingModal', event => {
+      $("#modal-building").modal('show');
     }
   );
 

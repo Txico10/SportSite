@@ -31,6 +31,7 @@ use Livewire\WithFileUploads;
 class CompanyForm extends Component
 {
     use WithFileUploads;
+    public $myCompany;
     public $company_id;
     public $logo;
     public $old_logo;
@@ -48,13 +49,13 @@ class CompanyForm extends Component
     /**
      * Mount profile form
      * 
-     * @param $id user id
+     * @param $company company info
      * 
      * @return profile form
      */
-    public function mount($id)
+    public function mount(RealState $company)
     {
-        $company = RealState::findOrFail($id);
+        $this->myCompany = $company;
         $this->company_id = $company->id;
         $this->logo = $company->logo;
         $this->old_logo = $company->logo;
@@ -82,7 +83,7 @@ class CompanyForm extends Component
      */
     public function saveForm()
     {
-        $company = RealState::findOrFail($this->company_id);
+        $company = $this->myCompany;
         $myRules = array();
         if ($this->old_logo !== $this->logo) {
             $myRules['logo'] = 'image|max:1024'; // 1MB Max;
@@ -209,7 +210,7 @@ class CompanyForm extends Component
      */
     public function edit($id)
     {
-        $company = RealState::findOrFail($id);
+        $company = $this->myCompany;
         $this->logo = $company->logo;
         $this->old_logo = $company->logo;
         $this->name = $company->name;

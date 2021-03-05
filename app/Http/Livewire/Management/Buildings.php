@@ -12,7 +12,8 @@
  * */
 namespace App\Http\Livewire\Management;
 
-use App\Models\Building;
+
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 /**
@@ -32,7 +33,7 @@ class Buildings extends Component
     public $sortField = 'lot';
     public $perPage = 10;
     public $sortAsc = true;
-    public $company_id;
+    public $myCompany;
 
     /**
      * Render the livewire users view
@@ -43,7 +44,7 @@ class Buildings extends Component
      */
     public function mount($company)
     {
-        $this->company_id = $company;
+        $this->myCompany = $company->load('buildings');
     }
 
     /**
@@ -53,13 +54,49 @@ class Buildings extends Component
      */
     public function render()
     {
+        //dd($this->sortAsc);
+        if (empty($this->search)) {
+
+            $buildings = $this->myCompany->buildings;
+
+        } else {
+
+            $buildings = $this->myCompany->buildings
+                ->filter(
+                    function ($value, $key) {
+                        return false !== stristr($value->lot, $this->search) || 
+                            false !== stristr($value->description, $this->search);
+                    }
+                );
+        }
+
+        if ($this->sortAsc) {
+            $newBuildings = $buildings->sortBy(
+                function ($building, $key) {
+                    return str_replace(' ', '', $building[$this->sortField]);
+                }
+            );
+        } else {
+            $newBuildings = $buildings->sortByDesc(
+                function ($building, $key) {
+                    return str_replace(' ', '', $building[$this->sortField]);
+                }
+            );
+        }
+        
+        $items = $newBuildings->forPage($this->page, $this->perPage);
+        
+        $paginator = new LengthAwarePaginator(
+            $items, 
+            $newBuildings->count(), 
+            $this->perPage, 
+            $this->page
+        );
+        
         return view(
             'livewire.management.buildings',
             [
-                'buildings' => Building::search($this->search)
-                    ->ofCompany($this->company_id)
-                    ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-                    ->paginate($this->perPage),
+                'buildings' => $paginator
             ]
         );
     }

@@ -25,6 +25,13 @@ use Illuminate\Database\Eloquent\Model;
 class Building extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['lot', 'description'];
+    
+    /**
      * RealState relationship
      * 
      * @return belongTo relationship

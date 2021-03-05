@@ -24,29 +24,49 @@ use Livewire\Component;
  * */
 class BuildingsForm extends Component
 {
-    public $building_id;
+    public $building;
+    public $lot;
+    public $description;
 
-        
-    /**
-     * Mount
-     *
-     * @param mixed $id the id of the building if existes
-     * 
-     * @return void
-     */
-    public function mount($id = null)
-    {
-        $this->building_id = $id;
-    }
+    protected $listeners = [
+        'editBuilding' => 'edit', 
+        'editBuildingContact' => 'editContact'
+    ];
+
         
     /**
      * Render
      *
-     * @return void
+     * @return view building-form
      */
     public function render()
     {
+        //dd($this->building_id);
         return view('livewire.management.buildings-form');
+    }
+
+        
+    /**
+     * Edit
+     * 
+     * @return void
+     */
+    public function edit($building)
+    {
+        dd($building);
+        $this->dispatchBrowserEvent('openBuildingModal');
+    }
+    
+    /**
+     * EditContact
+     *
+     * @param mixed $contact building contact
+     * 
+     * @return void
+     */
+    public function editContact($contact)
+    {
+        dd($contact);
     }
 
 }

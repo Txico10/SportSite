@@ -12,7 +12,7 @@
  * */
 namespace App\Http\Livewire\Management;
 
-use App\Models\RealState;
+
 use Livewire\Component;
 /**
  *  Company contact management
@@ -25,7 +25,7 @@ use Livewire\Component;
  * */
 class Contact extends Component
 {
-    public $company_id;
+    public $company;
 
     protected $listeners = ['refreshCompanyContact'=> '$refresh'];
     /**
@@ -37,7 +37,7 @@ class Contact extends Component
      */
     public function mount($company)
     {
-        $this->company_id = $company;
+        $this->company = $company->load('contact');
     }
 
     /**
@@ -50,7 +50,7 @@ class Contact extends Component
         return view(
             'livewire.management.contact', 
             [
-                'company' => RealState::findOrFail($this->company_id),
+                'contact' => $this->company->contact,
             ]
         );
     }

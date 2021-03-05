@@ -14,6 +14,7 @@
       <table class="table table-hover text-wrap">
         <thead>
           <tr>
+            @if($buildings->count()>0)
             <th style="width: 17%">
               <a wire:click.prevent="sortBy('lot')" role="button" href="#">Lot
                 @include('includes._sort-icon', ['field' => 'lot'])
@@ -24,6 +25,14 @@
                 @include('includes._sort-icon', ['field' => 'description'])
               </a>
             </th>
+            @else
+            <th style="width: 17%">
+              Lot
+            <th>
+              Description  
+            </th>
+            @endif
+            
             <th>Address</th>
             <th style="width: 15%">
               @permission('building-create')
@@ -40,7 +49,7 @@
               @if(empty($building->description))
               N/A
               @else
-              {{Str::limit($building->description, 60, '...')}}
+              {{Str::limit($building->description, 90, '...')}}
               @endif
             </td>
             <td>
@@ -52,8 +61,8 @@
             </td>
             <td>
               @permission('building-update')
-              <button class="btn btn-sm btn-outline-info" type="button"><i class="fas fa-pencil-alt"></i></button>
-              <button class="btn btn-sm btn-outline-secondary" type="button" wire:click="$emit('editContact',{{ $building->contact->id }})"><i class="fas fa-map-marker-alt"></i></button>
+              <button class="btn btn-sm btn-outline-info" type="button" wire:click.prevent="$emit('editBuilding', {{$building}})"><i class="fas fa-pencil-alt"></i></button>
+              <button class="btn btn-sm btn-outline-secondary" type="button" wire:click.prevent="$emit('editBuildingContact', {{$building->contact}})"><i class="fas fa-map-marker-alt"></i></button>
               @endpermission
               @permission('building-delete')
                 <button class="btn btn-sm btn-outline-danger" type="button"><i class="fas fa-trash-alt"></i></button>
@@ -69,14 +78,11 @@
     <!-- /.card-body -->
     {{ $buildings->links() }}
     <!-- /.card-footer-->
+    <x-modal title="Building" id="modal-building" type="">
+      <livewire:management.buildings-form/>  
+    </x-modal>
 </div>
 <!-- /.card -->
-<x-modal title="Building" id="modal-building" type="">
-  @if (isset($building))
-  <livewire:management.buildings-form :id="$building->id" />    
-  @else
-  <livewire:management.buildings-form/>
-  @endif  
-</x-modal>  
+  
 
 

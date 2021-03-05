@@ -56,7 +56,6 @@ class Employee extends Model
         return empty($query) ? static::query()
             : static::where('employees.name', 'like', '%'.$query.'%')
             ->orWhere('employees.birthdate', 'like', '%'.$query.'%')
-            ->orWhere('employees.nas', 'like', '%'.$query.'%')
             ->orWhere('employees.gender', 'like', '%'.$query.'%')
             ->orWhere('roles.display_name', 'like', '%'.$query.'%');
     }
