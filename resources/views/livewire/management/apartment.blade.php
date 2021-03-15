@@ -1,11 +1,12 @@
 <div class="card" id="apartmentsList">
     <div class="card-header"> 
       Building: 
-      <select name="myBuildings" id="myBuildings" wire:ignore data-width="100px">
-        @forelse($myBuildings as $myBuilding)
-          <option value="{{$myBuilding->id}}">{{$myBuilding->lot}}</option>
+      <select name="myBuildings" id="myBuildings" wire:ignore data-width="150px">
+        <option value="-1">All</option>
+        @forelse($myBuildings as $key=>$value)
+          <option value="{{$key}}">{{$value}}</option>
         @empty
-          <option value="-1">No Building</option>
+          <option value="-2">No Building</option>
         @endforelse
       </select>
       <div class="card-tools">
@@ -38,7 +39,7 @@
             <th>Locataire</th>
             <th>
               @permission('apartment-create')
-                <button class="btn btn-sm btn-outline-primary" type="button" style="width: 98px"><i class="fas fa-plus"></i> Add</button>
+              <button class="btn btn-sm btn-outline-primary" type="button" data-toggle="modal" data-target="#modal-apartment" style="width: 98px"><i class="fas fa-plus"></i> Add</button>
               @endpermission
             </th>
           </tr>
@@ -60,7 +61,7 @@
             <td>
               <button class="btn btn-sm btn-outline-primary" type="button"><i class="fas fa-user-cog"></i></button>
               @permission('apartment-update')
-                <button class="btn btn-sm btn-outline-info" type="button"><i class="fas fa-pencil-alt"></i></button>
+                <button class="btn btn-sm btn-outline-info" type="button" wire:click.prevent="$emit('editApartment', {{$apartment->id}})"><i class="fas fa-pencil-alt"></i></button>
               @endpermission
               @permission('apartment-delete')
                 <button class="btn btn-sm btn-outline-danger" type="button"><i class="fas fa-trash-alt"></i></button>
@@ -81,5 +82,8 @@
     {{ $apartments->links() }}
     @endif    
     <!-- /.card-footer-->
+    <x-modal title="Apartment" id="modal-apartment" type="">
+      <livewire:management.apartment-form :company="$company"/>  
+    </x-modal>
 </div>
   <!-- /.card -->    

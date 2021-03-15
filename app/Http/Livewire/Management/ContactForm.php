@@ -40,31 +40,10 @@ class ContactForm extends Component
     public $mobile;
     public $email;
 
-    protected $listeners = ['editContact'=> 'edit'];
-    /**
-     * Mount function.
-     * 
-     * @param $contact contact
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function mount($contact)
-    {
-        //$contact = Contact::findOrFail($id);
-        $this->oldContact = $contact;
-        $this->contact_id = $contact->id;
-        $this->suite = $contact->suite;
-        $this->num = $contact->num;
-        $this->street = $contact->street;
-        $this->city = $contact->city;
-        $this->region = $contact->region;
-        $this->country = $contact->country;
-        $this->pc = $contact->pc;
-        $this->telephone = $contact->telephone;
-        $this->mobile = $contact->mobile;
-        $this->email = $contact->email;
-
-    }
+    protected $listeners = [
+        'editContact'=> 'edit', 
+        'resetContactInputFiels' => 'resetInputFields',
+    ];
 
     /**
      * Display a listing of the resource.
@@ -83,7 +62,7 @@ class ContactForm extends Component
      */
     public function saveContactForm()
     {
-        $this->validate($this->rules());
+        $this->validate();
 
         $op = '';
         $type = '';
@@ -133,6 +112,7 @@ class ContactForm extends Component
 
         $this->dispatchBrowserEvent('closeContactModal');
         $this->emit('refreshCompanyContact');
+        $this->emit('refreshBuildings');
         $this->emit(
             'alert', 
             [
@@ -206,6 +186,7 @@ class ContactForm extends Component
     {
         $this->reset(
             [
+                'oldContact',
                 'suite',
                 'num', 
                 'street' ,
@@ -224,24 +205,24 @@ class ContactForm extends Component
     /**
      * Edit Contact
      * 
-     * @param $contactid the id of contact
+     * @param Contact $newContact the new contact
      * 
      * @return Contact
      */
-    public function edit($contactid)
+    public function edit(Contact $newContact)
     {
-        $contact = $this->oldContact;
-        $this->contact_id = $contact->id;
-        $this->suite = $contact->suite;
-        $this->num = $contact->num;
-        $this->street = $contact->street;
-        $this->city = $contact->city;
-        $this->region = $contact->region;
-        $this->country = $contact->country;
-        $this->pc = $contact->pc;
-        $this->telephone = $contact->telephone;
-        $this->mobile = $contact->mobile;
-        $this->email = $contact->email;
+        $this->oldContact = $newContact;
+        $this->contact_id = $this->oldContact->id;
+        $this->suite = $this->oldContact->suite;
+        $this->num = $this->oldContact->num;
+        $this->street = $this->oldContact->street;
+        $this->city = $this->oldContact->city;
+        $this->region = $this->oldContact->region;
+        $this->country = $this->oldContact->country;
+        $this->pc = $this->oldContact->pc;
+        $this->telephone = $this->oldContact->telephone;
+        $this->mobile = $this->oldContact->mobile;
+        $this->email = $this->oldContact->email;
 
         $this->dispatchBrowserEvent('openContactModal');
 

@@ -12,10 +12,10 @@
  * */
 namespace App\Http\Livewire\Management;
 
-
-use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 /**
  *  Extended Laratrust Roles Classe
  * 
@@ -33,20 +33,25 @@ class Apartment extends Component
     public $sortField = 'number';
     public $perPage = 10;
     public $sortAsc = true;
-    public $myBuildings;
+    public $myCompany;
     public $buildingId;
     public $active_building;
+
+    protected $listeners = [
+        'refreshApartments' => '$refresh', 
+    ];
 
     /**
      * Initialization function
      * 
-     * @param $buildings the company id
+     * @param $company the company id
      * 
      * @return null
      */
-    public function mount($buildings)
+    public function mount($company)
     {
-        $this->myBuildings = $buildings->sortBy('lot')->load('apartments');
+        $this->myCompany = $company->loadMissing('apartments.apartmentType', 'buildings.apartments');
+        $this->buildingId = -1;
             
     }
 
@@ -57,30 +62,35 @@ class Apartment extends Component
      */
     public function render()
     {
-        //dd($this->active_building);
+        //dd($this->myCompany);
         //$newBuilding = $this->myBuildings->where('id', $this->buildingId);
-        if ($this->myBuildings->count()>0) {
-            
-            if (empty($this->active_building)) {
-                $this->active_building = $this->myBuildings->first();
-            }
-
-            if (empty($this->buildingId)) {
-                $this->buildingId = $this->active_building->id;
-                //dump($this->buildingId);
-            }
+        if ($this->myCompany->buildings->count()>0) {
             
             if (empty($this->search)) {
-            
+                if ($this->buildingId ==-1) {
+                    $apartments =$this->myCompany->apartments;
+                } else {
+                    $apartments = $this->active_building->apartments;
+                }
                 //dd($newBuilding[0]->apartments);
-                $apartments = $this->active_building->apartments;
+                
             } else {
-                $apartments = $this->active_building->apartments
-                    ->filter(
-                        function ($value, $key) {
-                            return false !== stristr($value->number, $this->search);
-                        }
-                    );
+                if ($this->buildingId ==-1) {
+                    $apartments = $this->myCompany->apartments
+                        ->filter(
+                            function ($value, $key) {
+                                return false !== stristr($value->number, $this->search);
+                            }
+                        );
+                } else {
+                    $apartments = $this->active_building->apartments
+                        ->filter(
+                            function ($value, $key) {
+                                return false !== stristr($value->number, $this->search);
+                            }
+                        );
+                }
+                
             }
     
             if ($this->sortAsc) {
@@ -114,7 +124,8 @@ class Apartment extends Component
             'livewire.management.apartment',
             [
                 'apartments' => $paginator,
-                'myBuildings' => $this->myBuildings->pluck('lot', 'id'),
+                'company' => $this->myCompany,
+                'myBuildings' => $this->myCompany->buildings->sortBy('alias')->pluck('alias', 'id'),
             ]
         );
     }
@@ -136,9 +147,12 @@ class Apartment extends Component
      */
     public function updatedBuildingId()
     {
-        $this->active_building = $this->myBuildings
-            ->where('id', $this->buildingId)
-            ->first();
+        if ($this->buildingId > -1) {
+            $this->active_building = $this->myCompany->buildings
+                ->where('id', $this->buildingId)
+                ->first();
+        }
+        
     }
 
     /**

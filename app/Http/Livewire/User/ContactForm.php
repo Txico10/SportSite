@@ -143,7 +143,7 @@ class ContactForm extends Component
      * 
      * @return validation rules
      */
-    public function rules() 
+    protected function rules() 
     {
         return [
             'type' => ['required', Rule::in(['primary', 'emergency', 'other'])],

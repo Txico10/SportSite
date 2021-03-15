@@ -18,7 +18,6 @@ use App\Notifications\UserUpdate;
 use App\Rules\PermissionRolesCheck;
 use App\Models\User;
 use Livewire\Component;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
@@ -81,7 +80,7 @@ class UsersForm extends Component
      * 
      * @return array rules
      */
-    public function rules()
+    protected function rules()
     {
         return [
             'name'=>['required','string','min:6','max:32','regex:/^[a-z ,.\'-]+$/i'],
@@ -146,7 +145,7 @@ class UsersForm extends Component
             $validatedData =[
                 'name' => $this->name,
                 'email' =>$this->email,
-                'password' => Hash::make($this->password),
+                'password' => bcrypt($this->password),
             ];
 
 
@@ -181,7 +180,7 @@ class UsersForm extends Component
             }
 
             if (!empty($this->password)) {
-                $user->password = Hash::make($this->password);
+                $user->password = bcrypt($this->password);
                 $myfield['passord'] = 'password';
                 //dd($user);
             }
@@ -202,7 +201,7 @@ class UsersForm extends Component
         }
 
         $this->dispatchBrowserEvent('closeUserModal');
-        $this->emit('refreshUser');
+        //$this->emit('refreshUser');
         $this->emit(
             'alert', 
             [

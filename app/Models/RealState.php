@@ -42,6 +42,16 @@ class RealState extends Model
     {
         return $this->hasMany(Building::class);
     }
+    
+    /**
+     * Apartments relationship
+     * 
+     * @return void
+     */
+    public function apartments()
+    {
+        return $this->hasManyThrough(Apartment::class, Building::class);
+    }
 
     /**
      * Contact relationship

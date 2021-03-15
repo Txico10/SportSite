@@ -13,6 +13,7 @@ $factory->define(Building::class, function (Faker $faker) {
     }
     return [
         'lot' => $lot,
+        'alias' => $faker->word(),
         'description' => $faker->text(200),
     ];
 });

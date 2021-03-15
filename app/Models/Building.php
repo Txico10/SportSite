@@ -29,7 +29,7 @@ class Building extends Model
      *
      * @var array
      */
-    protected $fillable = ['lot', 'description'];
+    protected $fillable = ['lot', 'alias' ,'description'];
     
     /**
      * RealState relationship

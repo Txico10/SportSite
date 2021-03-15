@@ -35,6 +35,10 @@ class Buildings extends Component
     public $sortAsc = true;
     public $myCompany;
 
+    protected $listeners = [
+        'refreshBuildings' => '$refresh', 
+    ];
+
     /**
      * Render the livewire users view
      * 
@@ -65,6 +69,7 @@ class Buildings extends Component
                 ->filter(
                     function ($value, $key) {
                         return false !== stristr($value->lot, $this->search) || 
+                            false !== stristr($value->alias, $this->search) || 
                             false !== stristr($value->description, $this->search);
                     }
                 );
@@ -96,7 +101,8 @@ class Buildings extends Component
         return view(
             'livewire.management.buildings',
             [
-                'buildings' => $paginator
+                'buildings' => $paginator,
+                'company' => $this->myCompany
             ]
         );
     }

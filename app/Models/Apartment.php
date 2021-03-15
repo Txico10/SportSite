@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
 class Apartment extends Model
 {
     protected $fillable = [
-        'number', 'description', 'apartment_type_id'
+        'number', 'description', 'apartment_type_id', 'building_id'
     ];
 
     /**
@@ -45,7 +45,7 @@ class Apartment extends Model
      */
     public function apartmentType()
     {
-        return $this->belongsTo(ApartmentType::class);
+        return $this->belongsTo(ApartmentType::class, 'apartment_type_id', 'id');
     }
 
     /**

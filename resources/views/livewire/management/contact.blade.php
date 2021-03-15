@@ -2,7 +2,7 @@
     <div class="card-header">
         <h3 class="card-title">My Contacts</h3>
         <div class="card-tools">
-        <button type="button" class="btn btn-tool" wire:click="$emit('editContact',{{ $contact->id }})">
+        <button type="button" class="btn btn-tool" wire:click="$emit('editContact', {{$contact->id}})">
             <i class="fas fa-edit"></i></button>
         </div>
     </div>
@@ -45,6 +45,6 @@
     </div>
     <!-- /.card-body -->
     <x-modal title="Contact" id="modal-contact" type="modal-md">
-        <livewire:management.contact-form :contact="$contact" />
+        <livewire:management.contact-form/>
     </x-modal>
 </div>

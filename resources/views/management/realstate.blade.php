@@ -60,7 +60,7 @@
           <div class="tab-pane" id="apartments">
             <div class="row">
               <div class="col-md-12">
-                <livewire:management.apartment :buildings="$company->buildings"/>
+                <livewire:management.apartment :company="$company"/>
               </div>
             </div>
           </div>
@@ -103,15 +103,82 @@
       theme: 'bootstrap4',
       width: 'resolve'
     });
+
+    $('#apart_building').select2({
+      width: 'resolve',
+    });
+
+    $('#apart_type').select2({
+      width: 'resolve',
+    });
+    
+    $("#lot").inputmask({
+      mask: "9 999 999",
+      //placeholder: "*",
+      showMaskOnHover: true,
+      showMaskOnFocus: false,
+      oncomplete: function(){
+        var formID = document.getElementById("buildingform");
+        //console.log($(this).val());
+        Livewire.find(formID.getAttribute('wire:id')).set('lot', $(this).val());
+        $(this).addClass('is-valid').removeClass('is-invalid');
+      },
+      onincomplete: function(){
+        if($(this).val()===""){
+          $(this).removeClass('is-invalid');
+          $(this).removeClass('is-valid');
+          //console.log("incomplete vide")
+        } else {
+          var formID = document.getElementById("buildingform");
+          Livewire.find(formID.getAttribute('wire:id')).set('lot', null);
+          $(this).addClass('is-invalid').removeClass('is-valid');
+        }
+      },
+    });
+
     $("#modal-company").on('hidden.bs.modal', function(){
         Livewire.emit('resetCompanyInputFields');      
       }
     );
 
+    $("#modal-contact").on('hidden.bs.modal', function(){
+        Livewire.emit('resetContactInputFiels');      
+      }
+    );
+
+    $("#modal-building").on('hidden.bs.modal', function(){
+        $('#lot').val('');
+        $('#lot').removeClass('is-valid');
+        $('#lot').removeClass('is-invalid');
+        //$('#lot').removeAttr("disabled");
+        Livewire.emit('resetBuildingInputFields');      
+      }
+    );
+
+    $("#modal-apartment").on('hidden.bs.modal', function(){
+        Livewire.emit('resetApartmentInputFiels');      
+      }
+    );
+    
+
     $("#myBuildings").on('select2:select', function(event){
           var data = $(this).select2("val");
           var formID = document.getElementById("apartmentsList");
-          Livewire.find(formID.getAttribute('wire:id')).set('buildingId', data.toString());
+          Livewire.find(formID.getAttribute('wire:id')).set('buildingId', data);
+          //console.log(data);
+    });
+
+    $("#apart_building").on('select2:select', function(event){
+          var data = $(this).select2("val");
+          var formID = document.getElementById("apartmentform");
+          Livewire.find(formID.getAttribute('wire:id')).set('apart_building', data);
+          //console.log(data);
+    });
+
+    $("#apart_type").on('select2:select', function(event){
+          var data = $(this).select2("val");
+          var formID = document.getElementById("apartmentform");
+          Livewire.find(formID.getAttribute('wire:id')).set('apart_type', data);
           //console.log(data);
     });
 
@@ -122,6 +189,14 @@
         $('#myBuildings').select2({
           theme: 'bootstrap4',
           width: 'resolve'
+        });
+        
+        $('#apart_building').select2({
+          width: 'resolve',
+        });
+
+        $('#apart_type').select2({
+          width: 'resolve',
         });
       }); 
     }
@@ -148,7 +223,15 @@
   );
 
   window.addEventListener('openBuildingModal', event => {
+      $('#lot').val(event.detail.lot);
+      $('#lot').addClass('is-valid');
+      //$('#lot').attr('disabled', 'disabled');
       $("#modal-building").modal('show');
+    }
+  );
+  
+  window.addEventListener('closeBuildingModal', event => {
+      $("#modal-building").modal('hide');
     }
   );
 
@@ -156,6 +239,17 @@
         toastr[param['type']](param['message']);
     }
   );
+
+  window.addEventListener('openApartmentModal', event => {
+      $("#modal-apartment").modal('show');
+    }
+  );
+
+  window.addEventListener('closeApartmentModal', event => {
+      $("#modal-apartment").modal('hide');
+    }
+  );
+
 </script>
   
 @stop
