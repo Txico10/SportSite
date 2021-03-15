@@ -13,6 +13,7 @@
 namespace App\Http\Controllers\Management;
 
 use App\Http\Controllers\Controller;
+use App\Models\RealState;
 use Illuminate\Http\Request;
 /**
  *  Extended Laratrust Roles Classe
@@ -34,7 +35,8 @@ class BuildingController extends Controller
      */
     public function index($id)
     {
+        $company = RealState::where('id', $id)->first();
         
-        return view('management.building', compact('id'));
+        return view('management.building', compact('company'));
     }
 }

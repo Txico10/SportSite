@@ -16,7 +16,6 @@ use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use JeroenNoten\LaravelAdminLte\Events\BuildingMenu;
 /**
@@ -56,10 +55,12 @@ class AppServiceProvider extends ServiceProvider
         $events->listen(
             BuildingMenu::class, function (BuildingMenu $event) {
                 // Add some items to the menu...
-                $company = DB::table('employee_contracts')
+                $companyID = DB::table('employee_contracts')
                     ->where('user_id', auth()->user()->id)
-                    ->select('real_state_id')->get();
-                
+                    ->whereDate('start_date', '<=', today())
+                    ->whereDate('end_date', '>=', today())
+                    ->value('real_state_id');
+                //dd($company);
                 $event->menu->addBefore(
                     'role', 
                     [
@@ -87,12 +88,12 @@ class AppServiceProvider extends ServiceProvider
                         'header' => 'REAL STATE MANAGEMENT', 'permission' => 'companyMenu-read',
                     ]
                 );
-                if (!empty($company[0])) {
+                if (!empty($companyID)) {
                     $event->menu->add(
                         [
                             'key' => 'real_state',
                             'text' => 'Real State',
-                            'route'  => ['company.profile',["id" => $company[0]->real_state_id]],
+                            'route'  => ['company.profile',["id" => $companyID]],
                             'icon' => 'fas fa-fw fa-info',
                             'permission' => 'company-read',
                         ],
@@ -102,7 +103,7 @@ class AppServiceProvider extends ServiceProvider
                         [
                             'key' => 'buildings',
                             'text' => 'Buildings',
-                            'route'  => ['company.buildings', ["id" => $company[0]->real_state_id]],
+                            'route'  => ['company.buildings', ["id" => $companyID]],
                             'icon' => 'fas fa-fw fa-building',
                             'permission' => 'building-read',
                         ],
@@ -111,7 +112,7 @@ class AppServiceProvider extends ServiceProvider
                         [
                             'key' => 'apartments',
                             'text' => 'Apartments',
-                            'route'  => ['company.apartments', ["id" => $company[0]->real_state_id]],
+                            'route'  => ['company.apartments', ["id" => $companyID]],
                             'icon' => 'fas fa-fw fa-home',
                             'permission' => 'apartment-read',
                         ],

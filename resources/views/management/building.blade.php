@@ -21,7 +21,10 @@
 @section('content')
 <div class="row">
   <div class="col-md-12">
-    <livewire:management.buildings :company="$id"/>
+    <livewire:management.buildings :company="$company"/>
+    <x-modal title="Contact" id="modal-contact" type="modal-md">
+      <livewire:management.contact-form/>
+    </x-modal>
   </div>
 </div>
 @stop
@@ -31,5 +34,5 @@
 @stop
 
 @section('js')
-
+  <script type="text/javascript" src="{{asset('js/company.js')}}"></script>
 @stop

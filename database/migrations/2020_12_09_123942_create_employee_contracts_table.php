@@ -18,8 +18,6 @@ class CreateEmployeeContractsTable extends Migration
             $table->foreignId('real_state_id')->constrained();
             $table->foreignId('employee_id')->constrained();
             $table->foreignId('user_id')->references('id')->on('users');
-            $table->bigInteger('parent_id')->nullable();
-            $table->bigInteger('child_id')->nullable();
             $table->date('start_date');
             $table->date('end_date');
             $table->enum('status', ['FT', 'PT']);

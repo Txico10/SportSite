@@ -14,6 +14,8 @@ namespace App\Http\Controllers\Management;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\RealState;
+
 /**
  *  Extended Laratrust Roles Classe
  * 
@@ -34,7 +36,7 @@ class ApartmentController extends Controller
      */
     public function index($id)
     {
-        
-        return view('management.apartment', compact('id'));
+        $company = RealState::where('id', $id)->first();
+        return view('management.apartment', compact('company'));
     }
 }

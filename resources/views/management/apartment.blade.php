@@ -11,7 +11,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('company.buildings', ['id'=>$id])}}">Building</a></li>
+              <li class="breadcrumb-item"><a href="{{route('company.buildings', ['id'=>$company->id])}}">Building</a></li>
               <li class="breadcrumb-item active">Apartments</li>
             </ol>
           </div><!-- /.col -->
@@ -22,7 +22,7 @@
 @section('content')
 <div class="row">
   <div class="col-md-12">
-    <livewire:management.apartment :company="$id"/>
+    <livewire:management.apartment :company="$company"/>
   </div>
 </div>
 @stop
@@ -32,24 +32,5 @@
 @stop
 
 @section('js')
-<script>
-    $(document).ready(function(){
-    
-        $('#myBuildings').select2();
-    
-        $("#myBuildings").on('select2:select', function(event){
-          var data = $(this).select2("val");
-          var formID = document.getElementById("apartmentsList");
-          Livewire.find(formID.getAttribute('wire:id')).set('building_id', data);
-          //console.log(data);
-        });
-
-    });
-    document.addEventListener("livewire:load", () => {
-      Livewire.hook('message.processed', (message, component) => {
-        $('#myBuildings').select2();
-      }); 
-    });
-</script>
-
+  <script type="text/javascript" src="{{asset('js/company.js')}}"></script>
 @stop
