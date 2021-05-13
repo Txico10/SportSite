@@ -6,7 +6,7 @@ use App\Models\Employee;
 use Faker\Generator as Faker;
 
 $factory->define(Employee::class, function (Faker $faker) {
-    $gender = $faker->randomElement(['male','female']);
+    $gender = $faker->randomElement(['M','F']);
     return [
         'name' => $faker->name($gender),
         'birthdate' => $faker->dateTimeBetween('1960-01-01', '1990-12-12'),

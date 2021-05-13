@@ -12,7 +12,7 @@ class RealStateSeeder extends Seeder
      */
     public function run()
     {
-        $real_states = factory('App\Models\RealState', 25)
+        $real_states = factory('App\Models\RealState', 20)
             ->create()
             ->each(
                 function ($real_state) {
@@ -24,8 +24,8 @@ class RealStateSeeder extends Seeder
                             ->make(),
                     );
                     for ($i=0; $i < 5; $i++) { 
-                        $start_date = Carbon::now()->addMonth(rand(-1, -12))->format('Y-m-d');
-                        $end_date = Carbon::now()->addMonth(rand(12, 24))->format('Y-m-d');
+                        $start_date = Carbon::now()->addMonth(rand(-1, -12));
+                        $end_date = Carbon::now()->addMonth(rand(12, 24));
                         $real_state->employees()->attach(
                             factory(App\Models\Employee::class)->create()->id,
                             [

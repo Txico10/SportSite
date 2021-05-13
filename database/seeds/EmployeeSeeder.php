@@ -18,7 +18,7 @@ class EmployeeSeeder extends Seeder
         $roles = Role::whereNotIn('id', [1,2,5])->get();
         $val = 0;
         foreach ($employees as $employee) {
-            $employee->contact()->save(factory(App\Models\Contact::class)->make());
+            $employee->contacts()->save(factory(App\Models\Contact::class)->make());
             if ($val%5 == 0) {
                 $role = $roles->first();
             } else {

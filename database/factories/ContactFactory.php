@@ -4,21 +4,36 @@
 
 use App\Models\Contact;
 use Faker\Generator as Faker;
-use Faker\Factory as LocalFaker;
+use PragmaRX\Countries\Package\Countries;
 
 $factory->define(
     Contact::class, 
     function (Faker $faker) {
-        //$localizedFaker = LocalFaker::create("en_CA");
+        $myCountry = "CAN";
+        
+        $countryCities = Countries::where('cca3', $myCountry)->first()
+            ->hydrate('cities')
+            ->cities
+            ->pluck('nameascii')
+            ->toArray();
+        
+        $myCity = $faker->randomElement($countryCities);
+        
+        $myRegion =  Countries::where('cca3', $myCountry)->first()
+            ->hydrateCities()
+            ->cities
+            ->where('nameascii', $myCity)
+            ->first()
+            ->adm1name;
+        
         return [
             'suite' => $faker->secondaryAddress,
             'num' => $faker->buildingNumber,
             'street' => $faker->streetSuffix.' '.$faker->streetName,
-            'city' => $faker->city,
-            'region' => $faker->province,
-            //'region' => 'Quebec',
-            'country' => 'CAN',
-            'pc' => $faker->postcode,
+            'city' => $myCity,
+            'region' => utf8_decode($myRegion),
+            'country' => $myCountry,
+            'pc' => trim($faker->postcode),
             'telephone' => $faker->phoneNumber,
             'mobile'  => $faker->phoneNumber,
             'email' =>$faker->companyEmail,
