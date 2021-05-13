@@ -113,6 +113,7 @@ class ContactForm extends Component
         $this->dispatchBrowserEvent('closeContactModal');
         $this->emit('refreshCompanyContact');
         $this->emit('refreshBuildings');
+        $this->emit('refreshContactShow');
         $this->emit(
             'alert', 
             [

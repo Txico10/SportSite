@@ -48,7 +48,7 @@ class Buildings extends Component
      */
     public function mount($company)
     {
-        $this->myCompany = $company->load('buildings');
+        $this->myCompany = $company;
     }
 
     /**

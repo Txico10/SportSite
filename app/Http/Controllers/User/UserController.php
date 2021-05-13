@@ -36,7 +36,7 @@ class UserController extends Controller
      */
     public function index() 
     {
-    
+
         return view('admin.users');
     }
 
@@ -49,10 +49,12 @@ class UserController extends Controller
      */
     public function profile($id) 
     {
-        $user = User::findOrFail($id);
+        $user = User::with(['contacts', 'employees.contacts'])->findOrFail($id);
+        //dd($user);
         if ($user->id != Auth::id()) {
             abort('403');
         } else {
+            //dd($user);
             return view('user.profile', compact('user'));
         }
         

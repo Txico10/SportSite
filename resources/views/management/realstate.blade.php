@@ -22,7 +22,7 @@
 <div class="row">
   <div class="col-md-3">
     <livewire:management.company :company="$company" />
-    <livewire:management.contact :company="$company" />
+    <livewire:management.contact :contact="$company->contact" />
   </div>
   <div class="col-md-9">
     <div class="card">
@@ -66,7 +66,7 @@
           </div>
           <!-- /.tab-pane -->
           <div class="tab-pane" id="employees">
-            <livewire:management.employees :company_id="$company->id"/>
+            <livewire:management.employees :company="$company"/>
           </div>
           <!-- /.tab-pane -->
           <div class="tab-pane" id="tab_3">

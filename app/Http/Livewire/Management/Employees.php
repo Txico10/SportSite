@@ -1,6 +1,6 @@
 <?php
 /** 
- * Laratrust Roles Component
+ * Employee Component
  * 
  * PHP version 7.4
  * 
@@ -28,22 +28,24 @@ class Employees extends Component
 {
     use WithPagination;
 
-    public $company_id;
+    public $company;
     public $search ='';
     public $sortField = 'name';
     public $perPage = 10;
     public $sortAsc = true;
 
+    protected $listeners = ['refreshEmployees'=> '$refresh'];
     /**
      * Mount the livewire users view
      * 
-     * @param $companyId company_id
+     * @param $company company_id
      * 
      * @return page
      */
-    public function mount($companyId)
+    public function mount($company)
     {
-        $this->company_id = $companyId;
+        $this->company = $company;
+        //dd($this->company);
     }
 
     /**
@@ -57,11 +59,12 @@ class Employees extends Component
             'livewire.management.employees',
             [
                 'employees' => Employee::search($this->search)
-                    ->ofCompany($this->company_id)
+                    ->ofCompany($this->company->id)
                     ->ofUserRole()
                     ->ofRole()
                     ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
                     ->paginate($this->perPage),
+                'company' => $this->company,
             ]
         );
     }
@@ -74,6 +77,16 @@ class Employees extends Component
     public function paginationView() 
     {
         return '.includes.pagination-links';
+    }
+
+    /**
+     * Reset pagination on search
+     * 
+     * @return resetPage
+     */
+    public function updatingSearch()
+    {
+        $this->resetPage();
     }
 
     /**

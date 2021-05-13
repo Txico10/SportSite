@@ -40,7 +40,7 @@ class Company extends Component
      */
     public function mount(RealState $company)
     {
-        $this->company = $company;
+        $this->company = $company->load('contact', 'buildings.apartments', 'buildings.contact', 'apartments.apartmentType');
     }
 
     /**
@@ -50,6 +50,7 @@ class Company extends Component
      */
     public function render()
     {
+        //dd($this->company);
         return view(
             'livewire.management.company', 
             [

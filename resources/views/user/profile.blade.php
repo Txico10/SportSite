@@ -21,60 +21,23 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-3">
-        <livewire:user.profile :id="$user->id"/>
-          
-        @if($user->contacts->count()>0)
-        <div class="card card-primary card-outline">
-          <div class="card-header">
-            <h3 class="card-title">Primary Contact</h3>
-          </div>
-          <!-- /.card-header -->
-          <div class="card-body">
-            @foreach ($user->contacts as $contact)
+        <livewire:user.profile :user="$user"/>
+        @if ($user->contacts->count()>0)
+          @foreach ($user->contacts as $contact)
             @if(strcmp($contact->type,'primary')==0)
-            <strong><i class="fas fa-map-marker-alt mr-1"></i> Address</strong>
-            <p class="text-muted">
-              <span>{{$contact->suite}} - {{$contact->num}}</span>
-              <span>{{$contact->street}}, {{$contact->city}}, {{$contact->region}}</span>
-              <span>{{$contact->pc}} {{$contact->country}}</span>
-            </p>
-            <hr>
-            <strong><i class="fas fa-phone-alt mr-1"></i> Phone</strong>
-            <p class="text-muted">{{$contact->telephone}}</p>
-            <hr>
-            <strong><i class="fas fa-mobile-alt mr-1"></i> Mobile</strong>
-            <p class="text-muted">{{$contact->mobile}}</p>
+              <livewire:management.contact :contact="$contact" />
             @endif
+          @endforeach
+        @elseif($user->employees->count()>0)
+          @foreach ($user->employees as $employee)
+            @foreach($employee->contacts as $contact)
+              @if(strcmp($contact->type,'primary')==0)
+                <livewire:management.contact :contact="$employee->contacts" />
+              @endif              
             @endforeach
-          </div>
-          <!-- /.card-body -->
-        </div>
+          @endforeach
         @else
-        <div class="card card-primary card-outline">
-          <div class="card-header">
-            <h3 class="card-title">Primary Contact</h3>
-          </div>
-          <!-- /.card-header -->
-          <div class="card-body">
-            @foreach ($user->employees as $employee)
-            @if(strcmp($employee->contact->type,'primary')==0)
-            <strong><i class="fas fa-map-marker-alt mr-1"></i> Address</strong>
-            <p class="text-muted">
-              <span>{{$employee->contact->suite}} - {{$employee->contact->num}}</span>
-              <span>{{$employee->contact->street}}, {{$employee->contact->city}}, {{$employee->contact->region}}</span>
-              <span>{{$employee->contact->pc}} {{$employee->contact->country}}</span>
-            </p>
-            <hr>
-            <strong><i class="fas fa-phone-alt mr-1"></i> Phone</strong>
-            <p class="text-muted">{{$employee->contact->telephone}}</p>
-            <hr>
-            <strong><i class="fas fa-mobile-alt mr-1"></i> Mobile</strong>
-            <p class="text-muted">{{$employee->contact->mobile}}</p>
-            @endif
-            @endforeach
-          </div>
-          <!-- /.card-body -->
-        </div>
+          <p>Not available</p>
         @endif
       </div>
       <div class="col-md-9">
@@ -95,7 +58,14 @@
               <!-- /.tab-pane -->
               
               <div class="tab-pane" id="contact">
-                  <livewire:user.contact :id="$user->id"/>
+                @if($user->contacts->count()>0)
+                  <livewire:management.contact-show :contacts="$user->contacts"/>  
+                @elseif($user->employees->count()>0)
+                  <livewire:management.contact-show :contacts="$user->employees[0]->contacts"/>  
+                @else
+                  <p>New Contact case</p>
+                @endif
+                
               </div>
 
               <!-- /.tab-pane -->
@@ -216,7 +186,7 @@
       $('#relationship').select2();
 
       $("#modal-contact").on('hidden.bs.modal', function(){
-        Livewire.emit('resetContactInputFields');
+        Livewire.emit('resetContactInputFiels');
         $('#type').prop('disabled',false);
         $("#type").val('').trigger('change');
         $('#relationship').prop('disabled',false);

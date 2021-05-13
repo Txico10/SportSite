@@ -37,53 +37,50 @@
         </tr>
       </thead>
       <tbody>
-        @if($users->count())
-          @foreach($users as $key=>$user)
-            <tr>
-              <td>{{$key + $users->firstItem()}}</td>
-              <td>{{$user->name}}</td>
-              <td>{{$user->email}}</td>
-              <td>
-                @foreach($user->roles as $role)
-                  <span class="badge bg-success">{{ucfirst($role->display_name)}}</span>
-                @endforeach
-              </td>
-              <td>
-                @foreach($user->employees as $employee)
-                  {{$employee->pivot->myCompany->name}}
-                @endforeach
-              </td>
-              <td>{{\Carbon\Carbon::parse($user->created_at)->diffForHumans()}}</td>
-              <td>
-                  <button class="btn btn-sm btn-outline-primary" type="button" wire:click="$emit('infoUser',{{ $user->id }})"><i class="fas fa-user-cog"></i> Info</button>
-                  @if(Auth::id()!=$user->id)
-                    @permission('users-update')
-                    <button class="btn btn-sm btn-outline-info" type="button" wire:click="$emit('editUser',{{ $user->id }})"><i class="fas fa-pencil-alt"></i> Edit</button>
-                    @endpermission
-                    @permission('users-delete')
-                    <button class="btn btn-sm btn-outline-danger" type="button" wire:click="$emit('triggerDeleteUser',{{$user->id}})"><i class="fas fa-trash-alt"></i> Delete</button>
-                    @endpermission
-                    @if($user->status==0)
-                    <button class="btn btn-sm btn-outline-secondary type="button" wire:click="$emit('changeStatus',{{$user->id}})"><i class="fas fa-toggle-off"></i> Inactive</button>
-                    @else
-                    <button class="btn btn-sm btn-outline-success type="button" wire:click="$emit('changeStatus',{{$user->id}})"><i class="fas fa-toggle-on"></i>Active</button>
-                    @endif
+        @forelse($users as $key => $user)
+          <tr>
+            <td>{{$key + $users->firstItem()}}</td>
+            <td>{{$user->name}}</td>
+            <td>{{$user->email}}</td>
+            <td>
+              @foreach($user->roles as $role)
+                <span class="badge bg-success">{{ucfirst($role->display_name)}}</span>
+              @endforeach
+            </td>
+            <td>
+              @foreach($user->employees as $employee)
+                {{$employee->pivot->myCompany->name}}
+              @endforeach
+            </td>
+            <td>{{\Carbon\Carbon::parse($user->created_at)->diffForHumans()}}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary" type="button" wire:click="$emit('infoUser',{{ $user->id }})"><i class="fas fa-user-cog"></i> Info</button>
+                @if(Auth::id()!=$user->id)
+                  @permission('users-update')
+                  <button class="btn btn-sm btn-outline-info" type="button" wire:click="$emit('editUser',{{ $user->id }})"><i class="fas fa-pencil-alt"></i> Edit</button>
+                  @endpermission
+                  @permission('users-delete')
+                  <button class="btn btn-sm btn-outline-danger" type="button" wire:click="$emit('triggerDeleteUser',{{$user->id}})"><i class="fas fa-trash-alt"></i> Delete</button>
+                  @endpermission
+                  @if($user->status==0)
+                  <button class="btn btn-sm btn-outline-secondary type="button" wire:click="$emit('changeStatus',{{$user->id}})"><i class="fas fa-toggle-off"></i> Inactive</button>
+                  @else
+                  <button class="btn btn-sm btn-outline-success type="button" wire:click="$emit('changeStatus',{{$user->id}})"><i class="fas fa-toggle-on"></i>Active</button>
                   @endif
-                
-              </td>
-            </tr>
-          @endforeach
-        @else
-        <div class="row">
-          <p class="text-red float-rigth">No user registered</p>
-        </div>
-          
-        @endif
+                @endif
+
+            </td>
+          </tr>
+        @empty
+          <div class="row">
+            <p class="text-red float-rigth">No user registered</p>
+          </div>  
+        @endforelse
       </tbody>
     </table>
   </div>
   <!-- /.card-body -->
-  {{ $users->links() }}
+  {{ $users->links() }}   
 </div>
 
 <x-modal title="User" id="modal-userform" type="">
@@ -110,4 +107,4 @@
   </div>
   <!-- /.modal-dialog -->
 </div>
-  <!-- /.modal -->   
+  <!-- /.modal -->

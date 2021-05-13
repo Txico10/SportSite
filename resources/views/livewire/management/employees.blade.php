@@ -35,7 +35,7 @@
             </th>
             <th>
               @permission('employee-create')
-                <button class="btn btn-sm btn-outline-primary" type="button" style="width: 98px"><i class="fas fa-plus"></i> Add</button>
+                <button class="btn btn-sm btn-outline-primary" type="button" style="width: 98px" data-toggle="modal" data-target="#modal-employee"><i class="fas fa-plus"></i> Add</button>
               @endpermission
             </th>
           </tr>
@@ -48,20 +48,46 @@
             <td>{{$employee->gender}}</td>
             <td>{{$employee->display_name}}</td>
             <td>
+              <button type="button" class="btn btn-sm btn-outline-secondary" wire:click.prevent="$emit('showEmployeeContact', {{$employee->id}})"><i class="fas fa-map-marker-alt"></i></button>
               @permission('employee-update')
-                <button class="btn btn-sm btn-outline-info" type="button"><i class="fas fa-pencil-alt"></i></button>
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-info"><i class="fas fa-pencil-alt"></i></button>
+                <button type="button" class="btn btn-sm btn-outline-info dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu" role="menu">
+                  <a class="dropdown-item" href="#">Update Contact</a>
+                  <a class="dropdown-item" href="#">Reset Password</a>
+                </div>
+              </div>
               @endpermission
               @permission('employee-delete')
-                <button class="btn btn-sm btn-outline-danger" type="button"><i class="fas fa-trash-alt"></i></button>
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                <button type="button" class="btn btn-sm btn-outline-danger dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu" role="menu">
+                  <a class="dropdown-item" href="#">Close file</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                </div>
+              </div>
               @endpermission
             </td>
           </tr>  
           @endforeach
         </tbody>
       </table>
-    </div>
     <!-- /.card-body -->
-    {{ $employees->links() }}
+    </div>
     <!-- /.card-footer-->
+    {{ $employees->links() }}
+    <x-modal title="Show contact" id="modal-showContact" type="modal-md">
+      <livewire:management.contact-show :contacts="$employee->contacts"/>
+    </x-modal>
+    <x-modal title="Create Employee" id="modal-employee" type="modal-lg">
+      <livewire:management.employees-form :company="$company"/>
+    </x-modal>
+<!-- /.card -->
 </div>
-<!-- /.card -->    
+    

@@ -21,14 +21,11 @@
 @stop
 
 @section('content')
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-      <livewire:admin.users/>
-    </div>
+<div class="row">
+  <div class="col-12">
+    <livewire:admin.users/>
   </div>
 </div>
-
 @stop
 
 @section('footer')

@@ -44,7 +44,7 @@ class Users extends Component
         'infoUser',
         'changeStatus'
     ];
-    
+        
 
     /**
      * Render the livewire users view

@@ -39,9 +39,9 @@ class Employee extends Model
      * 
      * @return morphOne relationship
      */
-    public function contact()
+    public function contacts()
     {
-        return $this->morphOne(Contact::class, 'contactable');
+        return $this->morphMany(Contact::class, 'contactable');
     }
 
     /**
@@ -129,6 +129,31 @@ class Employee extends Model
             'roles.id'
         )
             ->select('employees.*', 'roles.display_name');
+    }
+    
+    /**
+     * SetGenderAttribute
+     *
+     * @param mixed $value value
+     * 
+     * @return void
+     */
+    public function setGenderAttribute($value)
+    {
+        switch ($value) {
+        case "M":
+            $this->attributes['gender'] = "male";
+            break;
+        case "F":
+            $this->attributes['gender'] = "female";
+            break;
+        case "O":
+            $this->attributes['gender'] = "other";
+            break;
+        default:
+            $this->attributes['gender'] = "indefined";
+            break;
+        }
     }
 
 }

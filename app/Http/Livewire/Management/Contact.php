@@ -25,19 +25,27 @@ use Livewire\Component;
  * */
 class Contact extends Component
 {
-    public $company;
+    public $contact;
 
     protected $listeners = ['refreshCompanyContact'=> '$refresh'];
     /**
      * Mount company.
      * 
-     * @param $company company id
+     * @param $contact company id
      *
      * @return view
      */
-    public function mount($company)
+    public function mount($contact)
     {
-        $this->company = $company->load('contact');
+        //dd($contact->count());
+        //$this->company = $company->load('contact');
+        //if (is_array($contact)) {
+        //    dd("YES");
+        //} else {
+            $this->contact = $contact->first();      
+        //}
+        
+        //dd($this->contact);
     }
 
     /**
@@ -50,7 +58,7 @@ class Contact extends Component
         return view(
             'livewire.management.contact', 
             [
-                'contact' => $this->company->contact,
+                'contact' => $this->contact,
             ]
         );
     }

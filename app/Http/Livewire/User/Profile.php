@@ -27,7 +27,7 @@ use Livewire\Component;
 class Profile extends Component
 {
 
-    public $user_id;
+    public $user;
 
     protected $listeners = ['refreshProfile'=> '$refresh'];
 
@@ -35,13 +35,14 @@ class Profile extends Component
     /**
      * Mount the view for a specific user
      * 
-     * @param $id user id
+     * @param $user user
      * 
-     * @return user_contact
+     * @return void
      */
-    public function mount($id)
+    public function mount($user)
     {
-        $this->user_id = $id;
+        $this->user = $user;
+        //dd($this->user);
     }
 
     /**
@@ -54,7 +55,7 @@ class Profile extends Component
         return view(
             'livewire.user.profile', 
             [
-                'user' => User::findOrFail($this->user_id),
+                'user' => $this->user,
             ] 
         );
     }

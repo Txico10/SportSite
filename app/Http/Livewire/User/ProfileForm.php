@@ -33,7 +33,7 @@ class ProfileForm extends Component
 {
     use WithFileUploads;
 
-    public $user_id;
+    public $user;
     public $name;
     public $email;
     public $old_email;
@@ -55,10 +55,9 @@ class ProfileForm extends Component
      * 
      * @return profile form
      */
-    public function mount($id = null)
+    public function mount($user)
     {
-        $user = User::findOrFail($id);
-        $this->user_id = $id;
+        $this->user = $user;
         $this->name = $user->name;
         $this->email = $user->email;
         $this->old_email = $user->email;
@@ -131,10 +130,10 @@ class ProfileForm extends Component
      */
     public function editProfile()
     {
-        $user = User::findOrFail($this->user_id);
-        $this->name = $user->name;
-        $this->photo = $user->image;
-        $this->email = $user->email;
+
+        $this->name = $this->user->name;
+        $this->photo = $this->user->image;
+        $this->email = $this->user->email;
 
         $this->dispatchBrowserEvent(
             'openModalProfile'
@@ -160,7 +159,7 @@ class ProfileForm extends Component
      */
     public function saveForm()
     {
-        $user = User::findOrFail($this->user_id);
+        $user = $this->user;
 
         if (strcmp($this->name, $user->name)!=0) {
             $user->name = $this->name;
