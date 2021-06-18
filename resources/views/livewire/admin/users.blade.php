@@ -83,7 +83,7 @@
   {{ $users->links() }}   
 </div>
 
-<x-modal title="User" id="modal-userform" type="">
+<x-modal title="User" id="modal-userform" type="" icon="fas fa-user">
   <livewire:admin.users-form>
 </x-modal>
 

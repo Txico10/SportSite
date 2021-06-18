@@ -70,7 +70,7 @@
     {{ $roles->links() }}
 </div>
 
-<x-modal title="Roles" id="modal-roles" type="">
+<x-modal title="Roles" id="modal-roles" type="" icon="fas fa-user-tag">
     <livewire:admin.roles-form/>
 </x-modal>
 

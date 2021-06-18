@@ -1,6 +1,6 @@
 <?php
 /** 
- * Laratrust Roles Component
+ * Employee Model
  * 
  * PHP version 7.4
  * 
@@ -14,7 +14,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 /**
- *  Extended Laratrust Roles Classe
+ *  Extended Model
  * 
  * @category MyCategory
  * @package  MyPackage

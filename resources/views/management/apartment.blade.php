@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('title', 'Apartments')
-
+@section('plugins.BootstrapSelect', true)
 @section('content_header')
     <div class="container-fluid">
         <div class="row mb-2">

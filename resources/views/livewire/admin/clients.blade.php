@@ -53,6 +53,6 @@
   </div>
   {{$clients->links()}}
 </div>
-<x-modal title="Register Company" id="modal-createcompany" type="modal-lg">
+<x-modal title="Register Company" id="modal-createcompany" type="modal-lg" icon="fas fa-building">
   <livewire:admin.clients-form/>
 </x-modal>

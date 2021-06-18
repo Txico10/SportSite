@@ -67,7 +67,7 @@
     {{ $permissions->links() }}
 </div>
 
-<x-modal title="Permissions" id="modal-permissions" type="">
+<x-modal title="Permissions" id="modal-permissions" type="" icon="fas fa-user-tag">
     <livewire:admin.permissions-form/>
 </x-modal>
 

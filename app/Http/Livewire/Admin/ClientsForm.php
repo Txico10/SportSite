@@ -450,7 +450,7 @@ class ClientsForm extends Component
         return [
             'managerName' => 'required|string|min:7|max:191',
             'managerBirth' => 'required|date',
-            'managerGender' => ['required', Rule::in(['male', 'female'])],
+            'managerGender' => ['required', Rule::in(['M', 'F'])],
             'managerMobile' => 'required|string|min:7|max:15',
             'managerEmail' => 'required|email:rfc,dns|unique:users,email',
             'managerPassword' => 'required|alpha_num|min:6|max:32',
@@ -568,7 +568,7 @@ class ClientsForm extends Component
             'type' => 'primary',
         ];
 
-        $newEmployee->contact()->create($employeeContact);
+        $newEmployee->contacts()->create($employeeContact);
 
         //Create User -> send registration confirmation info by email
         $newUser = User::create(

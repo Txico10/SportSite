@@ -243,11 +243,12 @@ class EmployeesForm extends Component
 
             DB::commit();
 
+            $newUser->sendEmailVerificationNotification();
+            
             if (isset($employee['image'])) {
                 $this->_storeImage($employee['image']);
             }
             
-            $newUser->sendEmailVerificationNotification();
             $this->dispatchBrowserEvent('closeEmployeeModal');
             $this->emit('refreshEmployees');
             $this->emit(

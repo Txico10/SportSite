@@ -68,8 +68,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function adminlte_image() 
     {
         $photo = auth()->user()->image;
+        
         if (empty($photo)) {
             $photo = 'https://picsum.photos/300/300';
+            
         } else {
             $photo = asset(Storage::url('profile_images/'.$photo));
         }

@@ -19,7 +19,7 @@
     <button type="button" class="btn btn-primary btn-block" wire:click="$emit('editProfile')"><b>Edit my profile</b></button>
   </div>
   <!-- /.card-body -->
-  <x-modal title="My Profile" id="modal-profile" type="">
+  <x-modal title="My Profile" id="modal-profile" type="" icon="fas fa-user-secret">
     <livewire:user.profile-form :user="$user" />
   </x-modal>
 </div>

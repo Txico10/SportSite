@@ -36,7 +36,7 @@ class Building extends Model
      * 
      * @return belongTo relationship
      */
-    public function reastate()
+    public function realstate()
     {
         return $this->belongsTo(RealState::class, 'real_state_id');
     }

@@ -57,8 +57,8 @@ class AppServiceProvider extends ServiceProvider
                 // Add some items to the menu...
                 $companyID = DB::table('employee_contracts')
                     ->where('user_id', auth()->user()->id)
-                    ->whereDate('start_date', '<=', today())
-                    ->whereDate('end_date', '>=', today())
+                    ->whereDate('start_date', '<=', now())
+                    ->whereDate('end_date', '>=', now())
                     ->value('real_state_id');
                 //dd($company);
                 $event->menu->addBefore(
@@ -121,7 +121,7 @@ class AppServiceProvider extends ServiceProvider
                         [
                             'key' => 'furnitures',
                             'text' => 'Furnitures',
-                            'url'  => '#',
+                            'route'  => ['company.furnitures', ["id" => $companyID]],
                             'icon' => 'fas fa-fw fa-chair',
                             'permission' => 'furniture-read',
                         ],

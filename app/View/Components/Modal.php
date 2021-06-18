@@ -27,6 +27,7 @@ class Modal extends Component
     public $title= '';
     public $id = '';
     public $type = '';
+    public $icon = '';
 
     /**
      * Create a new component instance.
@@ -34,14 +35,16 @@ class Modal extends Component
      * @param $title modal title
      * @param $id    modal id
      * @param $type  modal type
+     * @param $icon  modal icon
      *
      * @return void
      */
-    public function __construct($title, $id, $type)
+    public function __construct($title, $id, $type, $icon)
     {
         $this->title = $title;
         $this->id = $id;
         $this->type=$type;
+        $this->icon=$icon;
     }
 
     /**

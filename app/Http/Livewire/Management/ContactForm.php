@@ -212,6 +212,7 @@ class ContactForm extends Component
      */
     public function edit(Contact $newContact)
     {
+        //dd($newContact);
         $this->oldContact = $newContact;
         $this->contact_id = $this->oldContact->id;
         $this->suite = $this->oldContact->suite;

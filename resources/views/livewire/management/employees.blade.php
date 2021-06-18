@@ -14,6 +14,9 @@
         <thead>
           <tr>
             <th>
+              Photo
+            </th>
+            <th>
               <a wire:click.prevent="sortBy('name')" role="button" href="#">Name
                 @include('includes._sort-icon', ['field' => 'name'])
               </a>
@@ -43,6 +46,13 @@
         <tbody>
           @foreach($employees as $employee)
           <tr>
+            <td>
+              <ul class="list-inline">
+                <li class="list-inline-item">
+                    <img alt={{$employee->name}} class="table-avatar" style="width:40px;height:40px;" src={{!empty($employee->image) ? asset(Storage::url('profile_images/employees/'.$employee->image)): null}}>
+                </li>
+              </ul>
+            </td>
             <td>{{$employee->name}}</td>
             <td>{{$employee->birthdate}}</td>
             <td>{{$employee->gender}}</td>
@@ -51,12 +61,12 @@
               <button type="button" class="btn btn-sm btn-outline-secondary" wire:click.prevent="$emit('showEmployeeContact', {{$employee->id}})"><i class="fas fa-map-marker-alt"></i></button>
               @permission('employee-update')
               <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-outline-info"><i class="fas fa-pencil-alt"></i></button>
+                <button type="button" class="btn btn-sm btn-outline-info" wire:click.prevent="$emit('editEmployee', {{$employee}})"><i class="fas fa-pencil-alt"></i></button>
                 <button type="button" class="btn btn-sm btn-outline-info dropdown-toggle dropdown-icon" data-toggle="dropdown">
                   <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <div class="dropdown-menu" role="menu">
-                  <a class="dropdown-item" href="#">Update Contact</a>
+                  <a class="dropdown-item" wire:click.prevent="$emit('editContact', {{$employee->contacts}})">Update Contact</a>
                   <a class="dropdown-item" href="#">Reset Password</a>
                 </div>
               </div>
@@ -82,11 +92,14 @@
     </div>
     <!-- /.card-footer-->
     {{ $employees->links() }}
-    <x-modal title="Show contact" id="modal-showContact" type="modal-md">
+    <x-modal title="Show contact" id="modal-showContact" type="" icon="fas fa-address-card">
       <livewire:management.contact-show :contacts="$employee->contacts"/>
     </x-modal>
-    <x-modal title="Create Employee" id="modal-employee" type="modal-lg">
+    <x-modal title="Create Employee" id="modal-employee" type="modal-lg" icon="fas fa-user-plus">
       <livewire:management.employees-form :company="$company"/>
+    </x-modal>
+    <x-modal title="Edit Employee" id="modal-editEmployee" type="" icon="fas fa-user-edit">
+      <livewire:management.employees-edit />
     </x-modal>
 <!-- /.card -->
 </div>

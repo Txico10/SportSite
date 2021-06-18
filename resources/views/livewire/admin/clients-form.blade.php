@@ -289,8 +289,8 @@
                           </div>
                           <select class="form-control" name="managerGender" id="managerGender" wire:model="managerGender" data-placeholder="Manager gender" style="width: 87.9%">
                               <option value=""></option>
-                              <option value="male">Male</option>
-                              <option value="female">Female</option>
+                              <option value="M">Male</option>
+                              <option value="F">Female</option>
                           </select>
                       </div>
                     </div>

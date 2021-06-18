@@ -64,6 +64,9 @@ Route::get('/company/{id}/buildings', 'Management\BuildingController@index')
 Route::get('/company/{id}/apartments', 'Management\ApartmentController@index')
     ->middleware(['auth', 'verified', 'permission:apartment-read'])
     ->name('company.apartments');
+Route::get('/company/{id}/furnitures', 'Management\FurnitureController@index')
+    ->middleware(['auth','verified','permission:furniture-read'])
+    ->name('company.furnitures');
 /*
 Route::get('send', 'NotifyController@index');
 

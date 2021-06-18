@@ -2,9 +2,11 @@ $(function(){
   $('#legalform').select2({
     width: 'resolve'
   });
-  $('#myBuildings').select2({
-    width: 'resolve'
-  });
+  //$('#myBuildings').select2({
+  //  width: 'resolve'
+  //});
+  $('#myBuildings').selectpicker();
+  
   $('#apart_building').select2({
     width: 'resolve',
   });
@@ -24,6 +26,13 @@ $(function(){
   $('#employee-role').select2({
     width: 'resolve',
   });
+  $('#editEmployeeGender').select2({
+    width: 'resolve',
+  });
+  $('#furniture_list').select2({
+    width: 'resolve',
+  });
+  
   $("#lot").inputmask({
     mask: "9 999 999",
     //placeholder: "*",
@@ -89,6 +98,47 @@ $(function(){
     },
     allowInputToggle:true,
   });
+
+  $('#furniture-aquisition-date').datetimepicker({
+    format: 'DD/MM/YYYY',
+    useCurrent: false,
+    icons: {
+      previous: 'fas fa-chevron-left',
+      next: 'fas fa-caret-right',
+      today: 'fas fa-calendar-check',
+      clear: 'fas fa-trash',
+      close: 'fas fa-times-circle',
+    },
+    viewMode: 'days',
+    toolbarPlacement: 'bottom',
+    buttons: {
+      showToday: true,
+      showClear: true,
+      showClose: true,
+    },
+    allowInputToggle:true,
+  });
+  
+  $('#edit-employee-birthdate').datetimepicker({
+    format: 'DD/MM/YYYY',
+    useCurrent: false,
+    icons: {
+      previous: 'fas fa-chevron-left',
+      next: 'fas fa-caret-right',
+      today: 'fas fa-calendar-check',
+      clear: 'fas fa-trash',
+      close: 'fas fa-times-circle',
+    },
+    viewMode: 'days',
+    toolbarPlacement: 'bottom',
+    buttons: {
+      showToday: true,
+      showClear: true,
+      showClose: true,
+    },
+    allowInputToggle:true,
+  });
+
   $('#employee-startDate').datetimepicker({
     format: 'DD/MM/YYYY, HH:mm',
     useCurrent: true,
@@ -206,13 +256,20 @@ $(function(){
       Livewire.emit('resetApartmentInputFiels');      
     }
   );
+
+  $("#modal-editEmployee").on('hidden.bs.modal', function(){
+      Livewire.emit('resetEditEmployeeInputFields');      
+    }
+  );
   
-  $("#myBuildings").on('select2:select', function(event){
-        var data = $(this).select2("val");
-        var formID = document.getElementById("apartmentsList");
-        Livewire.find(formID.getAttribute('wire:id')).set('buildingId', data);
-        //console.log(data);
-  });
+  //$("#myBuildings").on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
+  //      var data = $(this).val();
+  //      if(data != -1) {
+  //        var formID = document.getElementById("apartmentsList");
+  //        Livewire.find(formID.getAttribute('wire:id')).set('buildingId', data);
+  //        console.log(data);
+  //      }
+  //});
   $("#apart_building").on('select2:select', function(event){
         var data = $(this).select2("val");
         var formID = document.getElementById("apartmentform");
@@ -249,6 +306,12 @@ $(function(){
     Livewire.find(formID.getAttribute('wire:id')).set('role', data);
     //console.log(data);
   });
+  $("#editEmployeeGender").on('select2:select', function(event){
+    var data = $(this).select2("val");
+    var formID = document.getElementById("employee-edit-form");
+    Livewire.find(formID.getAttribute('wire:id')).set('gender', data);
+    //console.log(data);
+  });
   $('#employee-birthdate').on('hide.datetimepicker', function(e) {
     e.preventDefault();
     var birthdate = moment(e.date._d).format('YYYY-MM-DD');
@@ -260,10 +323,23 @@ $(function(){
       $(".emp-birth").addClass('is-invalid').removeClass('is-valid');
       //console.log("birthdate = null");
     } else {
-      mybdate = moment(mybdate, "DD MM YYYY").format('YYYY-MM-DD');
-      if(birthdate !== mybdate){
-        birthdate = mybdate;
-      } 
+       
+      Livewire.find(formID.getAttribute('wire:id')).set('birthdate', birthdate);
+      $(".emp-birth").addClass('is-valid').removeClass('is-invalid')
+      //console.log(birthdate);
+    } 
+  });
+  $('#edit-employee-birthdate').on('hide.datetimepicker', function(e) {
+    e.preventDefault();
+    var birthdate = moment(e.date._d).format('YYYY-MM-DD');
+    var mybdate = $(".edit-employee-birth").val();
+    var formID = document.getElementById("employee-edit-form");
+    //console.log(birthdate);
+    if(mybdate === '') {
+      Livewire.find(formID.getAttribute('wire:id')).set('birthdate', null);
+      $(".emp-birth").addClass('is-invalid').removeClass('is-valid');
+      //console.log("birthdate = null");
+    } else { 
       Livewire.find(formID.getAttribute('wire:id')).set('birthdate', birthdate);
       $(".emp-birth").addClass('is-valid').removeClass('is-invalid')
       //console.log(birthdate);
@@ -337,9 +413,10 @@ $(function(){
 
 document.addEventListener("livewire:load", () => {
     Livewire.hook('message.processed', (message, component) => {
-        $('#myBuildings').select2({
-          width: 'resolve'
-        });
+        //$('#myBuildings').select2({
+        //  width: 'resolve'
+        //});
+        //$('#myBuildings').selectpicker();
         
         $('#apart_building').select2({
           width: 'resolve',
@@ -362,6 +439,9 @@ document.addEventListener("livewire:load", () => {
         });
 
         $('#employee-role').select2({
+          width: 'resolve',
+        });
+        $('#editEmployeeGender').select2({
           width: 'resolve',
         });
       }); 
@@ -426,6 +506,18 @@ window.addEventListener('openContactModal', event => {
 
   window.addEventListener('closeEmployeeModal', event => {
     $("#modal-employee").modal('hide');
+  });
+
+  window.addEventListener('openEmployeeEditModal', event => {
+    //console.log(event.detail.birthdate)
+    $(".edit-employee-birth").val(event.detail.birthdate)
+    $(".edit-employee-birth").addClass('is-valid').removeClass('is-invalid');
+    $("#modal-editEmployee").modal('show');
+  });
+
+  window.addEventListener('closeEmployeeEditModal', event => {
+    //console.log("YES")
+    $("#modal-editEmployee").modal('hide');
   });
 
   Livewire.on('contactInfo', contact=>{

@@ -62,6 +62,16 @@ class RealState extends Model
     {
         return $this->morphOne(Contact::class, 'contactable');
     }
+    
+    /**
+     * Furnitures
+     *
+     * @return void
+     */
+    public function furnitures()
+    {
+        return $this->hasMany(Furniture::class);
+    }
 
     /**
      * Searche for Real State/clients information

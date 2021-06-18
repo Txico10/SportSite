@@ -170,7 +170,7 @@
     </div>
   </div>
   </div>
-  <x-modal title="Reset Password" id="modal-resetPassword" type="">
+  <x-modal title="Reset Password" id="modal-resetPassword" type="" icon="fas fa-lock">
     <livewire:user.reset-password/>
   </x-modal>
 @stop

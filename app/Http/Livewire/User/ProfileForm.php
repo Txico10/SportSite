@@ -51,7 +51,7 @@ class ProfileForm extends Component
     /**
      * Mount profile form
      * 
-     * @param $id user id
+     * @param $user user id
      * 
      * @return profile form
      */

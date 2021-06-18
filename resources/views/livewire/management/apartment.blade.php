@@ -1,14 +1,17 @@
 <div class="card" id="apartmentsList">
-    <div class="card-header"> 
-      Building: 
-      <select name="myBuildings" id="myBuildings" wire:ignore data-width="150px">
-        <option value="-1">All</option>
-        @forelse($myBuildings as $key=>$value)
-          <option value="{{$key}}">{{$value}}</option>
-        @empty
-          <option value="-2">No Building</option>
-        @endforelse
-      </select>
+    <div class="card-header" wire:ignore id="for-bootstrap-select">
+       
+        <select name="myBuildings" id="myBuildings" wire:model="buildingId" data-container="#for-bootstrap-select" data-width="150px" data-title="Select building" data-live-search="true">
+          @if(!empty($myBuildings))
+            <option value="-1">All buildings</option>
+          @endif
+          @forelse($myBuildings as $key=>$value)
+            <option value="{{$key}}">{{$value}}</option>
+          @empty
+            <option value="-2">No Building</option>
+          @endforelse
+        </select>
+      
       <div class="card-tools">
         <div class="input-group input-group-sm" style="width: 150px;">
             <input type="text" wire:model="search" name="search" class="form-control float-right" placeholder="Search">
@@ -82,7 +85,7 @@
     {{ $apartments->links() }}
     @endif    
     <!-- /.card-footer-->
-    <x-modal title="Apartment" id="modal-apartment" type="">
+    <x-modal title="Apartment" id="modal-apartment" type="" icon="fas fa-home">
       <livewire:management.apartment-form :company="$company"/>  
     </x-modal>
 </div>

@@ -1,5 +1,7 @@
 @extends('adminlte::page')
 
+@section('plugins.BootstrapSelect', true)
+
 @section('title', 'Company profile')
 
 @section('content_header')
@@ -34,11 +36,11 @@
               Dropdown <span class="caret"></span>
             </a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" tabindex="-1" href="#">Buildings</a>
-              <a class="dropdown-item" tabindex="-1" href="#">Apartments</a>
-              <a class="dropdown-item" tabindex="-1" href="#">Something else</a>
+              <a class="dropdown-item" tabindex="-1" href="{{route('company.buildings',  ['id'=>$company->id])}}">Buildings</a>
+              <a class="dropdown-item" tabindex="-1" href="{{route('company.apartments', ['id'=>$company->id])}}">Apartments</a>
+              <a class="dropdown-item" tabindex="-1" href="{{route('company.furnitures', ['id'=>$company->id])}}">Furnitures</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" tabindex="-1" href="#">Separated link</a>
+              <a class="dropdown-item" tabindex="-1" href="#">Employees</a>
             </div>
           </li>
           <li class="nav-item"><a class="nav-link active" href="#buildings" data-toggle="tab">Buildings</a></li>

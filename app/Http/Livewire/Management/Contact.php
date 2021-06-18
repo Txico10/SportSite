@@ -37,15 +37,10 @@ class Contact extends Component
      */
     public function mount($contact)
     {
-        //dd($contact->count());
-        //$this->company = $company->load('contact');
-        //if (is_array($contact)) {
-        //    dd("YES");
-        //} else {
-            $this->contact = $contact->first();      
-        //}
         
-        //dd($this->contact);
+        $this->contact = $contact;      
+        
+        //dd($this->contact->count());
     }
 
     /**

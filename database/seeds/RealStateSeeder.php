@@ -23,6 +23,12 @@ class RealStateSeeder extends Seeder
                         factory(App\Models\Building::class, 4)
                             ->make(),
                     );
+
+                    $real_state->furnitures()->saveMany(
+                        factory(App\Models\Furniture::class, 5)
+                        ->make()
+                    );
+
                     for ($i=0; $i < 5; $i++) { 
                         $start_date = Carbon::now()->addMonth(rand(-1, -12));
                         $end_date = Carbon::now()->addMonth(rand(12, 24));

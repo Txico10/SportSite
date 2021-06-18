@@ -101,8 +101,11 @@
     <!-- /.card-body -->
     {{ $buildings->links() }}
     <!-- /.card-footer-->
-    <x-modal title="Building" id="modal-building" type="">
+    <x-modal title="Building" id="modal-building" type="" icon="fas fa-building">
       <livewire:management.buildings-form :company="$company"/>  
+    </x-modal>
+    <x-modal title="Contact" id="modal-contact" type="" icon="">
+      <livewire:management.contact-form/>
     </x-modal>
 </div>
 <!-- /.card -->

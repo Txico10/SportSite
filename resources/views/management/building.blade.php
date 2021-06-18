@@ -22,9 +22,6 @@
 <div class="row">
   <div class="col-md-12">
     <livewire:management.buildings :company="$company"/>
-    <x-modal title="Contact" id="modal-contact" type="modal-md">
-      <livewire:management.contact-form/>
-    </x-modal>
   </div>
 </div>
 @stop

@@ -1,5 +1,15 @@
 <?php
-
+/** 
+ * AdminLTE config file
+ * 
+ * PHP version 7.4
+ * 
+ * @category MyCategory
+ * @package  MyPackage
+ * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
+ * @license  MIT treino.localhost
+ * @link     link()
+ * */
 return [
 
     /*
@@ -224,11 +234,6 @@ return [
     */
 
     'menu' => [
-        [
-            'text' => 'search',
-            'search' => true,
-            'topnav' => true,
-        ],
         ['header' => 'ADMIN MANAGEMENT', 'permission' => 'adminMenu-read'],
         [
             'key' => 'role',
@@ -284,6 +289,7 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
+        App\MenuFilter\MyMenuFilter::class
     ],
 
     /*
@@ -316,6 +322,21 @@ return [
                     'type' => 'css',
                     'asset' => false,
                     'location' => '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css',
+                ],
+            ],
+        ],
+        'BootstrapSelect' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css',
                 ],
             ],
         ],
