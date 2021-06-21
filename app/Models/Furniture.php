@@ -11,7 +11,6 @@
  * @link     link()
  * */
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Model;
 /**
  *  Extended Model
@@ -25,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 class Furniture extends Model
 {
     protected $fillable = [
-        'manufacturer', 'model', 'serial', 'buy_at', 'salvage_at', 'qrcode'
+        'real_state_id','furniture_type_id','manufacturer', 'model', 'serial', 'buy_at', 'salvage_at', 'qrcode',
     ];
     
     /**
@@ -46,5 +45,41 @@ class Furniture extends Model
     public function furnitureType()
     {
         return $this->belongsTo(FurnitureType::class, 'furniture_type_id');
+    }
+
+    /**
+     * Set Manufacturer Attribute
+     *
+     * @param mixed $value Value
+     * 
+     * @return void
+     */
+    public function setManufacturerAttribute($value)
+    {
+        $this->attributes['manufacturer'] = strtolower($value);        
+    }
+    
+    /**
+     * Set Model Attribute
+     *
+     * @param mixed $value Value
+     * 
+     * @return void
+     */
+    public function setModelAttribute($value)
+    {
+        $this->attributes['model'] = strtolower($value);        
+    }
+    
+    /**
+     * Set Serial Attribute
+     *
+     * @param mixed $value Value
+     * 
+     * @return void
+     */
+    public function setSerialAttribute($value)
+    {
+        $this->attributes['serial'] = strtolower($value);
     }
 }

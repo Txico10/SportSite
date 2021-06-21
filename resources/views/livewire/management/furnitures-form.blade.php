@@ -62,7 +62,7 @@
                   <div class="input-group-prepend" data-target="#furniture-aquisition-date" data-toggle="datetimepicker">
                     <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
                   </div>
-                  <input type="text" class="form-control datetimepicker-input furniture-aquisition {{$errors->has("buy_at") ? 'is-invalid' : (strlen($buy_at)>0 ? 'is-valid':'')}}" placeholder="Aquisition date" data-target="#furniture-aquisition-date" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                  <input type="text" class="form-control datetimepicker-input furniture-aquisition-date {{$errors->has('buy_at') ? 'is-invalid' : (strlen($buy_at)>0 ? 'is-valid':'')}}" placeholder="Aquisition date" data-target="#furniture-aquisition-date" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
                 </div>
             </div>
         </div>

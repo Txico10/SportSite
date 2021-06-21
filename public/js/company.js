@@ -84,7 +84,7 @@ $(function(){
     useCurrent: false,
     icons: {
       previous: 'fas fa-chevron-left',
-      next: 'fas fa-caret-right',
+      next: 'fas fa-chevron-right',
       today: 'fas fa-calendar-check',
       clear: 'fas fa-trash',
       close: 'fas fa-times-circle',
@@ -104,7 +104,7 @@ $(function(){
     useCurrent: false,
     icons: {
       previous: 'fas fa-chevron-left',
-      next: 'fas fa-caret-right',
+      next: 'fas fa-chevron-right',
       today: 'fas fa-calendar-check',
       clear: 'fas fa-trash',
       close: 'fas fa-times-circle',
@@ -124,7 +124,7 @@ $(function(){
     useCurrent: false,
     icons: {
       previous: 'fas fa-chevron-left',
-      next: 'fas fa-caret-right',
+      next: 'fas fa-chevron-right',
       today: 'fas fa-calendar-check',
       clear: 'fas fa-trash',
       close: 'fas fa-times-circle',
@@ -261,6 +261,15 @@ $(function(){
       Livewire.emit('resetEditEmployeeInputFields');      
     }
   );
+
+  $("#modal-furniture").on('hidden.bs.modal', function(){
+    $('#furniture-aquisition-date').datetimepicker('clear');
+    $(".furniture-aquisition-date").val("");
+    $(".furniture-aquisition-date").removeClass('is-valid');
+    $(".furniture-aquisition-date").removeClass('is-invalid');
+    Livewire.emit('resetFurnitureInputFields');      
+  }
+);
   
   //$("#myBuildings").on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
   //      var data = $(this).val();
@@ -312,6 +321,12 @@ $(function(){
     Livewire.find(formID.getAttribute('wire:id')).set('gender', data);
     //console.log(data);
   });
+  $("#furniture_list").on('select2:select', function(event){
+    var data = $(this).select2("val");
+    var formID = document.getElementById("furniture-form");
+    Livewire.find(formID.getAttribute('wire:id')).set('furniture_type_id', data);
+    //console.log(data);
+  });
   $('#employee-birthdate').on('hide.datetimepicker', function(e) {
     e.preventDefault();
     var birthdate = moment(e.date._d).format('YYYY-MM-DD');
@@ -342,6 +357,22 @@ $(function(){
     } else { 
       Livewire.find(formID.getAttribute('wire:id')).set('birthdate', birthdate);
       $(".emp-birth").addClass('is-valid').removeClass('is-invalid')
+      //console.log(birthdate);
+    } 
+  });
+  $('#furniture-aquisition-date').on('hide.datetimepicker', function(e) {
+    e.preventDefault();
+    var buydate = moment(e.date._d).format('YYYY-MM-DD');
+    var mybuydate = $(".furniture-aquisition-date").val();
+    var formID = document.getElementById("furniture-form");
+    //console.log(birthdate);
+    if(mybuydate === '') {
+      Livewire.find(formID.getAttribute('wire:id')).set('buy_at', null);
+      $(".furniture-aquisition-date").addClass('is-invalid').removeClass('is-valid');
+      //console.log("birthdate = null");
+    } else { 
+      Livewire.find(formID.getAttribute('wire:id')).set('buy_at', buydate);
+      $(".furniture-aquisition-date").addClass('is-valid').removeClass('is-invalid')
       //console.log(birthdate);
     } 
   });
@@ -413,10 +444,6 @@ $(function(){
 
 document.addEventListener("livewire:load", () => {
     Livewire.hook('message.processed', (message, component) => {
-        //$('#myBuildings').select2({
-        //  width: 'resolve'
-        //});
-        //$('#myBuildings').selectpicker();
         
         $('#apart_building').select2({
           width: 'resolve',
@@ -442,6 +469,10 @@ document.addEventListener("livewire:load", () => {
           width: 'resolve',
         });
         $('#editEmployeeGender').select2({
+          width: 'resolve',
+        });
+
+        $('#furniture_list').select2({
           width: 'resolve',
         });
       }); 
@@ -520,8 +551,17 @@ window.addEventListener('openContactModal', event => {
     $("#modal-editEmployee").modal('hide');
   });
 
+  window.addEventListener('openFurnitureModal', event => {
+    $(".furniture-aquisition-date").val(event.detail.buy_at);
+    $(".furniture-aquisition-date").addClass('is-valid').removeClass('is-invalid');
+    $("#modal-furniture").modal('show');
+  });
+
+  window.addEventListener('closeFurnitureModal', event => {
+    $("#modal-furniture").modal('hide');
+  });
+
   Livewire.on('contactInfo', contact=>{
     $("#modal-showContact .modal-body").html(contact);
     $("#modal-showContact").modal('show');
-    //console.log(data.html());
   });

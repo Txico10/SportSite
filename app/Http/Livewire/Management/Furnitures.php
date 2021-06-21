@@ -12,7 +12,6 @@
  * */
 namespace App\Http\Livewire\Management;
 
-use App\Models\FurnitureType;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -36,6 +35,10 @@ class Furnitures extends Component
     public $perPage = 10;
     public $sortAsc = true;
     public $furnitureType;
+
+    protected $listeners = [
+        'refreshFurnitures' => '$refresh', 
+    ];
         
     /**
      * Mount
@@ -47,7 +50,7 @@ class Furnitures extends Component
     public function mount($company)
     {
         $this->companyFurnitures = $company->load('furnitures', 'furnitures.furnitureType');
-        //dd($test);
+        //dd($this->companyFurnitures);
     }    
     /**
      * Render

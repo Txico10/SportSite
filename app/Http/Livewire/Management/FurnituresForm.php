@@ -12,7 +12,9 @@
  * */
 namespace App\Http\Livewire\Management;
 
+use App\Models\Furniture;
 use App\Models\FurnitureType;
+use Carbon\Carbon;
 use Livewire\Component;
 /**
  *  Furniture Form Livewire component
@@ -25,7 +27,7 @@ use Livewire\Component;
  * */
 class FurnituresForm extends Component
 {
-    public $submit_btn_title = "Save";
+    public $submit_btn_title = "save";
     public $manufacturer;
     public $model;
     public $serial;
@@ -34,8 +36,15 @@ class FurnituresForm extends Component
     public $qrcode;
     public $furnitureList;
     public $furniture_type_id;
+    public $furniture_id;
+    public $real_state_id;
     public $company;
-        
+    
+    protected $listeners = [
+        'editFurniture' => 'edit', 
+        'resetFurnitureInputFields' => 'resetInputFields'
+    ];
+
     /**
      * Mount
      * 
@@ -47,8 +56,7 @@ class FurnituresForm extends Component
     {
         $this->furnitureList = FurnitureType::all()->pluck('description', 'id');
         $this->company = $company;
-
-        //dd($this->company);
+        $this->real_state_id = $company->id;
     }
 
     /**
@@ -66,14 +74,114 @@ class FurnituresForm extends Component
             ]
         );
     }
+
+    /**
+     * Rules
+     *
+     * @return void
+     */
+    protected function rules()
+    {
+        return [
+            'real_state_id' => 'required|exists:real_states,id',
+            'furniture_type_id' => 'required|exists:furniture_types,id',
+            'manufacturer' => 'required|string|min:3|max:255',
+            'model' => 'required|alpha_num',
+            'serial' => 'required|alpha_num',
+            'buy_at' => 'date|before_or_equal:today',
+            'salvage_at' => 'nullable|date|after:startDate',
+            'qrcode' => 'nullable|image|dimensions:max_width=165,max_height=165',
+        ];
+    }
+
+    /**
+     * Updated
+     *
+     * @param mixed $propertyName validation field
+     * 
+     * @return void
+     */
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName);
+    }
     
     /**
-     * SaveFurnitureForm
+     * Save Furniture Form
      *
      * @return void
      */
     public function saveFurnitureForm()
     {
-        dd("Save Furniture Form");
+        $msg_type = "success";
+        $msg = "created successfuly";
+
+        $validatedData = $this->validate();
+
+        Furniture::updateOrCreate(
+            ['id' => $this->furniture_id],
+            $validatedData
+        );
+        
+        if (strcmp($this->submit_btn_title, "save")!=0) {
+            $msg = "updated successfuly";
+        }
+
+        $this->dispatchBrowserEvent('closeFurnitureModal');
+        $this->emit('refreshFurnitures');
+        $this->emit(
+            'alert', 
+            [
+                'type'=>$msg_type,
+                'message'=>'Apartment '.$msg,
+                ]
+        );
+    }
+    
+    /**
+     * Edit
+     *
+     * @param $id furniture id
+     * 
+     * @return void
+     */
+    public function edit($id)
+    {
+        $furniture = $this->company->furnitures->where('id', $id)->first();
+        
+        $this->furniture_id = $id;
+        $this->furniture_type_id = $furniture->furniture_type_id;
+        $this->manufacturer = $furniture->manufacturer;
+        $this->model = $furniture->model;
+        $this->serial = $furniture->serial;
+        $this->buy_at = $furniture->buy_at;
+        $this->salvage_at = $furniture->salvage_at;
+        $this->qrcode = $furniture->qrcode;
+        $this->submit_btn_title = "update";
+        $formatedDate = Carbon::parse($this->buy_at)->format('d-m-Y');
+        $this->dispatchBrowserEvent('openFurnitureModal', ['buy_at' => $formatedDate]);
+    }
+    
+    /**
+     * Reset Input Fields
+     *
+     * @return void
+     */
+    public function resetInputFields()
+    {
+        $this->reset(
+            [
+                'manufacturer',
+                'model',
+                'serial',
+                'buy_at',
+                'salvage_at',
+                'qrcode',
+                'furniture_type_id',
+                'furniture_id'
+            ]
+        );
+        $this->submit_btn_title = "save";
+        $this->resetErrorBag();
     }
 }
