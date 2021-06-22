@@ -85,7 +85,7 @@
                     <div class="input-group-prepend" data-target="#employee-birthdate" data-toggle="datetimepicker">
                       <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                     </div>
-                    <input type="text" class="form-control datetimepicker-input employee-birth {{$errors->has("birthdate") ? 'is-invalid' : (strlen($birthdate)>0 ? 'is-valid':'')}}" placeholder="Employee Birthdate" data-target="#employee-birthdate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                    <input type="text" class="form-control datetimepicker-input employee-birthdate {{$errors->has("birthdate") ? 'is-invalid' : (strlen($birthdate)>0 ? 'is-valid':'')}}" placeholder="Employee Birthdate" data-target="#employee-birthdate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
                   </div>
                 </div>
                 <!-- Employee gender -->

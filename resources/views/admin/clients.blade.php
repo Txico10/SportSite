@@ -94,24 +94,24 @@
 
     $('#managerBirth').on('hide.datetimepicker', function(e) {
       e.preventDefault();
-      var birthdate = moment(e.date._d).format('YYYY-MM-DD');
-      var mybdate = $(".datetimepicker-input").val();
-      var formID = document.getElementById("myclient-form");
-      //console.log(birthdate);
-      if(mybdate === '') {
-        Livewire.find(formID.getAttribute('wire:id')).set('managerBirth', null);
-        $(".datetimepicker-input").addClass('is-invalid').removeClass('is-valid');
-        //console.log("birthdate = null");
-      } else {
-        mybdate = moment(mybdate, "DD MM YYYY").format('YYYY-MM-DD');
-        if(birthdate !== mybdate){
-          birthdate = mybdate;
-        } 
-        Livewire.find(formID.getAttribute('wire:id')).set('managerBirth', birthdate);
-        $(".datetimepicker-input").addClass('is-valid').removeClass('is-invalid')
+      if(e.date!==null) {
+        var birthdate = moment(e.date._d).format('YYYY-MM-DD');
+        var mybdate = $(".managerBirth").val();
+        var formID = document.getElementById("myclient-form");
         //console.log(birthdate);
+        if(mybdate === '') {
+          Livewire.find(formID.getAttribute('wire:id')).set('managerBirth', null);
+          $(".managerBirth").addClass('is-invalid').removeClass('is-valid');
+          //console.log("birthdate = null");
+        } else {
+          mybdate = moment(mybdate, "DD MM YYYY").format('YYYY-MM-DD'); 
+          Livewire.find(formID.getAttribute('wire:id')).set('managerBirth', birthdate);
+          $(".managerBirth").addClass('is-valid').removeClass('is-invalid')
+          //console.log(birthdate);
+        }
+      } else {
+        $(".managerBirth").removeClass('is-valid')
       }
-      
       
     });
 
@@ -169,8 +169,8 @@
         $('#zip').val("").trigger('change');
         $("#zip").removeClass('is-valid');
         $('#managerBirth').datetimepicker('clear');
-        $(".datetimepicker-input").addClass('').removeClass('is-valid');
-        $(".datetimepicker-input").addClass('').removeClass('is-invalid');
+        $(".managerBirth").addClass('').removeClass('is-valid');
+        $(".managerBirth").addClass('').removeClass('is-invalid');
         $("#managerMobile").val("").trigger('change');
         $("#managerMobile").removeClass('is-valid');
       }
