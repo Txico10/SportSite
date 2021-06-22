@@ -28,10 +28,10 @@ class ApartmentForm extends Component
 {
     public $submit_btn_title = "save";
     public $apart_id;
-    public $apart_building;
-    public $apart_type;
-    public $apart_number;
-    public $apart_description;
+    public $building_id;
+    public $apartment_type_id;
+    public $number;
+    public $description;
     public $myCompany;
     public $mytypes;
 
@@ -80,10 +80,10 @@ class ApartmentForm extends Component
     protected function rules()
     {
         return [
-            'apart_building' => 'required|exists:buildings,id',
-            'apart_type' => 'required|exists:apartment_types,id',
-            'apart_number' => 'required|alpha_num',
-            'apart_description' => 'nullable|string|min:3|max:255'
+            'building_id' => 'required|exists:buildings,id',
+            'apartment_type_id' => 'required|exists:apartment_types,id',
+            'number' => 'required|alpha_num',
+            'description' => 'nullable|string|min:3|max:255'
         ];
     }
 
@@ -106,68 +106,27 @@ class ApartmentForm extends Component
      */
     public function saveApartmentForm()
     {
-        $msg = "An error occured";
-        $msg_type = "error";
-        $flag = false;
-        $this->validate();
+        $msg = "Apartment created successfuly";
+        $msg_type = "success";
 
-        if (strcmp($this->submit_btn_title, "save")==0) {
-            $validatedData = [
-                'building_id' => $this->apart_building,
-                'apartment_type_id' => $this->apart_type,
-                'number' => $this->apart_number,
-            ];
+        $validatedData = $this->validate();
 
-            if (!empty($this->apart_description)) {
-                $validatedData['description'] = $this->apart_description;
-            }
-            
-            $this->myCompany->apartments()->create($validatedData);
-            
-            $msg = "created successfuly";
-            $msg_type = "success";
+        Apartment::updateOrCreate(
+            ['id'=>$this->apart_id],
+            $validatedData
+        );
+        if (strcmp($this->submit_btn_title, "save")!=0) {
+            $msg = "Apartment updated successfuly";
 
-        } else {
-            if (!empty($this->apart_id)) {
-                $myApartment = $this->myCompany->apartments->where('id', $this->apart_id)->first();
+        } 
 
-                if ($myApartment->building_id != $this->apart_building) {
-                    $myApartment->building_id = $this->apart_building;
-                    $flag = true;
-                }
-
-                if ($myApartment->apartment_type_id != $this->apart_type) {
-                    $myApartment->apartment_type_id = $this->apart_type;
-                    $flag = true;
-                }
-
-                if (strcmp($myApartment->number, $this->apart_number)!=0) {
-                    $myApartment->number = $this->apart_number;
-                    $flag = true;
-                }
-                
-                if (strcmp($myApartment->description, $this->apart_description)!=0) {
-                    $myApartment->number = $this->apart_number;
-                    $flag = true;
-                }
-
-                if ($flag) {
-                    $myApartment->save();
-                    $msg_type = "success";
-                    $msg = "updated successfully";
-                } else {
-                    $msg = "not updated";
-                    $msg_type = "warning";
-                }
-            }
-        }
         $this->dispatchBrowserEvent('closeApartmentModal');
         $this->emit('refreshApartments');
         $this->emit(
             'alert', 
             [
                 'type'=>$msg_type,
-                'message'=>'Apartment '.$msg,
+                'message'=>$msg,
                 ]
         );
     }
@@ -182,10 +141,10 @@ class ApartmentForm extends Component
         $this->reset(
             [
                 'apart_id',
-                'apart_building',
-                'apart_type',
-                'apart_number',
-                'apart_description',
+                'building_id',
+                'apartment_type_id',
+                'number',
+                'description',
             ]
         );
         $this->resetErrorBag();
@@ -202,10 +161,10 @@ class ApartmentForm extends Component
     public function edit(Apartment $apartment)
     {
         $this->apart_id = $apartment->id;
-        $this->apart_building = $apartment->building_id;
-        $this->apart_type = $apartment->apartment_type_id;
-        $this->apart_number = $apartment->number;
-        $this->apart_description = $apartment->description;
+        $this->building_id = $apartment->building_id;
+        $this->apartment_type_id = $apartment->apartment_type_id;
+        $this->number = $apartment->number;
+        $this->description = $apartment->description;
         $this->submit_btn_title = "update";
         $this->dispatchBrowserEvent('openApartmentModal');
         
