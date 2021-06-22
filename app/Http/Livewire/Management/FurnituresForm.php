@@ -159,7 +159,12 @@ class FurnituresForm extends Component
         $this->qrcode = $furniture->qrcode;
         $this->submit_btn_title = "update";
         $formatedDate = Carbon::parse($this->buy_at)->format('d-m-Y');
-        $this->dispatchBrowserEvent('openFurnitureModal', ['buy_at' => $formatedDate]);
+        $this->dispatchBrowserEvent(
+            'openFurnitureModal', 
+            [
+                'buy_at' => $formatedDate
+            ]
+        );
     }
     
     /**

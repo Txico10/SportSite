@@ -2,9 +2,12 @@ $(function(){
   $('#legalform').select2({
     width: 'resolve'
   });
-  //$('#myBuildings').select2({
-  //  width: 'resolve'
-  //});
+  $('#contactCountry').select2({
+    width: 'resolve'
+  });
+  $('#contactCity').select2({
+    width: 'resolve'
+  });
   $('#myBuildings').selectpicker();
   
   $('#apart_building').select2({
@@ -276,27 +279,31 @@ $(function(){
     $(".furniture-aquisition-date").removeClass('is-valid');
     $(".furniture-aquisition-date").removeClass('is-invalid');
     Livewire.emit('resetFurnitureInputFields');      
-  }
-);
+  });
   
-  //$("#myBuildings").on('changed.bs.select', function(event, clickedIndex, isSelected, previousValue){
-  //      var data = $(this).val();
-  //      if(data != -1) {
-  //        var formID = document.getElementById("apartmentsList");
-  //        Livewire.find(formID.getAttribute('wire:id')).set('buildingId', data);
-  //        console.log(data);
-  //      }
-  //});
+  $("#contactCountry").on('select2:select', function(event){
+    var data = $(this).select2("val");
+    var formID = document.getElementById("contact-form");
+    Livewire.find(formID.getAttribute('wire:id')).set('country', data);
+    //console.log(data);
+  });
+  $("#contactCity").on('select2:select', function(event){
+    var data = $(this).select2("val");
+    var formID = document.getElementById("contact-form");
+    Livewire.find(formID.getAttribute('wire:id')).set('city', data);
+    //console.log(data);
+  });
+  
   $("#apart_building").on('select2:select', function(event){
         var data = $(this).select2("val");
         var formID = document.getElementById("apartmentform");
-        Livewire.find(formID.getAttribute('wire:id')).set('apart_building', data);
+        Livewire.find(formID.getAttribute('wire:id')).set('building_id', data);
         //console.log(data);
   });
   $("#apart_type").on('select2:select', function(event){
         var data = $(this).select2("val");
         var formID = document.getElementById("apartmentform");
-        Livewire.find(formID.getAttribute('wire:id')).set('apart_type', data);
+        Livewire.find(formID.getAttribute('wire:id')).set('apartment_type_id', data);
         //console.log(data);
   });
   $("#employeeGender").on('select2:select', function(event){
@@ -431,7 +438,7 @@ $(function(){
     clearIncomplete: true,
     oncomplete: function(){
       var formID = document.getElementById("myEmployeeForm");
-      console.log($(this).val());
+      //console.log($(this).val());
       Livewire.find(formID.getAttribute('wire:id')).set('mobile', $(this).val());
       $(this).addClass('is-valid').removeClass('is-invalid');
     },
@@ -446,6 +453,51 @@ $(function(){
       } 
     },
   });
+
+  $("#contactTelephone").inputmask({
+    mask: "(999) 999-9999",
+    tabThrough:true,
+    clearIncomplete: true,
+    oncomplete: function(){
+      var formID = document.getElementById("contact-form");
+      //console.log($(this).val());
+      Livewire.find(formID.getAttribute('wire:id')).set('telephone', $(this).val());
+      $(this).addClass('is-valid').removeClass('is-invalid');
+    },
+    onincomplete: function() {
+      if($(this).val()==="") {
+        $(this).removeClass('is-invalid');
+        $(this).removeClass('is-valid');
+      } else {
+        var formID = document.getElementById("contact-form");
+        Livewire.find(formID.getAttribute('wire:id')).set('telephone', null);
+        $(this).addClass('is-invalid').removeClass('is-valid');
+      } 
+    },
+  });
+
+  $("#contactMobile").inputmask({
+    mask: "(999) 999-9999",
+    tabThrough:true,
+    clearIncomplete: true,
+    oncomplete: function(){
+      var formID = document.getElementById("contact-form");
+      //console.log($(this).val());
+      Livewire.find(formID.getAttribute('wire:id')).set('mobile', $(this).val());
+      $(this).addClass('is-valid').removeClass('is-invalid');
+    },
+    onincomplete: function() {
+      if($(this).val()==="") {
+        $(this).removeClass('is-invalid');
+        $(this).removeClass('is-valid');
+      } else {
+        var formID = document.getElementById("contact-form");
+        Livewire.find(formID.getAttribute('wire:id')).set('mobile', null);
+        $(this).addClass('is-invalid').removeClass('is-valid');
+      } 
+    },
+  });
+
   $("#showpasswd").on("click", function (event) {
     event.preventDefault;
     var password = $("#password").val();
@@ -465,7 +517,15 @@ $(function(){
 
 document.addEventListener("livewire:load", () => {
     Livewire.hook('message.processed', (message, component) => {
-        
+      
+        $('#contactCountry').select2({
+          width: 'resolve'
+        });
+
+        $('#contactCity').select2({
+          width: 'resolve'
+        });
+
         $('#apart_building').select2({
           width: 'resolve',
         });

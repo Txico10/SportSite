@@ -15,6 +15,7 @@ namespace App\Http\Livewire\Management;
 use App\Models\Contact;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use PragmaRX\Countries\Package\Countries;
 /**
  *  Company contact form class
  * 
@@ -39,12 +40,23 @@ class ContactForm extends Component
     public $telephone;
     public $mobile;
     public $email;
+    public $allCountries;
+    public $countryCities;
 
     protected $listeners = [
         'editContact'=> 'edit', 
         'resetContactInputFiels' => 'resetInputFields',
     ];
-
+    
+    /**
+     * Mount
+     *
+     * @return void
+     */
+    public function mount()
+    {
+        $this->allCountries = Countries::all()->pluck('name.common', 'cca3')->toArray();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -52,7 +64,12 @@ class ContactForm extends Component
      */
     public function render()
     {
-        return view('livewire.management.contact-form');
+        return view(
+            'livewire.management.contact-form', 
+            [
+                'allCountries'=>$this->allCountries,
+            ]
+        );
     }
 
     /**
@@ -177,6 +194,46 @@ class ContactForm extends Component
     {
         $this->validateOnly($propertyName, $this->rules());
     }
+    
+    /**
+     * Updated Country
+     *
+     * @return void
+     */
+    public function updatedCountry()
+    {
+        $this->countryCities =  Countries::where('cca3', $this->country)->first()
+            ->hydrate('cities')
+            ->cities
+            ->pluck('name', 'nameascii')
+            ->toArray();
+
+        $this->region = null;
+        $this->city = null;
+
+        $this->validate(
+            [
+                'country' => 'required|string|min:2|max:32'
+            ]
+        );
+    }
+    
+    /**
+     * Updated City
+     *
+     * @return void
+     */
+    public function updatedCity()
+    {
+        $myRegion =  Countries::where('cca3', $this->country)->first()
+            ->hydrateCities()
+            ->cities
+            ->where('nameascii', $this->city)
+            ->first()
+            ->adm1name;
+        $this->region = utf8_decode($myRegion);
+        
+    }
 
     /**
      * Reset form fields
@@ -197,7 +254,8 @@ class ContactForm extends Component
                 'pc',
                 'telephone',
                 'mobile',
-                'email'
+                'email',
+                'countryCities'
             ]
         );
         $this->resetErrorBag();
@@ -225,8 +283,14 @@ class ContactForm extends Component
         $this->telephone = $this->oldContact->telephone;
         $this->mobile = $this->oldContact->mobile;
         $this->email = $this->oldContact->email;
-
+        if (!empty($this->country)) {
+            $this->countryCities =  Countries::where('cca3', $this->country)->first()
+                ->hydrate('cities')
+                ->cities
+                ->pluck('name', 'nameascii')
+                ->toArray();
+        }
+        
         $this->dispatchBrowserEvent('openContactModal');
-
     }
 }

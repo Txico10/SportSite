@@ -51,7 +51,14 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="far fa-map"></i></span>
                             </div>
-                            <input type="text" id="city" class="form-control {{$errors->has("city") ? 'is-invalid' : (  strlen($city)>0 ? 'is-valid':'')}}" wire:model.lazy="city" placeholder="City">
+                            <select class="form-control" name="city" id="contactCity" wire:model="city" style="width: 80.5%" data-placeholder="Select city" data-allow-clear="true">
+                                <option value=""></option>
+                                @if(!empty($countryCities))
+                                    @foreach($countryCities as $key => $newCity)
+                                        <option value="{{$key}}">{{utf8_decode($newCity)}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
                         </div>
                         @error('city')
                             <label class="text-danger">{{ $message }}</label>
@@ -79,7 +86,12 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="far fa-map"></i></span>
                             </div>
-                            <input type="text" id="country" class="form-control {{$errors->has("country") ? 'is-invalid' : (  strlen($country)>0 ? 'is-valid':'')}}" wire:model="country" placeholder="Country">
+                            <select class="form-control" name="country" id="contactCountry" wire:model="country" style="width: 80.5%" data-placeholder="Select country" data-allow-clear="true">
+                                <option value=""></option>
+                                @foreach($allCountries as $key => $newCountry)
+                                    <option value="{{$key}}">{{$newCountry}}</option>  
+                                @endforeach
+                            </select>
                         </div>
                         @error('country')
                             <label class="text-danger">{{ $message }}</label>
@@ -92,7 +104,7 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="far fa-map"></i></span>
                             </div>
-                            <input type="text" id="pc" class="form-control {{$errors->has("pc") ? 'is-invalid' : (  strlen($pc)>0 ? 'is-valid':'')}}" wire:model="pc" placeholder="ZIP Code">
+                            <input type="text" id="pc" class="form-control {{$errors->has("pc") ? 'is-invalid' : (  strlen($pc)>0 ? 'is-valid':'')}}" wire:model.lazy="pc" placeholder="ZIP Code">
                         </div>
                         @error('pc')
                             <label class="text-danger">{{ $message }}</label>
@@ -106,7 +118,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
                     </div>
-                    <input type="text" id="telephone" class="form-control {{$errors->has("telephone") ? 'is-invalid' : (  strlen($telephone)>0 ? 'is-valid':'')}}" wire:model="telephone" placeholder="Phone number">
+                    <input type="text" id="contactTelephone" class="form-control {{$errors->has("telephone") ? 'is-invalid' : (  strlen($telephone)>0 ? 'is-valid':'')}}" wire:ignore placeholder="Phone number">
                 </div>
                 @error('telephone')
                     <label class="text-danger">{{ $message }}</label>
@@ -118,7 +130,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fas fa-mobile"></i></span>
                     </div>
-                    <input type="text" id="mobile" wire:ignore class="form-control {{$errors->has("mobile") ? 'is-invalid' : (  strlen($mobile)>0 ? 'is-valid':'')}}" wire:model="mobile" placeholder="Mobile number">
+                    <input type="text" id="contactMobile" class="form-control {{$errors->has("mobile") ? 'is-invalid' : (  strlen($mobile)>0 ? 'is-valid':'')}}" wire:ignore placeholder="Mobile number">
                 </div>
                 @error('mobile')
                     <label class="text-danger">{{ $message }}</label>

@@ -12,6 +12,7 @@
  * */
 namespace App\Http\Livewire\Management;
 
+use App\Models\Building;
 use Livewire\Component;
 /**
  *  Livewire building form component
@@ -25,7 +26,7 @@ use Livewire\Component;
 class BuildingsForm extends Component
 {
     public $building_id;
-    public $company;
+    public $real_state_id;
     public $lot;
     public $old_lot;
     public $alias;
@@ -37,15 +38,6 @@ class BuildingsForm extends Component
         'editBuildingContact' => 'editContact',
         'resetBuildingInputFields' => 'resetInputFields'
     ];
-    
-    //protected $rules = [
-    //    'alias' => 'required|string|min:3',
-    //    'description' => 'nullable|string|min:3|max:255'
-    //];
-
-    //protected $messages = [
-    //    'lot.exists' => 'The lot can\'t be updated'
-    //];
         
     /**
      * Mount
@@ -56,7 +48,7 @@ class BuildingsForm extends Component
      */
     function mount($company)
     {
-        $this->company = $company;
+        $this->real_state_id = $company->id;
     }
 
     /**
@@ -66,7 +58,6 @@ class BuildingsForm extends Component
      */
     public function render()
     {
-        //dd($this->building_id);
         return view('livewire.management.buildings-form');
     }
     
@@ -77,6 +68,9 @@ class BuildingsForm extends Component
      */
     protected function rules()
     {
+        if (empty($this->building_id)) {
+            $myRule['real_state_id'] = 'required|exists:real_states,id';
+        }
 
         if (empty($this->building_id) || strcmp($this->lot, $this->old_lot) !=0) {
             $myRule['lot'] = 'required|string|unique:buildings';
@@ -110,7 +104,6 @@ class BuildingsForm extends Component
      */
     public function edit($building)
     {
-        //dd($building);
         $this->building_id = $building['id'];
         $this->lot = $building['lot'];
         $this->old_lot = $building['lot'];
@@ -127,40 +120,19 @@ class BuildingsForm extends Component
      */
     public function saveBuildingForm()
     {
-        $msg = "";
-        //$this->updatedLot();
+        $msg = "Building created successfully";
+        
         $validatedData = $this->validate();
 
+        $newBuilding = Building::updateOrCreate(
+            ['id' => $this->building_id],
+            $validatedData
+        );
+
         if (strcmp($this->submit_btn_title, "save")==0) {
-            
-            //$validatedData['lot'] = $this->lot;
-            $newBuilding = $this->company->buildings()->create($validatedData);
             $newBuilding->contact()->create(['type' => 'primary']);
-            $msg = "created";
-            //dd($validatedData);
         } else {
-            //$this->validate(['lot' => 'required|string|exists:buildings,lot']);
-            //$validatedData = $this->validate();
-            //$validatedData['lot'] = $this->lot;
-            //$validatedData['id'] = $this->building_id;
-            $newBuilding = $this->company->buildings
-                ->firstWhere('id', $this->building_id);
-
-            if (isset($validatedData['lot']) && strcmp($validatedData['lot'], $newBuilding->lot)!=0) {
-                $newBuilding->lot = $validatedData['lot'];
-            }
-
-            if (strcmp($validatedData['alias'], $newBuilding->alias)!=0) {
-                $newBuilding->alias = $validatedData['alias'];
-            }
-
-            if (isset($validatedData['description']) && strcmp($validatedData['description'], $newBuilding->description)!=0) {
-                $newBuilding->description = $validatedData['description'];
-            }
-            //dd($validatedData);
-            $newBuilding->save();
-            $msg = "updated";
-            
+            $msg = "Building updated successfully";
         }
         
         $this->dispatchBrowserEvent('closeBuildingModal');
@@ -170,10 +142,9 @@ class BuildingsForm extends Component
             'alert', 
             [
                 'type'=>'success',
-                'message'=>'Building '.$msg.' successfully'
+                'message'=>$msg,
                 ]
         );
-        //dd($validatedData);
     }
     
     /**

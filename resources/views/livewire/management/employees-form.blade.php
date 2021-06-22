@@ -257,7 +257,7 @@
                         <div class="input-group-prepend">
                           <span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
                         </div>
-                        <input type="text" id="employee-mobile" wire:ignore class="form-control {{$errors->has("mobile") ? 'is-invalid' : (  strlen($mobile)>0 ? 'is-valid':'')}}" placeholder="Mobile number">
+                        <input type="text" id="employee-mobile" class="form-control {{$errors->has("mobile") ? 'is-invalid' : (  strlen($mobile)>0 ? 'is-valid':'')}}" wire:ignore placeholder="Mobile number">
                       </div>
                     </div>
                     <!-- Manager email -->
