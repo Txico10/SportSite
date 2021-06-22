@@ -164,18 +164,22 @@ $(function(){
   });
   $('#employee-startDate').on('hide.datetimepicker', function(e) {
     e.preventDefault();
-    var startdate = moment(e.date._d).format('YYYY-MM-DD hh:mm:ss');
-    var mysdate = $(".employee-start").val();
-    var formID = document.getElementById("myEmployeeForm");
-    //console.log("Form val: "+mysdate);
-    if(mysdate === '') {
-      Livewire.find(formID.getAttribute('wire:id')).set('startDate', null);
-      $(".employee-start").addClass('is-invalid').removeClass('is-valid');
-      //console.log("birthdate = null");
-    } else { 
-      Livewire.find(formID.getAttribute('wire:id')).set('startDate', startdate);
-      $(".employee-start").addClass('is-valid').removeClass('is-invalid')
-      //console.log("Final value "+startdate);
+    if(e.date!==null) {
+      var startdate = moment(e.date._d).format('YYYY-MM-DD hh:mm:ss');
+      var mysdate = $(".employee-start").val();
+      var formID = document.getElementById("myEmployeeForm");
+      //console.log("Form val: "+mysdate);
+      if(mysdate === '') {
+        Livewire.find(formID.getAttribute('wire:id')).set('startDate', null);
+        $(".employee-start").addClass('is-invalid').removeClass('is-valid');
+        //console.log("birthdate = null");
+      } else { 
+        Livewire.find(formID.getAttribute('wire:id')).set('startDate', startdate);
+        $(".employee-start").addClass('is-valid').removeClass('is-invalid')
+        //console.log("Final value "+startdate);
+      }
+    } else {
+      $(".employee-start").removeClass('is-valid')
     }  
   });
 
@@ -202,18 +206,22 @@ $(function(){
 
   $('#employee-endDate').on('hide.datetimepicker', function(e) {
     e.preventDefault();
-    var end_date = moment(e.date._d).format('YYYY-MM-DD hh:mm:ss');
-    var myedate = $(".employee-endDate").val();
-    var formID = document.getElementById("myEmployeeForm");
-    //console.log("Form val: "+end_date);
-    if(myedate === '') {
-      Livewire.find(formID.getAttribute('wire:id')).set('endDate', null);
-      $(".employee-endDate").addClass('is-invalid').removeClass('is-valid');
-      //console.log("end_date = null");
+    if(e.date!==null) {
+      var end_date = moment(e.date._d).format('YYYY-MM-DD hh:mm:ss');
+      var myedate = $(".employee-endDate").val();
+      var formID = document.getElementById("myEmployeeForm");
+      //console.log("Form val: "+end_date);
+      if(myedate === '') {
+        Livewire.find(formID.getAttribute('wire:id')).set('endDate', null);
+        $(".employee-endDate").addClass('is-invalid').removeClass('is-valid');
+        //console.log("end_date = null");
+      } else {
+        Livewire.find(formID.getAttribute('wire:id')).set('endDate', end_date);
+        $(".employee-endDate").addClass('is-valid').removeClass('is-invalid')
+        //console.log("Final value "+end_date);
+      }
     } else {
-      Livewire.find(formID.getAttribute('wire:id')).set('endDate', end_date);
-      $(".employee-endDate").addClass('is-valid').removeClass('is-invalid')
-      //console.log("Final value "+end_date);
+      $(".employee-endDate").removeClass('is-valid')
     }
   });
 
@@ -329,52 +337,65 @@ $(function(){
   });
   $('#employee-birthdate').on('hide.datetimepicker', function(e) {
     e.preventDefault();
-    var birthdate = moment(e.date._d).format('YYYY-MM-DD');
-    var mybdate = $(".datetimepicker-input").val();
-    var formID = document.getElementById("myEmployeeForm");
-    //console.log(birthdate);
-    if(mybdate === '') {
-      Livewire.find(formID.getAttribute('wire:id')).set('birthdate', null);
-      $(".emp-birth").addClass('is-invalid').removeClass('is-valid');
-      //console.log("birthdate = null");
-    } else {
-       
-      Livewire.find(formID.getAttribute('wire:id')).set('birthdate', birthdate);
-      $(".emp-birth").addClass('is-valid').removeClass('is-invalid')
+    if(e.date!==null) {
+      var birthdate = moment(e.date._d).format('YYYY-MM-DD');
+      var mybdate = $(".employee-birthdate").val();
+      var formID = document.getElementById("myEmployeeForm");
       //console.log(birthdate);
-    } 
+      if(mybdate === '') {
+        Livewire.find(formID.getAttribute('wire:id')).set('birthdate', null);
+        $(".employee-birthdate").addClass('is-invalid').removeClass('is-valid');
+        //console.log("birthdate = null");
+      } else { 
+        Livewire.find(formID.getAttribute('wire:id')).set('birthdate', birthdate);
+        $(".employee-birthdate").addClass('is-valid').removeClass('is-invalid')
+        //console.log(birthdate);
+      }
+    } else {
+      $(".employee-birthdate").removeClass('is-valid')
+    }
   });
   $('#edit-employee-birthdate').on('hide.datetimepicker', function(e) {
     e.preventDefault();
-    var birthdate = moment(e.date._d).format('YYYY-MM-DD');
-    var mybdate = $(".edit-employee-birth").val();
-    var formID = document.getElementById("employee-edit-form");
-    //console.log(birthdate);
-    if(mybdate === '') {
-      Livewire.find(formID.getAttribute('wire:id')).set('birthdate', null);
-      $(".emp-birth").addClass('is-invalid').removeClass('is-valid');
-      //console.log("birthdate = null");
-    } else { 
-      Livewire.find(formID.getAttribute('wire:id')).set('birthdate', birthdate);
-      $(".emp-birth").addClass('is-valid').removeClass('is-invalid')
+    if(e.date!==null) {
+      var birthdate = moment(e.date._d).format('YYYY-MM-DD');
+      var mybdate = $(".edit-employee-birth").val();
+      var formID = document.getElementById("employee-edit-form");
       //console.log(birthdate);
+      if(mybdate === '') {
+        Livewire.find(formID.getAttribute('wire:id')).set('birthdate', null);
+        $(".edit-employee-birth").addClass('is-invalid').removeClass('is-valid');
+        //console.log("birthdate = null");
+      } else { 
+        Livewire.find(formID.getAttribute('wire:id')).set('birthdate', birthdate);
+        $(".edit-employee-birth").addClass('is-valid').removeClass('is-invalid')
+        //console.log(birthdate);
+      }
+    } else {
+      $(".edit-employee-birth").removeClass('is-valid')
     } 
   });
   $('#furniture-aquisition-date').on('hide.datetimepicker', function(e) {
     e.preventDefault();
-    var buydate = moment(e.date._d).format('YYYY-MM-DD');
-    var mybuydate = $(".furniture-aquisition-date").val();
-    var formID = document.getElementById("furniture-form");
-    //console.log(birthdate);
-    if(mybuydate === '') {
-      Livewire.find(formID.getAttribute('wire:id')).set('buy_at', null);
-      $(".furniture-aquisition-date").addClass('is-invalid').removeClass('is-valid');
-      //console.log("birthdate = null");
-    } else { 
-      Livewire.find(formID.getAttribute('wire:id')).set('buy_at', buydate);
-      $(".furniture-aquisition-date").addClass('is-valid').removeClass('is-invalid')
+    if(e.date!==null) {
+      var buydate = moment(e.date._d).format('YYYY-MM-DD');
+      var mybuydate = $(".furniture-aquisition-date").val();
+      var formID = document.getElementById("furniture-form");
       //console.log(birthdate);
-    } 
+      if(mybuydate === '') {
+        Livewire.find(formID.getAttribute('wire:id')).set('buy_at', null);
+        $(".furniture-aquisition-date").addClass('is-invalid').removeClass('is-valid');
+        //console.log("birthdate = null");
+      } else { 
+        Livewire.find(formID.getAttribute('wire:id')).set('buy_at', buydate);
+        $(".furniture-aquisition-date").addClass('is-valid').removeClass('is-invalid')
+        //console.log(birthdate);
+      }
+    } else {
+      $(".furniture-aquisition-date").removeClass('is-valid')
+      //console.log("NULL")
+    }
+     
   });
   $("#modal-employee").on('hidden.bs.modal', function(){
     //console.log("Hello");
