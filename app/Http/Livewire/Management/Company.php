@@ -40,7 +40,7 @@ class Company extends Component
      */
     public function mount(RealState $company)
     {
-        $this->company = $company->load('contact', 'buildings.apartments', 'buildings.contact', 'apartments.apartmentType');
+        $this->company = $company->load('contact');
     }
 
     /**

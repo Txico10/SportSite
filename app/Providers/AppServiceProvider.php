@@ -61,6 +61,21 @@ class AppServiceProvider extends ServiceProvider
                     ->whereDate('end_date', '>=', now())
                     ->value('real_state_id');
                 //dd($company);
+                $event->menu->add(
+                    [
+                        'header' => 'ADMIN MANAGEMENT',
+                        'permission' => 'adminMenu-read'
+                    ]
+                );
+                $event->menu->add(
+                    [
+                        'key' => 'role',
+                        'text' => 'Roles',
+                        'route'  => 'admin.role',
+                        'icon' => 'fas fa-fw fa-briefcase',
+                        'permission' => 'roles-read',
+                    ],
+                );
                 $event->menu->addBefore(
                     'role', 
                     [
@@ -83,12 +98,12 @@ class AppServiceProvider extends ServiceProvider
                         'permission' => 'company-read',
                     ]
                 );
-                $event->menu->add(
-                    [
-                        'header' => 'REAL STATE MANAGEMENT', 'permission' => 'companyMenu-read',
-                    ]
-                );
                 if (!empty($companyID)) {
+                    $event->menu->add(
+                        [
+                            'header' => 'REAL STATE MANAGEMENT', 'permission' => 'companyMenu-read',
+                        ]
+                    );
                     $event->menu->add(
                         [
                             'key' => 'real_state',
@@ -98,7 +113,15 @@ class AppServiceProvider extends ServiceProvider
                             'permission' => 'company-read',
                         ],
                     );
-                    
+                    $event->menu->add(
+                        [
+                            'key' => 'employees',
+                            'text' => 'Employees',
+                            'route'  => ['company.employees', ["id" => $companyID]],
+                            'icon' => 'fas fa-fw fa-user-tie',
+                            'permission' => 'employee-read',
+                        ],
+                    );
                     $event->menu->add(
                         [
                             'key' => 'buildings',
@@ -126,6 +149,45 @@ class AppServiceProvider extends ServiceProvider
                             'permission' => 'furniture-read',
                         ],
                     );
+                    $event->menu->add(
+                        [
+                            'header' => 'LEASE MANAGEMENT', 
+                            'permission' => 'leaseMenu-read'
+                        ],
+                    );
+                    $event->menu->add(
+                        [
+                            'key' => 'tenats',
+                            'text' => 'Tenants',
+                            'url'  => '#',
+                            'icon' => 'fas fa-fw fa-users',
+                        ],
+                    );
+                    $event->menu->add(
+                        [
+                            'key' => 'bail',
+                            'text' => 'Bail',
+                            'url'  => '#',
+                            'icon' => 'fas fa-fw fa-file-contract',
+                        ],
+                    );
+                    $event->menu->add(
+                        [
+                            'key' => 'tickets',
+                            'text' => 'Tickets',
+                            'url'  => '#',
+                            'icon' => 'fas fa-fw fa-ticket-alt',
+                        ],
+                    );
+                    $event->menu->add(
+                        [
+                            'key' => 'payments',
+                            'text' => 'Payments',
+                            'url'  => '#',
+                            'icon' => 'fas fa-fw fa-money-check-alt',
+                        ],
+                    );
+
                 }
             }
         );

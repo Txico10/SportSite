@@ -145,11 +145,11 @@ class FurnituresForm extends Component
      * 
      * @return void
      */
-    public function edit($id)
+    public function edit(Furniture $furniture)
     {
-        $furniture = $this->company->furnitures->where('id', $id)->first();
+        //$furniture = $this->company->furnitures->where('id', $id)->first();
         
-        $this->furniture_id = $id;
+        $this->furniture_id = $furniture->id;
         $this->furniture_type_id = $furniture->furniture_type_id;
         $this->manufacturer = $furniture->manufacturer;
         $this->model = $furniture->model;

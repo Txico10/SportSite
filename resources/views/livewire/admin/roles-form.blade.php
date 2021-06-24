@@ -44,7 +44,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
             </div>
-            <select class="form-control" id="select2bs4"  multiple="multiple" style="width: 91%" data-placeholder = "Select permissions">
+            <select class="form-control" id="select2bs4"  multiple="multiple" style="width: 94%" wire:model="permissions" data-placeholder = "Select permissions">
                 @foreach($permissionsList as $key => $permission)
                     <option value="{{$permission->id}}">{{$permission->display_name}}</option>    1
                 @endforeach

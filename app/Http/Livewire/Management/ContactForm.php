@@ -291,6 +291,6 @@ class ContactForm extends Component
                 ->toArray();
         }
         
-        $this->dispatchBrowserEvent('openContactModal');
+        $this->dispatchBrowserEvent('openContactModal', ['telephone'=>$this->telephone, 'mobile' =>$this->mobile]);
     }
 }

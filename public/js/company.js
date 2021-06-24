@@ -561,6 +561,21 @@ document.addEventListener("livewire:load", () => {
 );
 
 window.addEventListener('openContactModal', event => {
+      //console.log(event);
+      if(event.detail.telephone!==null){
+        $('#contactTelephone').val(event.detail.telephone)
+        $('#contactTelephone').addClass('is-valid')
+      }else {
+        $('#contactTelephone').val("")
+        $('#contactTelephone').removeClass('is-valid')
+      }
+      if(event.detail.mobile!==null){
+        $('#contactMobile').val(event.detail.mobile)
+        $('#contactMobile').addClass('is-valid')
+      }else {
+        $('#contactMobile').val("")
+        $('#contactMobile').removeClass('is-valid')
+      }
       $("#modal-contact").modal('show');
     }
 );

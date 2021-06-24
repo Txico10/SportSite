@@ -233,41 +233,7 @@ return [
     |
     */
 
-    'menu' => [
-        ['header' => 'ADMIN MANAGEMENT', 'permission' => 'adminMenu-read'],
-        [
-            'key' => 'role',
-            'text' => 'Roles',
-            'route'  => 'admin.role',
-            'icon' => 'fas fa-fw fa-briefcase',
-            'permission' => 'roles-read',
-        ],
-        ['header' => 'LEASE MANAGEMENT', 'permission' => 'leaseMenu-read'],
-        [
-            'key' => 'tenats',
-            'text' => 'Tenants',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa-users',
-        ],
-        [
-            'key' => 'bail',
-            'text' => 'Bail',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa-file-contract',
-        ],
-        [
-            'key' => 'tickets',
-            'text' => 'Tickets',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa-ticket-alt',
-        ],
-        [
-            'key' => 'payments',
-            'text' => 'Payments',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa-money-check-alt',
-        ],
-    ],
+    'menu' => [],
 
     /*
     |--------------------------------------------------------------------------

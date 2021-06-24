@@ -46,6 +46,18 @@ class Furniture extends Model
     {
         return $this->belongsTo(FurnitureType::class, 'furniture_type_id');
     }
+    
+    /**
+     * Apartments
+     *
+     * @return void
+     */
+    public function apartments()
+    {
+        return $this->belongsToMany(Apartment::class, 'furniture_apartment', 'furniture_id', 'apartment_id')
+            ->withPivot('assigned_at', 'withdraw_at')
+            ->withTimestamps();
+    }
 
     /**
      * Set Manufacturer Attribute

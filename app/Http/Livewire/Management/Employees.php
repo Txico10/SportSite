@@ -44,7 +44,7 @@ class Employees extends Component
      */
     public function mount($company)
     {
-        $this->company = $company;
+        $this->company = $company->load('employees.contacts');
         //dd($this->company);
     }
 

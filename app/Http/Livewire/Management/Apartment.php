@@ -50,8 +50,9 @@ class Apartment extends Component
      */
     public function mount($company)
     {
-        $this->myCompany = $company;
+        $this->myCompany = $company->load('apartments.building', 'apartments.apartmentType');
         $this->buildingId = -1;
+        //dd($this->myCompany);
             
     }
 

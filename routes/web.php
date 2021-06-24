@@ -56,6 +56,9 @@ Route::get('/company/{id}/profile', 'Management\RealStateController@profile')
 Route::get('/users/{id}/profile', 'User\UserController@profile')
     ->middleware(['auth', 'verified'])->name('user.profile');
     
+Route::get('/company/{id}/employees', 'Management\EmployeeController@index')
+    ->middleware(['auth', 'verified', 'permission:employee-read'])
+    ->name('company.employees');
 
 Route::get('/company/{id}/buildings', 'Management\BuildingController@index')
     ->middleware(['auth', 'verified', 'permission:building-read'])

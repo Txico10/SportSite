@@ -213,8 +213,6 @@ class EmployeesForm extends Component
             'status' => '1',
         ];
 
-        //dd($user);
-
         DB::beginTransaction();
         try {
 

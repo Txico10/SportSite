@@ -58,31 +58,35 @@
             <td>{{$employee->gender}}</td>
             <td>{{$employee->display_name}}</td>
             <td>
-              <button type="button" class="btn btn-sm btn-outline-secondary" wire:click.prevent="$emit('showEmployeeContact', {{$employee->id}})"><i class="fas fa-map-marker-alt"></i></button>
-              @permission('employee-update')
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-outline-info" wire:click.prevent="$emit('editEmployee', {{$employee}})"><i class="fas fa-pencil-alt"></i></button>
-                <button type="button" class="btn btn-sm btn-outline-info dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                  <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <div class="dropdown-menu" role="menu">
-                  <a class="dropdown-item" wire:click.prevent="$emit('editContact', {{$employee->contacts}})">Update Contact</a>
-                  <a class="dropdown-item" href="#">Reset Password</a>
+              <div class="margin">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" wire:click.prevent="$emit('showEmployeeContact', {{$employee->id}})"><i class="fas fa-map-marker-alt"></i></button>
                 </div>
-              </div>
-              @endpermission
-              @permission('employee-delete')
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
-                <button type="button" class="btn btn-sm btn-outline-danger dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                  <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <div class="dropdown-menu" role="menu">
-                  <a class="dropdown-item" href="#">Close file</a>
-                  <a class="dropdown-item" href="#">Another action</a>
+                @permission('employee-update')
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-info" wire:click.prevent="$emit('editEmployee', {{$employee}})"><i class="fas fa-pencil-alt"></i></button>
+                  <button type="button" class="btn btn-sm btn-outline-info dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <div class="dropdown-menu" role="menu">
+                    <a class="dropdown-item" wire:click.prevent="$emit('editContact', {{$employee->contacts}})" href="javascript:void(0)">Update Contact</a>
+                    <a class="dropdown-item" href="#">Reset Password</a>
+                  </div>
                 </div>
+                @endpermission
+                @permission('employee-delete')
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                  <button type="button" class="btn btn-sm btn-outline-danger dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <div class="dropdown-menu" role="menu">
+                    <a class="dropdown-item" href="#">Close file</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                  </div>
+                </div>
+                @endpermission
               </div>
-              @endpermission
             </td>
           </tr>  
           @endforeach
@@ -94,6 +98,9 @@
     {{ $employees->links() }}
     <x-modal title="Show contact" id="modal-showContact" type="" icon="fas fa-address-card">
       <livewire:management.contact-show :contacts="$employee->contacts"/>
+    </x-modal>
+    <x-modal title="Contact" id="modal-contact" type="" icon="fas fa-address-book">
+      <livewire:management.contact-form/>
     </x-modal>
     <x-modal title="Create Employee" id="modal-employee" type="modal-lg" icon="fas fa-user-plus">
       <livewire:management.employees-form :company="$company"/>

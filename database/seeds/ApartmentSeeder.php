@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Apartment;
 use Illuminate\Database\Seeder;
 
 class ApartmentSeeder extends Seeder
@@ -11,6 +12,6 @@ class ApartmentSeeder extends Seeder
      */
     public function run()
     {
-        //
+        //code
     }
 }

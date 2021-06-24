@@ -1,6 +1,6 @@
 <?php
 /** 
- * Laratrust Roles Component
+ * Buildings controller
  * 
  * PHP version 7.4
  * 
@@ -16,7 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RealState;
 use Illuminate\Http\Request;
 /**
- *  Extended Laratrust Roles Classe
+ *  Extend controller Classe
  * 
  * @category MyCategory
  * @package  MyPackage

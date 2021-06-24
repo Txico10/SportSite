@@ -89,7 +89,7 @@
                 <td>
                     <button class="btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-info-circle"></i></button>
                   @permission('furniture-update')
-                  <button class="btn btn-sm btn-outline-info" type="button" wire:click.prevent="$emit('editFurniture', {{$furniture->id}})"><i class="fas fa-pencil-alt"></i></button>
+                  <button class="btn btn-sm btn-outline-info" type="button" wire:click.prevent="$emit('editFurniture', {{$furniture}})"><i class="fas fa-pencil-alt"></i></button>
                   @endpermission
                   @permission('furniture-delete')
                     <button class="btn btn-sm btn-outline-danger" type="button"><i class="fas fa-trash-alt"></chairbutton>

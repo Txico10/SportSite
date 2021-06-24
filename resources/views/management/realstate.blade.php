@@ -40,7 +40,7 @@
               <a class="dropdown-item" tabindex="-1" href="{{route('company.apartments', ['id'=>$company->id])}}">Apartments</a>
               <a class="dropdown-item" tabindex="-1" href="{{route('company.furnitures', ['id'=>$company->id])}}">Furnitures</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" tabindex="-1" href="#">Employees</a>
+              <a class="dropdown-item" tabindex="-1" href="{{route('company.employees', ['id'=>$company->id])}}">Employees</a>
             </div>
           </li>
           <li class="nav-item"><a class="nav-link active" href="#buildings" data-toggle="tab">Buildings</a></li>
@@ -54,7 +54,7 @@
           <div class="tab-pane active" id="buildings">
             <div class="row">
               <div class="col-md-12">
-                <livewire:management.buildings :company="$company"/>
+                <p>Buildings</p>
               </div>
             </div>
           </div>
@@ -62,13 +62,13 @@
           <div class="tab-pane" id="apartments">
             <div class="row">
               <div class="col-md-12">
-                <livewire:management.apartment :company="$company"/>
+                <p>Apartments</p>
               </div>
             </div>
           </div>
           <!-- /.tab-pane -->
           <div class="tab-pane" id="employees">
-            <livewire:management.employees :company="$company"/>
+            <p>Employees</p>
           </div>
           <!-- /.tab-pane -->
           <div class="tab-pane" id="tab_3">

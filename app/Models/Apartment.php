@@ -47,6 +47,18 @@ class Apartment extends Model
     {
         return $this->belongsTo(ApartmentType::class, 'apartment_type_id', 'id');
     }
+    
+    /**
+     * Furnitures
+     *
+     * @return void
+     */
+    public function furnitures()
+    {
+        return $this->belongsToMany(Furniture::class, 'furniture_apartment', 'apartment_id', 'furniture_id')
+            ->withPivot('assigned_at', 'withdraw_at')
+            ->withTimestamps();
+    }
 
     /**
      * Scope a query to only include users of a given type.
