@@ -114,7 +114,7 @@ class FurnituresForm extends Component
     public function saveFurnitureForm()
     {
         $msg_type = "success";
-        $msg = "created successfuly";
+        $msg = "Furniture created successfuly";
 
         $validatedData = $this->validate();
 
@@ -124,24 +124,18 @@ class FurnituresForm extends Component
         );
         
         if (strcmp($this->submit_btn_title, "save")!=0) {
-            $msg = "updated successfuly";
+            $msg = "Furniture updated successfuly";
         }
 
         $this->dispatchBrowserEvent('closeFurnitureModal');
-        $this->emit('refreshFurnitures');
-        $this->emit(
-            'alert', 
-            [
-                'type'=>$msg_type,
-                'message'=>'Apartment '.$msg,
-                ]
-        );
+        session()->flash('status', $msg);
+        return redirect()->route('company.furnitures', ['id'=>$this->real_state_id]);
     }
     
     /**
      * Edit
      *
-     * @param $id furniture id
+     * @param $furniture furniture id
      * 
      * @return void
      */

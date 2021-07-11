@@ -54,7 +54,7 @@ class Buildings extends Component
     /**
      * Livewire render
      * 
-     * @return view
+     * @return Illuminate\Support\Facades\View
      */
     public function render()
     {

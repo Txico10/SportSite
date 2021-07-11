@@ -54,7 +54,7 @@ class BuildingsForm extends Component
     /**
      * Render
      *
-     * @return view building-form
+     * @return Illuminate\Support\Facades\View
      */
     public function render()
     {

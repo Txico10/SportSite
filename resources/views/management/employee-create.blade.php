@@ -5,12 +5,13 @@
     <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Employees List</h1>
+            <h1 class="m-0 text-dark">New employee</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
-              <li class="breadcrumb-item active">Employees</li>
+              <li class="breadcrumb-item"><a href="{{route('company.employees', ['id'=>$company->id])}}">Employees</a></li>
+              <li class="breadcrumb-item active">Create</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -19,8 +20,8 @@
 
 @section('content')
 <div class="row">
-  <div class="col-md-12">
-    <livewire:management.employees :company="$company"/>
+  <div class="col-md-8 mx-auto">
+    <livewire:management.employees-form :company="$company"/>
   </div>
 </div>
 @stop

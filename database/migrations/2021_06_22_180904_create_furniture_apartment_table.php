@@ -17,8 +17,8 @@ class CreateFurnitureApartmentTable extends Migration
             $table->id();
             $table->foreignId('furniture_id')->constrained()->onDelete('cascade');
             $table->foreignId('apartment_id')->constrained()->onDelete('cascade');
-            $table->date('assigned_at');
-            $table->date('withdraw_at')->nullable();
+            $table->dateTime('assigned_at');
+            $table->dateTime('withdraw_at');
             $table->timestamps();
         });
     }

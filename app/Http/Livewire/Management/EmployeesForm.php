@@ -247,8 +247,9 @@ class EmployeesForm extends Component
                 $this->_storeImage($employee['image']);
             }
             
-            $this->dispatchBrowserEvent('closeEmployeeModal');
+            //$this->dispatchBrowserEvent('closeEmployeeModal');
             $this->emit('refreshEmployees');
+
             $this->emit(
                 'alert', 
                 [
@@ -256,7 +257,6 @@ class EmployeesForm extends Component
                     'message' => 'Employee creted successfuly',
                 ]
             );
-
         }catch(\Exception $ex) {
             DB::rollBack();
             $this->dispatchBrowserEvent('closeEmployeeModal');

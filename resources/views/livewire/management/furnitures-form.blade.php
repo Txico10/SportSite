@@ -6,10 +6,10 @@
                     <label for="name" class="text-danger">{{ $message }}</label>
                 @enderror
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-chair"></i></span>
+                    <div class="input-group-prepend" style="width: 10%">
+                        <span class="input-group-text"><i class="fas fa-chair fa-fw"></i></span>
                     </div>
-                    <select name="furniture_list" id="furniture_list" style="width: 91%" wire:model="furniture_type_id" data-placeholder="Select appliance or furniture" data-allow-clear="true">
+                    <select name="furniture_list" id="furniture_list" style="width: 90%" wire:model="furniture_type_id" data-placeholder="Select appliance or furniture" data-allow-clear="true">
                         @if(!empty($furnitureList))
                             <option value=""></option>
                         @endif
@@ -27,7 +27,7 @@
                 @enderror
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-industry"></i></span>
+                        <span class="input-group-text"><i class="fas fa-industry fa-fw"></i></span>
                     </div>
                     <input type="text" id="manufacturer" class="form-control {{$errors->has("manufacturer") ? 'is-invalid' : (  strlen($manufacturer)>0 ? 'is-valid':'')}}" wire:model.lazy="manufacturer" placeholder="Enter the manufacturer">
                 </div>
@@ -38,7 +38,7 @@
                 @enderror
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                        <span class="input-group-text"><i class="fas fa-barcode fa-fw"></i></span>
                     </div>
                     <input type="text" id="appliance_model" class="form-control {{$errors->has("model") ? 'is-invalid' : (  strlen($model)>0 ? 'is-valid':'')}}" wire:model.lazy="model" placeholder="Enter the model">
                 </div>
@@ -49,7 +49,7 @@
                 @enderror
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                        <span class="input-group-text"><i class="fas fa-barcode fa-fw"></i></span>
                     </div>
                     <input type="text" id="appliance_serial" class="form-control {{$errors->has("serial") ? 'is-invalid' : (  strlen($serial)>0 ? 'is-valid':'')}}" wire:model.lazy="serial" placeholder="Enter the serial number">
                 </div>
@@ -60,7 +60,7 @@
                 @enderror
                 <div class="input-group mb-3 date" id="furniture-aquisition-date" data-target-input="nearest" wire:ignore>
                   <div class="input-group-prepend" data-target="#furniture-aquisition-date" data-toggle="datetimepicker">
-                    <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
+                    <span class="input-group-text"><i class="fas fa-calendar-check fa-fw"></i></span>
                   </div>
                   <input type="text" class="form-control datetimepicker-input furniture-aquisition-date {{$errors->has('buy_at') ? 'is-invalid' : (strlen($buy_at)>0 ? 'is-valid':'')}}" placeholder="Aquisition date" data-target="#furniture-aquisition-date" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
                 </div>

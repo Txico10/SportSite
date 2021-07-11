@@ -35,6 +35,13 @@ $(function(){
   $('#furniture_list').select2({
     width: 'resolve',
   });
+  $('#furniture_companyBuildings').select2({
+    width: 'resolve',
+  });
+  $('#furniture_buildingApartments').select2({
+    width: 'resolve',
+  });
+  
   
   $("#lot").inputmask({
     mask: "9 999 999",
@@ -122,6 +129,26 @@ $(function(){
     allowInputToggle:true,
   });
   
+  $('#furnitute-assignement-date').datetimepicker({
+    format: 'DD/MM/YYYY',
+    useCurrent: false,
+    icons: {
+      previous: 'fas fa-chevron-left',
+      next: 'fas fa-chevron-right',
+      today: 'fas fa-calendar-check',
+      clear: 'fas fa-trash',
+      close: 'fas fa-times-circle',
+    },
+    viewMode: 'days',
+    toolbarPlacement: 'bottom',
+    buttons: {
+      showToday: true,
+      showClear: true,
+      showClose: true,
+    },
+    allowInputToggle:true,
+  });
+
   $('#edit-employee-birthdate').datetimepicker({
     format: 'DD/MM/YYYY',
     useCurrent: false,
@@ -280,6 +307,14 @@ $(function(){
     $(".furniture-aquisition-date").removeClass('is-invalid');
     Livewire.emit('resetFurnitureInputFields');      
   });
+
+  $("#modal-furnitureAssignement").on('hidden.bs.modal', function(){
+    $('#furnitute-assignement-date').datetimepicker('clear');
+    $(".furnitute-assignement-date").val("");
+    $(".furnitute-assignement-date").removeClass('is-valid');
+    $(".furnitute-assignement-date").removeClass('is-invalid');
+    Livewire.emit('resetFurnitureAssignementInputFields');      
+  });
   
   $("#contactCountry").on('select2:select', function(event){
     var data = $(this).select2("val");
@@ -340,6 +375,18 @@ $(function(){
     var data = $(this).select2("val");
     var formID = document.getElementById("furniture-form");
     Livewire.find(formID.getAttribute('wire:id')).set('furniture_type_id', data);
+    //console.log(data);
+  });
+  $("#furniture_companyBuildings").on('select2:select', function(event){
+    var data = $(this).select2("val");
+    var formID = document.getElementById("furnituteAssignForm");
+    Livewire.find(formID.getAttribute('wire:id')).set('building_id', data);
+    //console.log(data);
+  });
+  $("#furniture_buildingApartments").on('select2:select', function(event){
+    var data = $(this).select2("val");
+    var formID = document.getElementById("furnituteAssignForm");
+    Livewire.find(formID.getAttribute('wire:id')).set('apartment_id', data);
     //console.log(data);
   });
   $('#employee-birthdate').on('hide.datetimepicker', function(e) {
@@ -404,6 +451,30 @@ $(function(){
     }
      
   });
+
+  $('#furnitute-assignement-date').on('hide.datetimepicker', function(e) {
+    e.preventDefault();
+    if(e.date!==null) {
+      var assigndate = moment(e.date._d).format('YYYY-MM-DD');
+      var myassigndate = $(".furnitute-assignement-date").val();
+      var formID = document.getElementById("furnituteAssignForm");
+      //console.log(birthdate);
+      if(myassigndate === '') {
+        Livewire.find(formID.getAttribute('wire:id')).set('assigned_at', null);
+        $(".furnitute-assignement-date").addClass('is-invalid').removeClass('is-valid');
+        //console.log("birthdate = null");
+      } else { 
+        Livewire.find(formID.getAttribute('wire:id')).set('assigned_at', assigndate);
+        $(".furnitute-assignement-date").addClass('is-valid').removeClass('is-invalid')
+        //console.log(birthdate);
+      }
+    } else {
+      $(".furnitute-assignement-date").removeClass('is-valid')
+      //console.log("NULL")
+    }
+     
+  });
+
   $("#modal-employee").on('hidden.bs.modal', function(){
     //console.log("Hello");
     $('#employee-birthdate').datetimepicker('clear');
@@ -513,6 +584,115 @@ $(function(){
     }
   });
 
+  $("#DeleteAssignFurniture").on("click", function(event){
+    var assign = $(this).val() 
+    //console.log(assign);
+    Swal.fire({
+      title: 'Are You Sure?',
+      text: 'The furnuture assignement will be deleted!',
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Delete!'
+    }).then((result) => {
+		//if user clicks on delete
+        if (result.value) {
+		    // calling destroy method to delete
+        Livewire.emit('deleteFurnitureAssign', assign);
+        //console.log(assign);
+
+        } 
+    });
+  });
+
+  $(".editFurnitureButton").on("click", function(){
+    var furnitureID = $(this).val();
+    Livewire.emit('editFurniture', furnitureID);
+  });
+
+  $(".salvageFurnitureButton").on("click", function(event){
+    event.preventDefault;
+    var furnitureID = $(this).val();
+    var companyID = this.dataset.company
+    let _token   = $('meta[name="csrf-token"]').attr('content');
+    let _url='/company/'+companyID+'/furnitures/'+furnitureID+'/salvage'
+    Swal.fire({
+      title: 'Are You Sure?',
+      text: 'The furnuture will be no longer used!',
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Descontinue!'
+    }).then((result) => {
+		//if user clicks on delete
+        if (result.value) {
+          $.ajax({
+            url:_url,
+            type: "PATCH",
+            cache: false,
+            data: {
+              _token: _token,
+              furniture_id: furnitureID,
+              company_id: companyID,
+            },
+            success: function(response) {
+              toastr[response.type](response.message);
+              setTimeout(function () { location.reload(); 5000});
+            },
+            error: function(response){
+              $.each(response.responseJSON.errors, function(key, value){
+                toastr["error"](value);
+              })
+            }
+          });
+        } 
+    });
+    
+  });
+
+  $(".deleteFurnitureButton").on("click", function(event){
+    event.preventDefault;
+    var furnitureID = $(this).val();
+    var companyID = this.dataset.company;
+    let _token   = $('meta[name="csrf-token"]').attr('content');
+    let _url='/company/'+companyID+'/furnitures/'+furnitureID;
+    Swal.fire({
+      title: 'Are You Sure?',
+      text: 'The furnuture will be deleted!',
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Delete!'
+    }).then((result) => {
+		//if user clicks on delete
+        if (result.value) {
+          $.ajax({
+            url:_url,
+            type: "DELETE",
+            cache: false,
+            data: {
+              _token: _token,
+              furniture_id: furnitureID,
+              company_id: companyID,
+            },
+            success: function(response) {
+              toastr[response.type](response.message);
+              setTimeout(function () { location.reload(); 5000});
+            },
+            error: function(response){
+              $.each(response.responseJSON.errors, function(key, value){
+                toastr["error"](value);
+              })
+            }
+          });
+        } 
+    });
+
+  });
+
 });
 
 document.addEventListener("livewire:load", () => {
@@ -556,6 +736,14 @@ document.addEventListener("livewire:load", () => {
         $('#furniture_list').select2({
           width: 'resolve',
         });
+
+        $('#furniture_companyBuildings').select2({
+          width: 'resolve',
+        });
+        $('#furniture_buildingApartments').select2({
+          width: 'resolve',
+        });
+        
       }); 
     }
 );
@@ -609,7 +797,7 @@ window.addEventListener('openContactModal', event => {
   );
 
   Livewire.on('alert', param => {
-        toastr[param['type']](param['message']);
+      toastr[param['type']](param['message']);
     }
   );
 
@@ -657,7 +845,16 @@ window.addEventListener('openContactModal', event => {
     $("#modal-furniture").modal('hide');
   });
 
+  window.addEventListener('closeFurnitureAssignementModal', event => {
+    $("#modal-furnitureAssignement").modal('hide');
+  });
+
   Livewire.on('contactInfo', contact=>{
     $("#modal-showContact .modal-body").html(contact);
     $("#modal-showContact").modal('show');
   });
+
+  $("#DeleteAssignFurniture").click(function(){
+    console.log("Hello");
+  });
+  

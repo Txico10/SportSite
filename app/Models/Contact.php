@@ -1,6 +1,6 @@
 <?php
 /** 
- * Laratrust Roles Component
+ * Contact Model
  * 
  * PHP version 7.4
  * 
@@ -14,7 +14,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 /**
- *  Extended Laratrust Roles Classe
+ *  Contact Model Classe
  * 
  * @category MyCategory
  * @package  MyPackage
@@ -31,7 +31,7 @@ class Contact extends Model
     /**
      * Render the livewire users view
      * 
-     * @return morphTo relationship
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function contactable() 
     {

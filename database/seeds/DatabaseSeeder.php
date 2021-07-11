@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
         // $this->call(UserSeeder::class);
         $this->call(
             [
-                LaratrustSeeder::class, 
+                LaratrustSeeder::class,
+                LogsParameterSeeder::class, 
                 UserSeeder::class, 
                 ApartmentTypeSeeder::class,
                 FurnitureTypeSeeder::class,

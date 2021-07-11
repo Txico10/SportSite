@@ -12,8 +12,9 @@
  * */
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 /**
- *  Extended Model
+ *  Furniture Extended Model
  * 
  * @category MyCategory
  * @package  MyPackage
@@ -24,13 +25,14 @@ use Illuminate\Database\Eloquent\Model;
 class Furniture extends Model
 {
     protected $fillable = [
-        'real_state_id','furniture_type_id','manufacturer', 'model', 'serial', 'buy_at', 'salvage_at', 'qrcode',
+        'real_state_id','furniture_type_id','manufacturer', 
+        'model', 'serial', 'buy_at', 'salvage_at', 'qrcode',
     ];
     
     /**
      * Realstate
      *
-     * @return void
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function realstate()
     {
@@ -40,7 +42,7 @@ class Furniture extends Model
     /**
      * FurnitureType
      *
-     * @return void
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function furnitureType()
     {
@@ -50,13 +52,49 @@ class Furniture extends Model
     /**
      * Apartments
      *
-     * @return void
+     * @return Illuminate\Database\Eloquent\Model 
      */
     public function apartments()
     {
-        return $this->belongsToMany(Apartment::class, 'furniture_apartment', 'furniture_id', 'apartment_id')
-            ->withPivot('assigned_at', 'withdraw_at')
+        return $this->belongsToMany(Apartment::class, FurnitureApartment::class)
+            ->withPivot('id', 'assigned_at', 'withdraw_at')
             ->withTimestamps();
+    }
+    
+    /**
+     * Furniture Last assignement
+     * 
+     * @return Illuminate\Support\Facades\DB
+     */
+    public function furnitureAssigned()
+    {
+        return DB::table('furniture_apartment')
+            ->where('furniture_id', $this->id)
+            ->where('withdraw_at', null)
+            ->first();
+    }
+    
+    /**
+     * Furniture Unassigned
+     *
+     * @return void
+     */
+    public function furnitureUnassigned()
+    {
+        return DB::table('furniture_apartment')
+            ->where('furniture_id', $this->id)
+            ->orderByDesc('assigned_at')
+            ->value('withdraw_at');
+    }
+    
+    /**
+     * Logs
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function logs()
+    {
+        return $this->morphMany(Log::class, 'logable');
     }
 
     /**

@@ -37,7 +37,7 @@ class Employee extends Model
     /**
      * Contact relationship
      * 
-     * @return morphOne relationship
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function contacts()
     {
@@ -63,7 +63,7 @@ class Employee extends Model
     /**
      * Searche for Real State/clients information
      * 
-     * @return belongsToMany relationship with pivot
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function company()
     {

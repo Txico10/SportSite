@@ -36,7 +36,7 @@ class Company extends Component
      * 
      * @param $company company id
      *
-     * @return view
+     * @return void
      */
     public function mount(RealState $company)
     {
@@ -46,7 +46,7 @@ class Company extends Component
     /**
      * Display company contact.
      *
-     * @return view
+     * @return Illuminate\Support\Facades\View
      */
     public function render()
     {

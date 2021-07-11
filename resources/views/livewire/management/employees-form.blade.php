@@ -71,7 +71,7 @@
                   @enderror
                   <div class="input-group mb-3">
                       <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fas fa-building"></i></span>
+                          <span class="input-group-text"><i class="fas fa-user"></i></span>
                       </div>
                       <input type="text" id="name" class="form-control {{$errors->has("name") ? 'is-invalid' : (  strlen($name)>0 ? 'is-valid':'')}}" wire:model.lazy="name" placeholder="Employee name">
                   </div>
@@ -129,7 +129,7 @@
                       </div>
                     </div>            
                   </div>
-                  <!-- Companies Address - Door number -->
+                  <!-- Companies Address - Dor number -->
                   <div class="col-sm-6">
                     <div class="form-group">
                       @error('number')

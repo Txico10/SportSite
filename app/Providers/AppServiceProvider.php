@@ -12,7 +12,7 @@
  * */
 namespace App\Providers;
 
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -56,7 +56,7 @@ class AppServiceProvider extends ServiceProvider
             BuildingMenu::class, function (BuildingMenu $event) {
                 // Add some items to the menu...
                 $companyID = DB::table('employee_contracts')
-                    ->where('user_id', auth()->user()->id)
+                    ->where('user_id', Auth::id())
                     ->whereDate('start_date', '<=', now())
                     ->whereDate('end_date', '>=', now())
                     ->value('real_state_id');
@@ -84,7 +84,6 @@ class AppServiceProvider extends ServiceProvider
                         'route'  => 'admin.users',
                         'icon' => 'fas fa-fw fa-users',
                         'permission' => 'users-read',
-                        'label' => User::count(),
                         'label_color' => 'success',
                     ]
                 );
@@ -107,7 +106,7 @@ class AppServiceProvider extends ServiceProvider
                     $event->menu->add(
                         [
                             'key' => 'real_state',
-                            'text' => 'Real State',
+                            'text' => 'My Company',
                             'route'  => ['company.profile',["id" => $companyID]],
                             'icon' => 'fas fa-fw fa-info',
                             'permission' => 'company-read',
@@ -117,9 +116,24 @@ class AppServiceProvider extends ServiceProvider
                         [
                             'key' => 'employees',
                             'text' => 'Employees',
-                            'route'  => ['company.employees', ["id" => $companyID]],
                             'icon' => 'fas fa-fw fa-user-tie',
                             'permission' => 'employee-read',
+                            'submenu' => [
+                                [
+                                    'text' => 'All Employees',
+                                    'classes' => 'ml-4',
+                                    'route'  => ['company.employees', ["id" => $companyID]],
+                                    'icon' => 'fas fa-fw fa-users',
+                                    'permission' => 'employee-read',
+                                ],
+                                [
+                                    'text' => 'New Employee',
+                                    'classes' => 'ml-4',
+                                    'route'  => ['company.employees.create', ["id" => $companyID]],
+                                    'icon' => 'fas fa-fw fa-user-plus',
+                                    'permission' => 'employee-create',
+                                ],
+                            ]
                         ],
                     );
                     $event->menu->add(

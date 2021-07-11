@@ -50,7 +50,7 @@ class Apartment extends Component
      */
     public function mount($company)
     {
-        $this->myCompany = $company->load('apartments.building', 'apartments.apartmentType');
+        $this->myCompany = $company->load('buildings', 'apartments.building', 'apartments.apartmentType');
         $this->buildingId = -1;
         //dd($this->myCompany);
             
@@ -59,7 +59,7 @@ class Apartment extends Component
     /**
      * Reder the apartment view
      * 
-     * @return view
+     * @return Illuminate\Support\Facades\View
      */
     public function render()
     {
@@ -120,7 +120,7 @@ class Apartment extends Component
         } else {
             $paginator = null;
         }
-        
+
         return view(
             'livewire.management.apartment',
             [

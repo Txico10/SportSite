@@ -55,7 +55,7 @@ class Apartment extends Model
      */
     public function furnitures()
     {
-        return $this->belongsToMany(Furniture::class, 'furniture_apartment', 'apartment_id', 'furniture_id')
+        return $this->belongsToMany(Furniture::class, FurnitureApartment::class)
             ->withPivot('assigned_at', 'withdraw_at')
             ->withTimestamps();
     }

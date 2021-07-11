@@ -97,13 +97,13 @@
     <!-- /.card-footer-->
     {{ $employees->links() }}
     <x-modal title="Show contact" id="modal-showContact" type="" icon="fas fa-address-card">
-      <livewire:management.contact-show :contacts="$employee->contacts"/>
+      <livewire:management.contact-show/>
     </x-modal>
     <x-modal title="Contact" id="modal-contact" type="" icon="fas fa-address-book">
       <livewire:management.contact-form/>
     </x-modal>
     <x-modal title="Create Employee" id="modal-employee" type="modal-lg" icon="fas fa-user-plus">
-      <livewire:management.employees-form :company="$company"/>
+      
     </x-modal>
     <x-modal title="Edit Employee" id="modal-editEmployee" type="" icon="fas fa-user-edit">
       <livewire:management.employees-edit />

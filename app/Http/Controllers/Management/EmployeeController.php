@@ -39,4 +39,18 @@ class EmployeeController extends Controller
         
         return view('management.employee', compact('company'));
     }
+    
+    /**
+     * Create
+     *
+     * @param mixed $id company id
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function create($id)
+    {
+        $company = RealState::where('id', $id)->first();
+
+        return view('management.employee-create', compact('company'));
+    }
 }

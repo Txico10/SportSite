@@ -14,6 +14,7 @@ namespace App\Http\Controllers\Management;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Apartment;
 use App\Models\RealState;
 
 /**
@@ -38,5 +39,20 @@ class ApartmentController extends Controller
     {
         $company = RealState::where('id', $id)->first();
         return view('management.apartment', compact('company'));
+    }
+    
+    /**
+     * Furniture List
+     *
+     * @param int       $id        Company ID
+     * @param Apartment $apartment Apartment
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function furnitureList(int $id, Apartment $apartment)
+    {
+        $apartment = $apartment->load('apartmentType', 'building', 'furnitures', 'furnitures.furnitureType');
+        //dd($apartment);
+        return view('management.apartment-furniture', compact('id', 'apartment'));
     }
 }

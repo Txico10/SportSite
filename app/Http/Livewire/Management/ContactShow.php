@@ -34,32 +34,13 @@ class ContactShow extends Component
     ];
     
     /**
-     * Mount
-     * 
-     * @param $contacts my contacts
-     *
-     * @return void
-     */
-    public function mount($contacts)
-    {
-        $this->contacts = $contacts;
-
-        //dd($this->contacts);
-    }
-    /**
      * Render
      *
      * @return void
      */
     public function render()
     {
-        return view(
-            'livewire.management.contact-show', 
-            [
-                'contact' => $this->contacts,
-
-            ]
-        );
+        return view('livewire.management.contact-show');
     }
 
         

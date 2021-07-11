@@ -57,7 +57,7 @@ class ApartmentForm extends Component
     /**
      * Render
      *
-     * @return view
+     * @return Illuminate\Support\Facades\View
      */
     public function render()
     {
