@@ -19,6 +19,7 @@ class CreateRealStatesTable extends Migration
             $table->string('neq', 10);
             $table->string('legalform')->nullable();
             $table->string('logo')->nullable();
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }

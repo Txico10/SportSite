@@ -17,9 +17,7 @@ class CreateBuildingsTable extends Migration
             $table->id();
             $table->string('lot');
             $table->string('alias')->nullable();
-            $table->unsignedBigInteger('real_state_id');
-            $table->foreign('real_state_id')->references('id')
-                ->on('real_states')->onDelete('cascade');
+            $table->foreignId('real_state_id')->constrained();
             $table->text('description')->nullable();
             $table->timestamps();
         });

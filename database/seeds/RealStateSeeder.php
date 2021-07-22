@@ -1,8 +1,30 @@
 <?php
+/** 
+ * Real Estate seeder
+ * 
+ * PHP version 7.4
+ * 
+ * @category MyCategory
+ * @package  MyPackage
+ * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
+ * @license  MIT treino.localhost
+ * @link     link()
+ * */
 
-use Carbon\Carbon;
+use App\Models\Contact;
+use App\Models\RealState;
+use App\Models\Team;
+
 use Illuminate\Database\Seeder;
-
+/**
+ *  Real Estate seeder extend seeder
+ * 
+ * @category MyCategory
+ * @package  MyPackage
+ * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
+ * @license  MIT treino.localhost
+ * @link     link()
+ * */
 class RealStateSeeder extends Seeder
 {
     /**
@@ -12,36 +34,19 @@ class RealStateSeeder extends Seeder
      */
     public function run()
     {
-        $real_states = factory('App\Models\RealState', 20)
-            ->create()
+        factory(RealState::class, 20)->create()
             ->each(
                 function ($real_state) {
-                    $real_state->contact()
-                        ->save(factory(App\Models\Contact::class)->make());
                     
-                    $real_state->buildings()->saveMany(
-                        factory(App\Models\Building::class, 4)
-                            ->make(),
+                    $team = Team::create(
+                        [
+                            'name'=> strval($real_state->id), 
+                            'display_name'=> $real_state->name
+                        ]
                     );
 
-                    $real_state->furnitures()->saveMany(
-                        factory(App\Models\Furniture::class, 5)
-                        ->make()
-                    );
-
-                    for ($i=0; $i < 5; $i++) { 
-                        $start_date = Carbon::now()->addMonth(rand(-1, -12));
-                        $end_date = Carbon::now()->addMonth(rand(12, 24));
-                        $real_state->employees()->attach(
-                            factory(App\Models\Employee::class)->create()->id,
-                            [
-                                'user_id' => factory(App\Models\User::class)->create()->id,
-                                'start_date' => $start_date,
-                                'end_date' => $end_date,
-                                'status' => 'FT'
-                            ]
-                        );
-                    }
+                    $real_state->contact()->save(factory(Contact::class)->make());
+                    
                 }
             );
     }

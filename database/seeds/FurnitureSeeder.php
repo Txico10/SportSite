@@ -1,8 +1,28 @@
 <?php
+/** 
+ * Furniture seeder
+ * 
+ * PHP version 7.4
+ * 
+ * @category MyCategory
+ * @package  MyPackage
+ * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
+ * @license  MIT treino.localhost
+ * @link     link()
+ * */
 
 use App\Models\Furniture;
+use App\Models\RealState;
 use Illuminate\Database\Seeder;
-
+/**
+ *  Furniture seeder extend seeder
+ * 
+ * @category MyCategory
+ * @package  MyPackage
+ * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
+ * @license  MIT treino.localhost
+ * @link     link()
+ * */
 class FurnitureSeeder extends Seeder
 {
     /**
@@ -12,6 +32,12 @@ class FurnitureSeeder extends Seeder
      */
     public function run()
     {
-        factory(Furniture::class, 20)->create();
+        $real_estates = RealState::all();
+
+        foreach ($real_estates as $real_estate) {
+            $real_estate->furnitures()->saveMany(
+                factory(Furniture::class, 5)->make()
+            );
+        }  
     }
 }

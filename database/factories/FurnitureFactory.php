@@ -4,12 +4,10 @@
 
 use App\Models\Furniture;
 use App\Models\FurnitureType;
-use App\Models\RealState;
 use Faker\Generator as Faker;
 
 $factory->define(Furniture::class, function (Faker $faker) {
     $furnitureType = FurnitureType::pluck('id');
-    //$real_state = RealState::pluck('id');
     $manufacturer = ['whirlpool', 'maytag', 'ge appliances', 'samsung', 'admiral'];
     return [
         'furniture_type_id' => $faker->randomElement($furnitureType),

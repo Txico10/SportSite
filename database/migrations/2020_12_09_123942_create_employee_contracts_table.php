@@ -16,10 +16,11 @@ class CreateEmployeeContractsTable extends Migration
         Schema::create('employee_contracts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('real_state_id')->constrained();
-            $table->foreignId('employee_id')->constrained();
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('employee_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained();
             $table->dateTime('start_date', 0);
             $table->dateTime('end_date', 0)->nullable();
+            $table->text('agreement')->nullable();
             $table->enum('status', ['FT', 'PT']);
             $table->timestamps();
         });

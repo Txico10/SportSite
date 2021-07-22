@@ -17,9 +17,8 @@ class CreateEmployeesTable extends Migration
             $table->id();
             $table->string('name');
             $table->date('birthdate');
-            //$table->integer('nas');
+            $table->integer('nas')->nullable();
             $table->string('gender');
-            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

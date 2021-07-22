@@ -16,6 +16,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Laratrust\Traits\LaratrustUserTrait;
 
@@ -31,7 +32,10 @@ use Laratrust\Traits\LaratrustUserTrait;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use LaratrustUserTrait;
-    use Notifiable; 
+    use Notifiable;
+    
+    const ACTIVE = 1;
+    const INACTIVE = 0;
 
     /**
      * The attributes that are mass assignable.
@@ -60,6 +64,47 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'active_company'
+    ];
+    
+    /**
+     * Get Active Company Attribute
+     *
+     * @return int||null
+     */
+    public function getActiveCompanyAttribute()
+    {
+        return DB::table('employee_contracts')
+            ->where('user_id', $this->id)
+            ->whereDate('start_date', '<=', now())
+            ->where(
+                function ($query) {
+                    $query->whereNull('end_date')
+                        ->orWhereDate('end_date', '>=', now());
+                }
+            )
+            ->value('real_state_id');
+    }
+    
+    /**
+     * Scope With Last Login Date
+     *
+     * @param mixed $query Query
+     * 
+     * @return void
+     */
+    public function scopeWithLastLoginDate($query)
+    {
+        $query->addSelect(
+            ['last_login_at' => Logins::select('created_at')
+                ->whereColumn('user_id', 'users.id')
+                ->latest()
+                ->take(1)
+            ]
+        )->withCasts(['last_login_at' => 'datetime']);
+    }
+
     /**
      * Render the livewire users view
      * 
@@ -67,7 +112,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function adminlte_image() 
     {
-        $photo = auth()->user()->image;
+        $photo = Auth::user()->image;
         
         if (empty($photo)) {
             $photo = 'https://picsum.photos/300/300';
@@ -95,7 +140,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function adminlte_profile_url()
     {
-        return url("/users/".Auth::id()."/profile");
+        return route('user.profile', ['user'=>$this]);
     }
 
     /**
@@ -111,22 +156,32 @@ class User extends Authenticatable implements MustVerifyEmail
             : static::where('name', 'like', '%'.$query.'%')
                 ->orWhere('email', 'like', '%'.$query.'%');
     }
+        
+    /**
+     * Logins
+     *
+     * @return void
+     */
+    public function logins()
+    {
+        return $this->hasMany(Logins::class);
+    }
 
     /**
      * Render the livewire users view
      * 
-     * @return morphMany relationship
+     * @return Illuminate\Database\Eloquent\Model
      */
-    public function contacts() 
+    public function contact() 
     {
 
-        return $this->morphMany(Contact::class, 'contactable');
+        return $this->morphOne(Contact::class, 'contactable');
     }
     
     /**
      * Employees
      *
-     * @return void
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function employees()
     {
@@ -134,8 +189,28 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withPivot(
                 [
                     'real_state_id',
+                    'status',
                     'start_date',
                     'end_date',
+                ]
+            )
+            ->withTimestamps();
+    }
+    
+    /**
+     * Companies
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function companies()
+    {
+        return $this->belongsToMany(RealState::class, EmployeeContract::class)
+            ->withPivot(
+                [
+                    'employee_id',
+                    'start_date',
+                    'end_date',
+                    'status',
                 ]
             )
             ->withTimestamps();

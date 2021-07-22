@@ -1,11 +1,29 @@
 <?php
-
+/** 
+ * ApartmentType seeder
+ * 
+ * PHP version 7.4
+ * 
+ * @category MyCategory
+ * @package  MyPackage
+ * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
+ * @license  MIT treino.localhost
+ * @link     link()
+ * */
 use App\Models\Apartment;
 use App\Models\ApartmentType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 
-
+/**
+ *  ApartmentType seeder extend seeder
+ * 
+ * @category MyCategory
+ * @package  MyPackage
+ * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
+ * @license  MIT treino.localhost
+ * @link     link()
+ * */
 class ApartmentTypeSeeder extends Seeder
 {
     /**

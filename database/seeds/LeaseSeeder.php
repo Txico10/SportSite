@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class LogSeeder extends Seeder
+class LeaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.

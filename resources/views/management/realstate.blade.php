@@ -36,11 +36,11 @@
               Dropdown <span class="caret"></span>
             </a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" tabindex="-1" href="{{route('company.buildings',  ['id'=>$company->id])}}">Buildings</a>
-              <a class="dropdown-item" tabindex="-1" href="{{route('company.apartments', ['id'=>$company->id])}}">Apartments</a>
-              <a class="dropdown-item" tabindex="-1" href="{{route('company.furnitures', ['id'=>$company->id])}}">Furnitures</a>
+              <a class="dropdown-item" tabindex="-1" href="{{route('company.buildings',  ['company'=>$company])}}">Buildings</a>
+              <a class="dropdown-item" tabindex="-1" href="{{route('company.apartments', ['company'=>$company])}}">Apartments</a>
+              <a class="dropdown-item" tabindex="-1" href="{{route('company.furnitures', ['company'=>$company])}}">Furnitures</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" tabindex="-1" href="{{route('company.employees', ['id'=>$company->id])}}">Employees</a>
+              <a class="dropdown-item" tabindex="-1" href="{{route('company.employees', ['company'=>$company])}}">Employees</a>
             </div>
           </li>
           <li class="nav-item"><a class="nav-link active" href="#buildings" data-toggle="tab">Buildings</a></li>

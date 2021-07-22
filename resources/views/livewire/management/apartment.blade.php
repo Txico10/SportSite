@@ -63,7 +63,7 @@
             </td>
             <td>
               <button class="btn btn-sm btn-outline-primary" type="button"><i class="fas fa-user-cog"></i></button>
-              <a class="btn btn-sm btn-outline-success" type="button" href="{{route('company.apartment.furnitures', ['id'=>$company->id, 'apartment'=>$apartment])}}"><i class="fas fa-chair"></i></a>
+              <a class="btn btn-sm btn-outline-success" type="button" href="{{route('company.apartment.furnitures', ['company'=>$company, 'apartment'=>$apartment])}}"><i class="fas fa-chair"></i></a>
               @permission('apartment-update')
                 <button class="btn btn-sm btn-outline-info" type="button" wire:click.prevent="$emit('editApartment', {{$apartment->id}})"><i class="fas fa-pencil-alt"></i></button>
               @endpermission

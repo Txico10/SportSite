@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLogsParametersTable extends Migration
+class CreateLoginsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateLogsParametersTable extends Migration
      */
     public function up()
     {
-        Schema::create('logs_parameters', function (Blueprint $table) {
+        Schema::create('logins', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->string('icon');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->ipAddress('ip_address');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateLogsParametersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('logs_parameters');
+        Schema::dropIfExists('logins');
     }
 }

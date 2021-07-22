@@ -20,7 +20,7 @@ use App\Models\RealState;
 use Illuminate\Support\Facades\DB;
 
 /**
- *  Furniture controller
+ *  Furniture controller extend controller
  * 
  * @category MyCategory
  * @package  MyPackage
@@ -34,13 +34,12 @@ class FurnitureController extends Controller
     /**
      * Index
      *
-     * @param int $id company id
+     * @param RealState $company company id
      * 
      * @return \Illuminate\Http\Response
      */
-    public function index(int $id)
+    public function index(RealState $company)
     {
-        $company = RealState::where('id', $id)->first();
         $company = $company->load('furnitures', 'furnitures.furnitureType');
 
         $furnitures = $company->furnitures->map( 
@@ -56,32 +55,32 @@ class FurnitureController extends Controller
     /**
      * Show furniture detais
      *
-     * @param int       $id        company id
+     * @param RealState $company   company id
      * @param Furniture $furniture furniture
      * 
      * @return \Illuminate\Http\Response
      */
-    public function show(int $id, Furniture $furniture)
+    public function show(RealState $company, Furniture $furniture)
     {
         $furniture = $furniture->load('apartments.building', 'furnitureType');
         $furnitureAssignement = $furniture->furnitureAssigned();
 
-        //dd($furnitureAssignement->id);
+        //dd($company);
 
-        return view('management.furniture-show', compact('id', 'furniture', 'furnitureAssignement'));
+        return view('management.furniture-show', compact('company', 'furniture', 'furnitureAssignement'));
     }
     
     /**
      * Withdraw furniture from apartment
      *
      * @param \Illuminate\Http\Request $request   Request
-     * @param int                      $id        Company ID
+     * @param RealState                $company   Company ID
      * @param App\Models\Furniture     $furniture Furniture
      * @param App\Models\Apartment     $apartment Apartment
      * 
      * @return Illuminate\Http\RedirectResponse
      */
-    public function withdraw(Request $request, int $id, Furniture $furniture, Apartment $apartment)
+    public function withdraw(Request $request, RealState $company, Furniture $furniture, Apartment $apartment)
     {
         //dd($request->assigned_at);
         $validatedData = $request->validate(
@@ -92,7 +91,7 @@ class FurnitureController extends Controller
 
         $furniture->apartments()->updateExistingPivot($apartment, ['withdraw_at'=>now()]);
 
-        return redirect()->route('company.furnitures.show', ['id'=>$id, 'furniture'=>$furniture])->with('status', 'Withdraw updated successfuly');
+        return redirect()->route('company.furnitures.show', ['company'=>$company, 'furniture'=>$furniture])->with('status', 'Withdraw updated successfuly');
         
     }
     

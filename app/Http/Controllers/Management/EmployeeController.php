@@ -1,6 +1,6 @@
 <?php
 /** 
- * Employees controller
+ * Employees Controller
  * 
  * PHP version 7.4
  * 
@@ -16,7 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RealState;
 use Illuminate\Http\Request;
 /**
- *  Extend controller Classe
+ *  Employee controller extend controller Classe
  * 
  * @category MyCategory
  * @package  MyPackage
@@ -29,13 +29,12 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      * 
-     * @param $id Company id
+     * @param RealState $company Company id
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index(RealState $company)
     {
-        $company = RealState::where('id', $id)->first();
         
         return view('management.employee', compact('company'));
     }
@@ -47,9 +46,8 @@ class EmployeeController extends Controller
      * 
      * @return \Illuminate\Http\Response
      */
-    public function create($id)
+    public function create(RealState $company)
     {
-        $company = RealState::where('id', $id)->first();
 
         return view('management.employee-create', compact('company'));
     }

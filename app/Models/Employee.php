@@ -31,7 +31,7 @@ class Employee extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'birthdate', 'gender', 'image'
+        'name', 'birthdate', 'gender'
     ];
 
     /**
@@ -39,9 +39,9 @@ class Employee extends Model
      * 
      * @return Illuminate\Database\Eloquent\Model
      */
-    public function contacts()
+    public function contact()
     {
-        return $this->morphMany(Contact::class, 'contactable');
+        return $this->morphOne(Contact::class, 'contactable');
     }
 
     /**
@@ -73,6 +73,7 @@ class Employee extends Model
                     'user_id',
                     'start_date',
                     'end_date',
+                    'agreement',
                     'status'
                 ]
             )

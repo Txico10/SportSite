@@ -38,6 +38,10 @@ Route::middleware(['auth','verified','role:superadministrator|administrator'])
         function () {
             //Route::get('/users', [Users::class,'render'])->name('users');
             Route::get('/users', 'User\UserController@index')->name('users');
+            Route::get('/users/{user}', 'User\UserController@show')
+                ->middleware('permission:users-read')->name('users.show');
+            Route::delete('/users/{user}', 'User\UserController@destroy')
+                ->middleware('permission:users-delete')->name('users.destroy');
             Route::namespace('Admin')->group(
                 function () {
                     Route::get('/roles', 'RoleController@index')
@@ -45,47 +49,61 @@ Route::middleware(['auth','verified','role:superadministrator|administrator'])
                 }
             );
             Route::get('/clients', 'Management\RealStateController@index')
-            ->name('clients');
+                ->name('clients')->middleware('permission:allCompanies-read');
         }
     );
+Route::patch('admin/users/{id}/changeStatus', 'User\UserController@changeStatus')
+    ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
+    ->name('users.changeStatus');
+Route::post('admin/users/{id}/permissions', 'User\UserController@getPermissions')
+    ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
+    ->name('users.permissions.list');
+Route::post('admin/users/{id}/roles', 'User\UserController@getRoles')
+    ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
+    ->name('users.roles.list');
 
-Route::get('/company/{id}/profile', 'Management\RealStateController@profile')
-    ->middleware(['auth', 'verified', 'permission:company-read'])
-    ->name('company.profile');
-
-Route::get('/users/{id}/profile', 'User\UserController@profile')
+Route::get('/users/{user:id}/profile', 'User\UserController@profile')
     ->middleware(['auth', 'verified'])->name('user.profile');
-    
-Route::get('/company/{id}/employees', 'Management\EmployeeController@index')
-    ->middleware(['auth', 'verified', 'permission:employee-read'])
+
+Route::get('/company/{company:slug}/profile', 'Management\RealStateController@profile')
+    ->middleware(['auth', 'verified', 'belong.company','permission:company-read'])
+    ->name('company.profile');
+Route::get('/company/{company:slug}/apartments-setting', 'Management\ApartmentTypeController@index')
+    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
+    ->name('company.apartment-setting');
+Route::get('/company/{company:slug}/furnitures-setting', 'Management\FurnitureTypeController@index')
+    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
+    ->name('company.furniture-setting');    
+Route::get('/company/{company:slug}/employees', 'Management\EmployeeController@index')
+    ->middleware(['auth', 'verified', 'belong.company', 'permission:employee-read'])
     ->name('company.employees');
     
-Route::get('/company/{id}/employees/create', 'Management\EmployeeController@create')
-    ->middleware(['auth', 'verified', 'permission:employee-create'])
+Route::get('/company/{company:slug}/employees/create', 'Management\EmployeeController@create')
+    ->middleware(['auth', 'verified', 'belong.company', 'permission:employee-create'])
     ->name('company.employees.create');
 
-Route::get('/company/{id}/buildings', 'Management\BuildingController@index')
-    ->middleware(['auth', 'verified', 'permission:building-read'])
+Route::get('/company/{company:slug}/buildings', 'Management\BuildingController@index')
+    ->middleware(['auth', 'verified', 'belong.company', 'permission:building-read'])
     ->name('company.buildings');
 
-Route::get('/company/{id}/apartments', 'Management\ApartmentController@index')
-    ->middleware(['auth', 'verified', 'permission:apartment-read'])
+Route::get('/company/{company:slug}/apartments', 'Management\ApartmentController@index')
+    ->middleware(['auth', 'verified', 'belong.company', 'permission:apartment-read'])
     ->name('company.apartments');
-Route::get('/company/{id}/furnitures', 'Management\FurnitureController@index')
-    ->middleware(['auth','verified','permission:furniture-read'])
+Route::get('/company/{company:slug}/furnitures', 'Management\FurnitureController@index')
+    ->middleware(['auth','verified', 'belong.company', 'permission:furniture-read'])
     ->name('company.furnitures');
 
-Route::get('/company/{id}/furnitures/{furniture}', 'Management\FurnitureController@show')
-    ->middleware(['auth','verified','permission:furniture-read'])
+Route::get('/company/{company:slug}/furnitures/{furniture}', 'Management\FurnitureController@show')
+    ->middleware(['auth','verified','belong.company', 'permission:furniture-read'])
     ->name('company.furnitures.show');
-Route::get('/company/{id}/apartment/{apartment}/furnitures', 'Management\ApartmentController@furnitureList')
-    ->middleware(['auth','verified','permission:apartment-read'])
+Route::get('/company/{company:slug}/apartment/{apartment}/furnitures', 'Management\ApartmentController@furnitureList')
+    ->middleware(['auth','verified', 'belong.company', 'permission:apartment-read'])
     ->name('company.apartment.furnitures');
-Route::post('/company/{id}/furnitures/{furniture}/apartment/{apartment}', 'Management\FurnitureController@withdraw')
-    ->middleware(['auth','verified','permission:furniture-read'])
+Route::post('/company/{company:slug}/furnitures/{furniture}/apartment/{apartment}', 'Management\FurnitureController@withdraw')
+    ->middleware(['auth','verified', 'belong.company', 'permission:furniture-read'])
     ->name('company.furniture.withdraw');
 Route::patch('/company/{id}/furnitures/{furniture}/salvage', 'Management\FurnitureController@salvage')
-    ->middleware(['auth','verified','permission:furniture-delete'])
+    ->middleware(['auth','verified', 'permission:furniture-delete'])
     ->name('company.furniture.salvage');
 Route::delete('/company/{id}/furnitures/{furniture}', 'Management\FurnitureController@destroy')
     ->middleware(['auth','verified','permission:furniture-delete'])

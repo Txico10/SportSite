@@ -1,6 +1,6 @@
 <?php
 /** 
- * Laratrust Roles Component
+ * Laratrust Role Model
  * 
  * PHP version 7.4
  * 
@@ -14,7 +14,7 @@ namespace App\Models;
 
 use Laratrust\Models\LaratrustRole;
 /**
- *  Extended Laratrust Roles Classe
+ *  Role extend Laratrust Roles Classe
  * 
  * @category MyCategory
  * @package  MyPackage
@@ -39,4 +39,5 @@ class Role extends LaratrustRole
             : static::where('display_name', 'like', '%'.$query.'%')
             ->orWhere('description', 'like', '%'.$query.'%');
     }
+    
 }

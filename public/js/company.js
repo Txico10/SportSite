@@ -1,45 +1,101 @@
 $(function(){
+  $('#user-role').select2({
+    width: 'resolve',
+    theme: 'bootstrap4',
+  });
+  $('#user-role-form').select2({
+    width: 'resolve',
+    theme: 'bootstrap4',
+    ajax : {
+      type: 'POST',
+      dataType: 'json',
+      delay: 250,
+      data: function(params){
+        return {
+          _token: $('meta[name="csrf-token"]').attr('content'),
+          search: params.term,
+        }
+      },
+      processResults: function(response) {
+        return {results:response}
+      },
+      cache: true,
+    }
+  });
+  $('#user-permissions-form').select2({
+    width: 'resolve',
+    theme: 'bootstrap4',
+    ajax : {
+      type: 'POST',
+      dataType: 'json',
+      delay: 250,
+      data: function(params){
+        return {
+          _token: $('meta[name="csrf-token"]').attr('content'),
+          search: params.term,
+        }
+      },
+      processResults: function(response) {
+        return {results:response}
+      },
+      cache: true,
+    }
+  });
+  
   $('#legalform').select2({
-    width: 'resolve'
+    width: 'resolve',
+    theme: 'bootstrap4',
   });
   $('#contactCountry').select2({
-    width: 'resolve'
+    width: 'resolve',
+    theme: 'bootstrap4',
   });
   $('#contactCity').select2({
-    width: 'resolve'
+    width: 'resolve',
+    theme: 'bootstrap4',
   });
   $('#myBuildings').selectpicker();
   
   $('#apart_building').select2({
     width: 'resolve',
+    theme: 'bootstrap4',
   });
   $('#apart_type').select2({
     width: 'resolve',
+    theme: 'bootstrap4',
   });
   $('#employeeGender').select2({
     width: 'resolve',
+    theme: 'bootstrap4',
   });
   $('#employeeCountry').select2({
     width: 'resolve',
+    theme: 'bootstrap4',
   });
   $('#employee-city').select2({
     width: 'resolve',
+    theme: 'bootstrap4',
   });
   
   $('#employee-role').select2({
     width: 'resolve',
+    theme: 'bootstrap4',
   });
   $('#editEmployeeGender').select2({
     width: 'resolve',
+    theme: 'bootstrap4',
   });
   $('#furniture_list').select2({
     width: 'resolve',
+    theme: 'bootstrap4',
   });
   $('#furniture_companyBuildings').select2({
     width: 'resolve',
+    theme: 'bootstrap4',
   });
   $('#furniture_buildingApartments').select2({
     width: 'resolve',
+    theme: 'bootstrap4',
   });
   
   
@@ -273,11 +329,23 @@ $(function(){
       //console.log("unCheckd");
     }
   });
-  
+
+  $("#modal-profile").on('hidden.bs.modal', function(){
+    Livewire.emit('resetProfileInputFields');
+    
+  });
+  $("#modal-userform").on('hidden.bs.modal', function(){
+    Livewire.emit('resetUserInputFields');
+    //$("#select2Role").val([]).trigger('change');
+    //$("#select2Permission").val([]).trigger('change');
+  });
   $("#modal-company").on('hidden.bs.modal', function(){
       Livewire.emit('resetCompanyInputFields');      
     }
   );
+  $("#modal-user-roles-permissions").on('hidden.bs.modal', function(){
+    //Livewire.emit('resetUserRPInputFields');      
+  });
   $("#modal-contact").on('hidden.bs.modal', function(){
       Livewire.emit('resetContactInputFiels');      
     }
@@ -315,7 +383,20 @@ $(function(){
     $(".furnitute-assignement-date").removeClass('is-invalid');
     Livewire.emit('resetFurnitureAssignementInputFields');      
   });
+
+  $("#user-role").on('select2:select', function(event){
+    var data = $(this).select2("val");
+    var formID = document.getElementById("userform");
+    Livewire.find(formID.getAttribute('wire:id')).set('role', data);
+    //console.log(data);
+  });
   
+  $("#employee-role").on('select2:select', function(event){
+    var data = $(this).select2("val");
+    var formID = document.getElementById("myEmployeeForm");
+    Livewire.find(formID.getAttribute('wire:id')).set('role', data);
+    //console.log(data);
+  });
   $("#contactCountry").on('select2:select', function(event){
     var data = $(this).select2("val");
     var formID = document.getElementById("contact-form");
@@ -569,8 +650,17 @@ $(function(){
     },
   });
 
+  $("#editProfileButton").on('click', function(){
+    Livewire.emit('editProfile');
+  });
+  
+  $("#userRolesPermissionsButton").on('click', function (event) {
+    $('#myteam').val($(this).val())
+    $("#modal-user-roles-permissions").modal('show');
+  })
+
   $("#showpasswd").on("click", function (event) {
-    event.preventDefault;
+    event.preventDefault();
     var password = $("#password").val();
     //console.log($(".text-info").text());
     if($(".passwd-txt").text()==="*********") {
@@ -611,8 +701,8 @@ $(function(){
     Livewire.emit('editFurniture', furnitureID);
   });
 
-  $(".salvageFurnitureButton").on("click", function(event){
-    event.preventDefault;
+  $("#furnitureTable").on("click", ".salvageFurnitureButton", function(event){
+    event.preventDefault();
     var furnitureID = $(this).val();
     var companyID = this.dataset.company
     let _token   = $('meta[name="csrf-token"]').attr('content');
@@ -638,8 +728,9 @@ $(function(){
               company_id: companyID,
             },
             success: function(response) {
+              toastr.options.onHidden = function() { location.reload() }
               toastr[response.type](response.message);
-              setTimeout(function () { location.reload(); 5000});
+              //setTimeout(function () { location.reload(); 5000});
             },
             error: function(response){
               $.each(response.responseJSON.errors, function(key, value){
@@ -652,7 +743,7 @@ $(function(){
     
   });
 
-  $(".deleteFurnitureButton").on("click", function(event){
+  $("#furnitureTable").on("click", '.deleteFurnitureButton',function(event){
     event.preventDefault;
     var furnitureID = $(this).val();
     var companyID = this.dataset.company;
@@ -679,8 +770,9 @@ $(function(){
               company_id: companyID,
             },
             success: function(response) {
+              toastr.options.onHidden = function() { location.reload() }
               toastr[response.type](response.message);
-              setTimeout(function () { location.reload(); 5000});
+              //setTimeout(function () { location.reload(); 5000});
             },
             error: function(response){
               $.each(response.responseJSON.errors, function(key, value){
@@ -693,60 +785,182 @@ $(function(){
 
   });
 
+  $("#usersTable").on("click", ".changeStatus", function(event){
+    //event.preventDefault();
+    var userID = $(this).val();
+    console.log(userID);
+    let _token   = $('meta[name="csrf-token"]').attr('content');
+    let _url='users/'+userID+'/changeStatus'
+    Swal.fire({
+      title: 'Are You Sure?',
+      text: 'The user status will be changed!!!',
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Save!'
+    }).then((result) => {
+        if (result.value) {
+          $.ajax({
+            url:_url,
+            type: "PATCH",
+            cache: false,
+            data: {
+              _token: _token,
+              user_id: userID,
+            },
+            success: function(response) {
+              toastr.options.onHidden = function() { location.reload() }
+              toastr.success(response.message);
+              //toastr[response.type](response.message);
+              //setTimeout(function () { location.reload(); 5000});
+            },
+            error: function(response){
+              $.each(response.responseJSON.errors, function(key, value){
+                toastr.error(value)
+                //toastr["error"](value);
+              })
+            }
+          });
+        } 
+    });
+
+  });
+
+  $("#usersTable").on("click", ".userDelete", function(event){
+    //event.preventDefault();
+    var userID = $(this).val();
+    //console.log(userID);
+    let _token   = $('meta[name="csrf-token"]').attr('content');
+    let _url='users/'+userID
+    Swal.fire({
+      title: 'The user will be permanently deleted!!!',
+      text: 'If you are not sure please click on cancel',
+      type: "error",
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Delete!'
+    }).then((result) => {
+        if (result.value) {
+          $.ajax({
+            url:_url,
+            type: "DELETE",
+            cache: false,
+            data: {
+              _token: _token,
+              user_id: userID,
+            },
+            success: function(response) {
+              toastr.options.onHidden = function() { location.reload() }
+              toastr[response.type](response.message);
+              //toastr[response.type](response.message);
+              //setTimeout(function () { location.reload(); 5000});
+            },
+            error: function(response){
+              toastr.error(response.responseJSON.message)
+              /*
+              $.each(response.responseJSON.message, function(key, value){
+                toastr.error(value)
+                //toastr["error"](value);
+              })
+              */
+             //console.log(response)
+            }
+          });
+        } 
+    });
+
+  });
+
 });
 
 document.addEventListener("livewire:load", () => {
     Livewire.hook('message.processed', (message, component) => {
-      
-        $('#contactCountry').select2({
-          width: 'resolve'
-        });
+      $('#user-role').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
 
-        $('#contactCity').select2({
-          width: 'resolve'
-        });
-
-        $('#apart_building').select2({
-          width: 'resolve',
-        });
-
-        $('#apart_type').select2({
-          width: 'resolve',
-        });
-
-        $('#employeeGender').select2({
-          width: 'resolve',
-        });
-    
-        $('#employeeCountry').select2({
-          width: 'resolve',
-        });
-
-        $('#employee-city').select2({
-          width: 'resolve',
-        });
-
-        $('#employee-role').select2({
-          width: 'resolve',
-        });
-        $('#editEmployeeGender').select2({
-          width: 'resolve',
-        });
-
-        $('#furniture_list').select2({
-          width: 'resolve',
-        });
-
-        $('#furniture_companyBuildings').select2({
-          width: 'resolve',
-        });
-        $('#furniture_buildingApartments').select2({
-          width: 'resolve',
-        });
+      $('#legalform').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
         
-      }); 
-    }
+      $('#contactCountry').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+      $('#contactCity').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+      $('#apart_building').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+      $('#apart_type').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+      $('#employeeGender').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+  
+      $('#employeeCountry').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+      $('#employee-city').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+      $('#employee-role').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+      $('#editEmployeeGender').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+      $('#furniture_list').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+      $('#furniture_companyBuildings').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+      $('#furniture_buildingApartments').select2({
+        width: 'resolve',
+        theme: 'bootstrap4',
+      });
+        
+    }); 
+  }
 );
+
+  Livewire.on('alert', param => {
+    toastr[param['type']](param['message']);
+  });
+
+  Livewire.on('newUserSpeciaCreate', param => {
+    toastr.options.onHidden = function() { location.reload() }
+    toastr[param['type']](param['message']);
+  });
+
+window.addEventListener('closeUserModal', event => {
+  $("#modal-userform").modal('hide');
+});
+
+window.addEventListener('openModalProfile', event => {
+  $("#modal-profile").modal('show');
+});
+
+window.addEventListener('closeModalProfile', event => {
+  $("#modal-profile").modal('hide');
+});
 
 window.addEventListener('openContactModal', event => {
       //console.log(event);
@@ -793,11 +1007,6 @@ window.addEventListener('openContactModal', event => {
   
   window.addEventListener('closeBuildingModal', event => {
       $("#modal-building").modal('hide');
-    }
-  );
-
-  Livewire.on('alert', param => {
-      toastr[param['type']](param['message']);
     }
   );
 

@@ -14,6 +14,7 @@ namespace App\Http\Livewire\User;
 
 use App\Rules\CustomPasswordCheck;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -80,7 +81,46 @@ class ProfileForm extends Component
             ]
         );
     }
+    
+    /**
+     * Rules
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        $validatedFields = [
+            'name' => ['required','string','min:5','max:191'],
+        ];
 
+        if (strcmp($this->email, $this->old_email)!=0) {
+            if (Auth::id()==$this->user->id) {
+                $validatedFields = array_merge(
+                    $validatedFields, 
+                    [
+                        'email' => ['required','email:rfc,dns','max:255','unique:users'],
+                        'password' => [
+                            'required', 
+                            'string', 
+                            'min:6',
+                            new CustomPasswordCheck($this->hashed_password),
+    
+                        ],
+                    ]
+                );
+            } else {
+                $validatedFields = array_merge(
+                    $validatedFields, 
+                    [
+                        'email' => ['required','email:rfc,dns','max:255','unique:users'],
+                    ]
+                );
+            }
+            
+        }
+
+        return $validatedFields;
+    }
     /**
      * Fields validation
      * 
@@ -90,27 +130,7 @@ class ProfileForm extends Component
      */
     public function updated($propertyName)
     {
-        $validatedFields = [
-            'name' => ['required','string','min:5','max:191'],
-        ];
-
-        if (strcmp($this->email, $this->old_email)!=0) {
-            $validatedFields = array_merge(
-                $validatedFields, 
-                [
-                    'email' => ['required','email:rfc,dns','max:255','unique:users'],
-                    'password' => [
-                        'required', 
-                        'string', 
-                        'min:6',
-                        new CustomPasswordCheck($this->hashed_password),
-
-                    ],
-                ]
-            );
-        }
-
-        $this->validateOnly($propertyName, $validatedFields);
+        $this->validateOnly($propertyName);
     }
 
     /**
@@ -159,8 +179,11 @@ class ProfileForm extends Component
      */
     public function saveForm()
     {
+        $this->validate();
+
         $user = $this->user;
 
+        
         if (strcmp($this->name, $user->name)!=0) {
             $user->name = $this->name;
             
@@ -170,7 +193,7 @@ class ProfileForm extends Component
             $user->email = $this->email;
             $user->email_verified_at = null;
         }
-
+        
         if (strcmp($this->photo, $this->old_photo)) {
 
             if ($user->image) {

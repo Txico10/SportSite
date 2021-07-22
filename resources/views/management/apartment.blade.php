@@ -11,7 +11,10 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('company.buildings', ['id'=>$company->id])}}">Building</a></li>
+              @permission('company-read')
+              <li class="breadcrumb-item"><a href="{{route('company.profile', ['company'=>$company])}}">Company</a></li>
+              @endpermission
+              <li class="breadcrumb-item"><a href="{{route('company.buildings', ['company'=>$company])}}">Building</a></li>
               <li class="breadcrumb-item active">Apartments</li>
             </ol>
           </div><!-- /.col -->

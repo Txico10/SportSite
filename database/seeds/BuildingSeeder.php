@@ -1,8 +1,30 @@
 <?php
+/** 
+ * Building seeder
+ * 
+ * PHP version 7.4
+ * 
+ * @category MyCategory
+ * @package  MyPackage
+ * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
+ * @license  MIT treino.localhost
+ * @link     link()
+ * */
 
+use App\Models\Apartment;
 use App\Models\Building;
+use App\Models\Contact;
+use App\Models\RealState;
 use Illuminate\Database\Seeder;
-
+/**
+ *  Building seeder extend seeder
+ * 
+ * @category MyCategory
+ * @package  MyPackage
+ * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
+ * @license  MIT treino.localhost
+ * @link     link()
+ * */
 class BuildingSeeder extends Seeder
 {
     /**
@@ -12,13 +34,18 @@ class BuildingSeeder extends Seeder
      */
     public function run()
     {
-        $buildings = Building::all();
+        $real_states = RealState::all();
 
-        foreach ($buildings as $key => $building) {
-            $building->contact()->save(factory(App\Models\Contact::class)->make(['suite' => null]));
-            $building->apartments()->saveMany(
-                factory(App\Models\Apartment::class, 7)->make(),
+        foreach ($real_states as $real_state) {
+            
+            $real_state->buildings()->saveMany(
+                factory(Building::class, 4)->create(['real_state_id'=>$real_state->id])->each(
+                    function ($building) { 
+                        $building->contact()->save(factory(Contact::class)->make(['suite' => null]));
+                    }
+                )
             );
+
         }
     }
 }

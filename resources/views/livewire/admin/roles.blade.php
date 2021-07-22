@@ -76,7 +76,7 @@
 
 <!-- Modal Roles Info-->
 <div class="modal fade" id="modal-rolePerms">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
             <h4 class="modal-title">Role info</h4>

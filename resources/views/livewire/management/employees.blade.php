@@ -69,7 +69,7 @@
                     <span class="sr-only">Toggle Dropdown</span>
                   </button>
                   <div class="dropdown-menu" role="menu">
-                    <a class="dropdown-item" wire:click.prevent="$emit('editContact', {{$employee->contacts}})" href="javascript:void(0)">Update Contact</a>
+                    <a class="dropdown-item" wire:click.prevent="$emit('editContact', {{$employee->contact}})" href="javascript:void(0)">Update Contact</a>
                     <a class="dropdown-item" href="#">Reset Password</a>
                   </div>
                 </div>

@@ -11,7 +11,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('company.furnitures', ['id'=>$id])}}">Furnitures</a></li>
+              <li class="breadcrumb-item"><a href="{{route('company.furnitures', ['company'=>$company])}}">Furnitures</a></li>
               <li class="breadcrumb-item active">Furniture</li>
             </ol>
           </div><!-- /.col -->
@@ -23,11 +23,19 @@
   <div class="row">
     <div class="col-md-3">
       <div class="card">
-        <div class="card-header">
+        <div class="card-header bg-lightblue">
           <h3 class="card-title">
             <i class="fas fa-info-circle"></i>
             Description
           </h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <i class="fas fa-fw fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                <i class="fas fa-fw fa-times"></i>
+            </button>
+        </div>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -50,7 +58,7 @@
                 @if(empty($furnitureAssignement))
                   <x-adminlte-button class="btn-sm" type="button" label="Assign" theme="outline-success" icon="fas fa-lg fa-sign-in-alt" data-toggle="modal" data-target="#modal-furnitureAssignement"/>
                 @else
-                  <form action="{{route('company.furniture.withdraw', ['id'=>$id, 'furniture'=>$furniture, 'apartment'=>$furnitureAssignement->apartment_id])}}" method="post">
+                  <form action="{{route('company.furniture.withdraw', ['company'=>$company, 'furniture'=>$furniture, 'apartment'=>$furnitureAssignement->apartment_id])}}" method="post">
                     @csrf
                     <input type="hidden" name="assigned_at" value="{{$furnitureAssignement->assigned_at}}">
                     <x-adminlte-button class="btn-sm" type="submit" label="Widthdraw" theme="outline-danger" icon="fas fa-lg fa-sign-out-alt"/>
@@ -106,7 +114,7 @@
         ]
       @endphp
       <div class="card">
-        <div class="card-header">
+        <div class="card-header bg-lightblue">
           <h3 class="card-title">
             <i class="fas fa-chair"></i>
             Furniture history
@@ -121,7 +129,7 @@
     </div>
   </div>
   <x-modal title="Furniture Assignement" id="modal-furnitureAssignement" type="" icon="fas fa-sign-in-alt">
-    @livewire('management.furnitures-apartment-form', ['company_id'=>$id,'furniture'=>$furniture])
+    @livewire('management.furnitures-apartment-form', ['company'=>$company,'furniture'=>$furniture])
   </x-modal>
 @stop
 

@@ -44,14 +44,15 @@ class FurnituresApartmentForm extends Component
     /**
      * Mount furniture apartment form
      *
-     * @param mixed $company_id Company ID
-     * @param mixed $furniture  Furniture
+     * @param mixed $company   Company ID
+     * @param mixed $furniture Furniture
      * 
      * @return void
      */
-    public function mount($company_id, $furniture)
+    public function mount($company, $furniture)
     {
-        $this->company = RealState::findOrFail($company_id);
+        //dd($company);
+        $this->company = $company;
         $this->buildings = $this->company->buildings;
         $this->furniture = $furniture;
         

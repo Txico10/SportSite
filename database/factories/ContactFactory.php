@@ -36,7 +36,7 @@ $factory->define(
             'pc' => trim($faker->postcode),
             'telephone' => $faker->phoneNumber,
             'mobile'  => $faker->phoneNumber,
-            'email' =>$faker->companyEmail,
+            'email' =>$faker->email,
             'type' => 'primary',
         ];
     }

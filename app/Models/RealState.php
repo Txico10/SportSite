@@ -13,6 +13,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+
 /**
  *  Extended Laratrust Roles Classe
  * 
@@ -56,7 +58,7 @@ class RealState extends Model
     /**
      * Contact relationship
      * 
-     * @return morphOne relationship
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function contact()
     {
@@ -66,13 +68,13 @@ class RealState extends Model
     /**
      * Furnitures
      *
-     * @return void
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function furnitures()
     {
         return $this->hasMany(Furniture::class);
     }
-
+    
     /**
      * Searche for Real State/clients information
      * 
@@ -90,12 +92,27 @@ class RealState extends Model
     /**
      * Searche for Real State/clients information
      * 
-     * @return query
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function employees()
     {
         return $this->belongsToMany(Employee::class, EmployeeContract::class)
-            ->withPivot(['user_id', 'start_date', 'end_date', 'status'])
+            ->withPivot(['user_id', 'start_date', 'end_date', 'agreement' ,'status'])
             ->withTimestamps();
     }
+    
+    /**
+     * Users
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function users()
+    {
+        return $this->belongsToMany(User::class, EmployeeContract::class)
+            //->wherePivot('start_date', '<=', now())
+            ->wherePivotNull('end_date')
+            ->orWherePivot('end_date', '>=', now())
+            ->withTimestamps();
+    }
+    
 }

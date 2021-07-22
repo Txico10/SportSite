@@ -40,10 +40,10 @@
             <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fas fa-at"></i></span>
             </div>
-            <input type="email" id="email" class="form-control {{$errors->has("email") ? 'is-invalid' : (  strlen($email)>0 ? 'is-valid':'')}}" wire:model="email" placeholder="Enter email">
+            <input type="email" id="email" class="form-control {{$errors->has("email") ? 'is-invalid' : (  strlen($email)>0 ? 'is-valid':'')}}" wire:model.lazy="email" placeholder="Enter email">
         </div>
     </div>
-    @if($email !== auth()->user()->email)
+    @if($email !== $user->email)
     <div class="form-group">
         @error('password')
             <label class="text-danger">{{ $message }}</label>

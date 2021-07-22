@@ -13,6 +13,6 @@ $factory->define(Apartment::class, function (Faker $faker) {
     return [
         'apartment_type_id' => $faker->randomElement($apartmentType),
         'description' => $faker->paragraph(1),
-        'number'=> $faker->unique(true)->numberBetween(1, 7),
+        'number'=> $faker->numberBetween(1, 7),
     ];
 });

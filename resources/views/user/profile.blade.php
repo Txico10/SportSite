@@ -22,19 +22,11 @@
     <div class="row">
       <div class="col-md-3">
         <livewire:user.profile :user="$user"/>
-        @if ($user->contacts->count()>0)
-          @foreach ($user->contacts as $contact)
-            @if(strcmp($contact->type,'primary')==0)
-              <livewire:management.contact :contact="$contact" />
-            @endif
-          @endforeach
+        @if (!empty($user->contact))
+            <livewire:management.contact :contact="$user->contact" />
         @elseif($user->employees->count()>0)
           @foreach ($user->employees as $employee)
-            @foreach($employee->contacts as $contact)
-              @if(strcmp($contact->type,'primary')==0)
-                <livewire:management.contact :contact="$employee->contacts" />
-              @endif              
-            @endforeach
+            <livewire:management.contact :contact="$employee->contact" />
           @endforeach
         @else
           <p>Not available</p>
@@ -58,10 +50,10 @@
               <!-- /.tab-pane -->
               
               <div class="tab-pane" id="contact">
-                @if($user->contacts->count()>0)
-                  <livewire:management.contact-show :contacts="$user->contacts"/>  
+                @if(!empty($user->contact))
+                  <livewire:management.contact-show :contacts="$user->contact"/>  
                 @elseif($user->employees->count()>0)
-                  <livewire:management.contact-show :contacts="$user->employees[0]->contacts"/>  
+                  <livewire:management.contact-show :contacts="$user->employees[0]->contact"/>  
                 @else
                   <p>New Contact case</p>
                 @endif

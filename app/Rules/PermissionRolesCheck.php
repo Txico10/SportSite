@@ -25,22 +25,19 @@ use Illuminate\Contracts\Validation\Rule;
  * */
 class PermissionRolesCheck implements Rule
 {
-    public $roles;
-    public $allRoles;
+    public $role;
+    
+    
     /**
      * Create a new rule instance.
      *
-     * @param $roles list of roles
+     * @param $role User role
      * 
      * @return void
      */
-    public function __construct($roles)
+    public function __construct($role)
     {
-        $this->roles = $roles;
-        if ($this->roles) {
-            $this->allRoles = Role::all();
-        }
-        
+        $this->role = $role;
     }
 
     /**
@@ -53,18 +50,14 @@ class PermissionRolesCheck implements Rule
      */
     public function passes($attribute, $value)
     {
-        if ($this->roles) {
-            foreach ($this->roles as $key => $roleID) {
-                $role = $this->allRoles->find($roleID);
-                $permissions = $role->permissions;
-                foreach ($permissions as $permission) {
-                    for ($i=0; $i < count($value); $i++) {
-                        if ($permission->id == $value[$i]) {
-                            return false;
-                        }
-                    }
-                }
+        //dd($value);
+        if ($value->count()>0 && !empty($this->role)) {
+            $role = Role::where('id', $this->role)->first();
+            $validate = $role->permissions->whereIn('id', $value);
+            if (!empty($validate)) {
+                return false;
             }
+
         }
         return true;
     }
@@ -76,6 +69,6 @@ class PermissionRolesCheck implements Rule
      */
     public function message()
     {
-        return 'The :attribute already exists in Role.';
+        return 'The permission already exists in Role.';
     }
 }

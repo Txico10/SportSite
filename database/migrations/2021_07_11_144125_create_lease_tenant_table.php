@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProgramAccountsTable extends Migration
+class CreateLeaseTenantTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateProgramAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::create('program_accounts', function (Blueprint $table) {
+        Schema::create('lease_tenant', function (Blueprint $table) {
             $table->id();
-            $table->string('iprog', 2);
-            $table->string('numref', 4);
+            $table->foreignId('lease_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateProgramAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('program_accounts');
+        Schema::dropIfExists('lease_tenant');
     }
 }

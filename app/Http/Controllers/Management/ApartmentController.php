@@ -1,6 +1,6 @@
 <?php
 /** 
- * Laratrust Roles Component
+ * Apartment Controller
  * 
  * PHP version 7.4
  * 
@@ -18,7 +18,7 @@ use App\Models\Apartment;
 use App\Models\RealState;
 
 /**
- *  Extended Laratrust Roles Classe
+ *  Apartment controller extend Controller Classe
  * 
  * @category MyCategory
  * @package  MyPackage
@@ -31,28 +31,27 @@ class ApartmentController extends Controller
     /**
      * Display a listing of the resource.
      * 
-     * @param $id Company id
+     * @param RealState $company Company id
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index(RealState $company)
     {
-        $company = RealState::where('id', $id)->first();
         return view('management.apartment', compact('company'));
     }
     
     /**
      * Furniture List
      *
-     * @param int       $id        Company ID
+     * @param RealState $company   Company ID
      * @param Apartment $apartment Apartment
      * 
      * @return \Illuminate\Http\Response
      */
-    public function furnitureList(int $id, Apartment $apartment)
+    public function furnitureList(RealState $company, Apartment $apartment)
     {
         $apartment = $apartment->load('apartmentType', 'building', 'furnitures', 'furnitures.furnitureType');
         //dd($apartment);
-        return view('management.apartment-furniture', compact('id', 'apartment'));
+        return view('management.apartment-furniture', compact('company', 'apartment'));
     }
 }

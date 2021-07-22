@@ -322,17 +322,17 @@ return [
                 [
                     'type' => 'js',
                     'asset' => true,
-                    'location' => 'vendor/select2/js/select2.full.min.js',
+                    'location' => 'vendor/select2/js/select2.full.js',
                 ],
                 [
                     'type' => 'css',
                     'asset' => true,
-                    'location' => 'vendor/select2/css/select2.min.css',
+                    'location' => 'vendor/select2/css/select2.css',
                 ],
                 [
                     'type' => 'css',
                     'asset' => true,
-                    'location' => 'vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css',
+                    'location' => 'vendor/select2-bootstrap4-theme/select2-bootstrap4.css',
                 ],
             ],
         ],

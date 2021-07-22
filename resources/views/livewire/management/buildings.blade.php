@@ -85,7 +85,7 @@
             <td>
               @permission('building-update')
               <button class="btn btn-sm btn-outline-info" type="button" wire:click.prevent="$emit('editBuilding', {{$building}})"><i class="fas fa-pencil-alt"></i></button>
-              <button class="btn btn-sm btn-outline-secondary" type="button" wire:click.prevent="$emit('editContact', {{$building->contact->id}})"><i class="fas fa-map-marker-alt"></i></button>
+              <button class="btn btn-sm btn-outline-secondary" type="button" wire:click.prevent="$emit('editContact', {{$building->contact}})"><i class="fas fa-map-marker-alt"></i></button>
               @endpermission
               @permission('building-delete')
                 <button class="btn btn-sm btn-outline-danger" type="button"><i class="fas fa-trash-alt"></i></button>

@@ -1,6 +1,6 @@
 <?php
 /** 
- * Buildings controller
+ * Buildings Controller
  * 
  * PHP version 7.4
  * 
@@ -16,7 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RealState;
 use Illuminate\Http\Request;
 /**
- *  Extend controller Classe
+ *  Building controller Extend controller Classe
  * 
  * @category MyCategory
  * @package  MyPackage
@@ -29,13 +29,12 @@ class BuildingController extends Controller
     /**
      * Display a listing of the resource.
      * 
-     * @param $id Company id
+     * @param RealState $company Company id
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index(RealState $company)
     {
-        $company = RealState::where('id', $id)->first();
         
         return view('management.building', compact('company'));
     }

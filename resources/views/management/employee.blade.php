@@ -10,6 +10,9 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
+              @permission('company-read')
+              <li class="breadcrumb-item"><a href="{{route('company.profile', ['company'=>$company])}}">Company</a></li>
+              @endpermission
               <li class="breadcrumb-item active">Employees</li>
             </ol>
           </div><!-- /.col -->

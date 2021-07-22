@@ -22,5 +22,5 @@
     <!-- /.card-body -->
     <x-modal title="Company" id="modal-company" type="" icon="fas fa-university">
       <livewire:management.company-form :company="$company" />
-  </x-modal>
+    </x-modal>
 </div>

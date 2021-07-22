@@ -1,9 +1,18 @@
-<div class="card card-primary">
+<div class="card card-lightblue">
     <div class="card-header">
-        <h3 class="card-title">My Contacts</h3>
+        <h3 class="card-title">
+            <button type="button" class="btn btn-tool" wire:click="$emit('editContact', {{$contact}})">
+                <i class="fas fa-fw fa-edit"></i>
+            </button>
+            Contact
+        </h3>
         <div class="card-tools">
-        <button type="button" class="btn btn-tool" wire:click="$emit('editContact', {{$contact}})">
-            <i class="fas fa-edit"></i></button>
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <i class="fas fa-fw fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                <i class="fas fa-fw fa-times"></i>
+            </button>
         </div>
     </div>
     <!-- /.card-header -->

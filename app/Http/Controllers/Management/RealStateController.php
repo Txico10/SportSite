@@ -1,6 +1,6 @@
 <?php
 /** 
- * Laratrust Roles Component
+ * Company Controller
  * 
  * PHP version 7.4
  * 
@@ -15,7 +15,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RealState;
 use Illuminate\Http\Request;
 /**
- *  Extended Laratrust Roles Classe
+ *  Company controller extends Controller Classe
  * 
  * @category MyCategory
  * @package  MyPackage
@@ -38,14 +38,12 @@ class RealStateController extends Controller
     /**
      * Display Real estate profile.
      *
-     * @param $id company id
+     * @param RealState $company company id
      * 
      * @return \Illuminate\Http\Response
      */
-    public function profile($id)
+    public function profile(RealState $company)
     {
-        $company = RealState::findOrFail($id);
-
         return view('management.realstate', compact('company'));
     }
 }

@@ -11,6 +11,9 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
+              @permission('company-read')
+              <li class="breadcrumb-item"><a href="{{route('company.profile', ['company'=>$company])}}">Company</a></li>
+              @endpermission
               <li class="breadcrumb-item active">Furnitures</li>
             </ol>
           </div><!-- /.col -->
@@ -34,7 +37,7 @@
   $data = array();
   $btn = null;
   foreach ($furnitures as $key => $furniture) {
-    $btn = '<a class="btn btn-outline-primary btn-sm mx-1 shadow" type="button" title="Furniture info" href="'.route('company.furnitures.show', ['id'=>$company->id, 'furniture'=>$furniture]).'"><i class="fas fa-info-circle fa-fw"></i></a>';
+    $btn = '<a class="btn btn-outline-primary btn-sm mx-1 shadow" type="button" title="More details" href="'.route('company.furnitures.show', ['company'=>$company, 'furniture'=>$furniture]).'"><i class="fas fa-info-circle fa-fw"></i></a>';
     
     if(empty($furniture->salvage_at)) {
       $active="Active";

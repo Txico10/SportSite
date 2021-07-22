@@ -66,8 +66,13 @@ class LoginController extends Controller
                     $this->username() => $message,
                     ]
                 );
-        } 
+        }
 
+        $user->logins()->create(
+            [
+                'ip_address' => $request->getClientIp(),
+            ]
+        );
 
     }
 }

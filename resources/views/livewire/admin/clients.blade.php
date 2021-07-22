@@ -42,7 +42,7 @@
             12,000 Sold
           </td>
           <td>
-            <a href="{{route('company.profile', $client->id)}}" class="text-muted">
+            <a href="{{route('company.profile', $client)}}" class="text-muted">
               <i class="fas fa-search"></i>
             </a>
           </td>

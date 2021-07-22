@@ -48,7 +48,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fas fa-file-contract"></i></span>
             </div>
-            <select name="legalform" id="legalform" wire:model="legalform" data-placeholder="Enter Legal form" style="width: 92%">
+            <select name="legalform" id="legalform" wire:model="legalform" data-placeholder="Enter Legal form" data-allow-clear="true" style="width: 92%">
                 <option value=""></option>
                 <option value="Sole proprietorship">Sole proprietorship</option>
                 <option value="Business corporation">Business corporation</option>

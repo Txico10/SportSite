@@ -10,7 +10,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{route('company.employees', ['id'=>$company->id])}}">Employees</a></li>
+              <li class="breadcrumb-item"><a href="{{route('company.employees', ['company'=>$company])}}">Employees</a></li>
               <li class="breadcrumb-item active">Create</li>
             </ol>
           </div><!-- /.col -->
@@ -20,8 +20,14 @@
 
 @section('content')
 <div class="row">
-  <div class="col-md-8 mx-auto">
+  <div class="col-md-3">
+
+  </div>
+  <div class="col-md-6 mx-auto">
     <livewire:management.employees-form :company="$company"/>
+  </div>
+  <div class="col-md-3">
+
   </div>
 </div>
 @stop

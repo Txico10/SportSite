@@ -25,7 +25,8 @@ use Illuminate\Database\Eloquent\Model;
 class Contact extends Model
 {
     protected $fillable = [
-        'suite','num','street','city','region','country','pc','telephone','mobile', 'name', 'type', 'relationship', 'email',
+        'suite','num','street','city','region','country','pc','telephone',
+        'mobile', 'name', 'type', 'relationship', 'email',
     ];
     
     /**

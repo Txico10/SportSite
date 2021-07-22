@@ -1,4 +1,4 @@
-<form wire:submit.prevent="saveForm" id="userform">      
+<form wire:submit.prevent="saveUserForm" id="userform">
     <div class="form-group">
         @error('name')
             <label for="name" class="text-danger">{{ $message }}</label>
@@ -8,9 +8,6 @@
                 <span class="input-group-text"><i class="fas fa-user"></i></span>
             </div>
             <input type="text" id="name" class="form-control {{$errors->has("name") ? 'is-invalid' : (  strlen($name)>0 ? 'is-valid':'')}}" wire:model.lazy="name" placeholder="Enter name">
-            @if(strcmp($submit_btn_title,"Update")==0)
-                <input type="hidden" wire:model="user_id" >
-            @endif
         </div>
     </div>
     <div class="form-group">
@@ -47,33 +44,14 @@
         </div>
     </div>
     <div class="form-group">
-        @error('roles')
+        @error('role')
             <label class="text-danger">{{ $message }}</label>
         @enderror
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fas fa-users-cog"></i></span>
             </div>
-            <select class="form-control" id="select2Role"  multiple="multiple" style="width: 90%" data-placeholder = "Select Roles">
-                @foreach($allRoles as $key => $role)
-                    <option value="{{$role->id}}">{{$role->display_name}}</option>    1
-                @endforeach
-            </select>
-        </div>
-    </div>
-    <div class="form-group">
-        @error('permissions')
-            <label class="text-danger">{{ $message }}</label>
-        @enderror
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-cogs"></i></span>
-            </div>
-            <select class="form-control" id="select2Permission"  multiple="multiple" style="width: 90%" data-placeholder = "Select Permissions">
-                @foreach($allPermissions as $key => $permission)
-                    <option value="{{$permission->id}}">{{$permission->display_name}}</option>    1
-                @endforeach
-            </select>
+            <input type="text" id="role" class="form-control {{$errors->has("role") ? 'is-invalid' : (  strlen($role)>0 ? 'is-valid':'')}}" value="{{$role->display_name}}" disabled>
         </div>
     </div>
     <div class="form-group">

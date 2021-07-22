@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Apartment;
+use App\Models\Building;
 use Illuminate\Database\Seeder;
 
 class ApartmentSeeder extends Seeder
@@ -12,6 +13,11 @@ class ApartmentSeeder extends Seeder
      */
     public function run()
     {
-        //code
+        $buildings = Building::all();
+        foreach ($buildings as $building) {
+            $building->apartments()->saveMany(
+                factory(Apartment::class, 7)->make()
+            );
+        }
     }
 }
