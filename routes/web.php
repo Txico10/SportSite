@@ -61,6 +61,12 @@ Route::post('admin/users/{id}/permissions', 'User\UserController@getPermissions'
 Route::post('admin/users/{id}/roles', 'User\UserController@getRoles')
     ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
     ->name('users.roles.list');
+Route::post('admin/users/{id}/fillroleprofiles', 'User\UserController@fillRolesProfiles')
+    ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
+    ->name('users.rolesprofiles.fill');
+Route::patch('admin/users/{id}/update-roles-permissions', 'User\UserController@updateRolesPermissions')
+    ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
+    ->name('users.rolesprofiles.update');
 
 Route::get('/users/{user:id}/profile', 'User\UserController@profile')
     ->middleware(['auth', 'verified'])->name('user.profile');

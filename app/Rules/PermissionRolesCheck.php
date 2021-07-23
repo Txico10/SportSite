@@ -25,19 +25,19 @@ use Illuminate\Contracts\Validation\Rule;
  * */
 class PermissionRolesCheck implements Rule
 {
-    public $role;
+    public $roles;
     
     
     /**
      * Create a new rule instance.
      *
-     * @param $role User role
+     * @param $roles User role
      * 
      * @return void
      */
-    public function __construct($role)
+    public function __construct($roles)
     {
-        $this->role = $role;
+        $this->roles = $roles;
     }
 
     /**
@@ -50,15 +50,16 @@ class PermissionRolesCheck implements Rule
      */
     public function passes($attribute, $value)
     {
-        //dd($value);
-        if ($value->count()>0 && !empty($this->role)) {
-            $role = Role::where('id', $this->role)->first();
-            $validate = $role->permissions->whereIn('id', $value);
-            if (!empty($validate)) {
-                return false;
+        if (!empty($value) && !empty($this->roles)) {
+            foreach ($this->roles as $key => $myrole) {
+                $role = Role::findOrFail($myrole);
+                $validation = $role->permissions->whereIn('id', $value);
+                if (count($validation)>0) {
+                    return false;
+                }
             }
-
         }
+
         return true;
     }
 

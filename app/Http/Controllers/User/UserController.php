@@ -21,7 +21,7 @@ use App\Models\Employee;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Team;
-use Illuminate\Cache\RateLimiting\Limit;
+use App\Rules\PermissionRolesCheck;
 use Illuminate\Support\Facades\DB;
 use Laratrust\LaratrustFacade;
 
@@ -47,11 +47,7 @@ class UserController extends Controller
      */
     public function index(Request $request) 
     {
-        //$userPermissions = User::find(25)->permissions;
-        //$myPermission=Permission::find(33);
-        //$test = $myPermission->whereIn('id', $userPermissions);
-        //dd($userPermissions);
-
+        
         if (LaratrustFacade::hasRole('administrator')) {
             
             $users= User::select(['users.*', 'roles.display_name AS role_name', 'teams.display_name AS team_name'])
@@ -186,10 +182,12 @@ class UserController extends Controller
 
             if ($search == '') {
                 $roles = Role::select('id', 'display_name')
+                    ->where('id', '<>', 1)
                     ->limit(5)
                     ->get();
             } else {
                 $roles = Role::select('id', 'display_name')
+                    ->where('id', '<>', 1)
                     ->where('display_name', 'like', '%'.$search.'%')
                     ->limit(10)
                     ->get();
@@ -240,12 +238,12 @@ class UserController extends Controller
 
             if ($search == '') {
                 $permissions = Permission::select('id', 'display_name')
-                    ->limit(10)
+                    ->limit(8)
                     ->get();
             } else {
                 $permissions = Permission::select('id', 'display_name')
                     ->where('display_name', 'like', '%'.$search.'%')
-                    ->limit(10)
+                    ->limit(8)
                     ->get();
             }
 
@@ -256,24 +254,135 @@ class UserController extends Controller
                     'id' => $permission->id,
                     'text' => $permission->display_name,
                 );
-                /*
-                if ($userPermissions->contains('name', $permission->name)) {
-                    $response[] = array(
-                        'id' => $permission->id,
-                        'text' => $permission->display_name,
-                        'selected' => true
-                    );
-                } else {
-                    
-                }
-                */
             }
             
             return response()->json($response, 200);
         }
         return null;
     }
+        
+    /**
+     * Fill User Roles and Profiles
+     *
+     * @param Request $request Request
+     * @param int     $id      User ID
+     * 
+     * @return Response json
+     */
+    public function fillRolesProfiles(Request $request, int $id)
+    {
+        if ($request->ajax()) {
+            $request->validate(
+                [
+                    'team_id' => 'required|numeric|exists:teams,id',
+                    'user_id' => 'required|numeric|exists:users,id'
+                ]
+            );
+            $myteam_id = $request->team_id;
+
+            $myuser = User::findOrFail($request->user_id);
+            $myteam = Team::findOrFail($myteam_id);
+
+            $myroles = $myuser->roles->filter(
+                function ($value, $key) use ($myteam_id) {
+                    if ($value->pivot->team_id == $myteam_id) {
+                        return $value;
+                    }
+                }
+            );
+
+            $mypermissions = $myuser->permissions->filter(
+                function ($value, $key) use ($myteam_id) {
+                    if ($value->pivot->team_id == $myteam_id) {
+                        return $value;
+                    }
+                }
+            );
+
+            $roles = array();
+            foreach ($myroles as $myrole) {
+                $roles[] = array(
+                    'id' => $myrole->id,
+                    'text' => $myrole->display_name,
+                    'selected' => true
+                );
+            }
+
+            $permissions = array();
+            foreach ($mypermissions as $mypermission) {
+                $permissions[] = array(
+                    'id' => $mypermission->id,
+                    'text' => $mypermission->display_name,
+                    'selected' => true
+                );
+            }
+
+            $team = array(
+                'id' => $myteam->id,
+                'name' => $myteam->display_name,
+            );
+
+            $user = array(
+                'id' => $myuser->id,
+                'name' => $myuser->name,
+            );
+
+
+
+            return response()->json(['type'=>'success', 'user'=>$user ,'team'=>$team, 'roles'=> $roles, 'permissions'=> $permissions], 200);
+        }
+        return null;
+    }
     
+    /**
+     * Update Roles and Permissions
+     *
+     * @param Request $request Request
+     * @param int     $id      User ID
+     * 
+     * @return void
+     */
+    public function updateRolesPermissions(Request $request, int $id)
+    {
+        if ($request->ajax()) {
+            
+            $request->validate(
+                [
+                    'user_id'=>['required','numeric','exists:users,id'],
+                    'team_id'=>['required','numeric','exists:teams,id'],
+                    'roles'=>['required','array','min:1','exists:roles,id'],
+                    'permissions'=>[
+                            'sometimes','array', 'min:1', 'exists:permissions,id',
+                            new PermissionRolesCheck($request->roles)
+                        ]
+                ]
+            );
+            
+            $user = User::find($request->user_id);
+            $user->syncRoles($request->roles, $request->team_id);
+
+            $mypermissions = $user->permissions;
+            
+            if (empty($request->permissions)) {    
+                if ($mypermissions->count()>0) {
+                    $user->detachPermissions($mypermissions, $request->team_id);
+                }
+            } else {
+                if ($mypermissions->count()>0) {
+                    $user->syncPermissions($request->permissions, $request->team_id);
+                } else {
+                    $user->attachPermissions($request->permissions, $request->team_id);
+                }
+
+            }
+            
+            $msg="Roles and permissions updated successfuly!!!";
+
+            return response()->json(["type"=>"success", "message"=>$msg]);
+        }
+        return null;
+    }
+
     /**
      * Destroy
      *

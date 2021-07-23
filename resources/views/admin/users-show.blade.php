@@ -76,7 +76,7 @@
                                 <h5 class="card-title">{{$team->display_name}}</h5>
                                 @if(Auth::id()!=$user->id && $user->status!=0 && $user->active_company!=null)
                                 <div class="card-tools">
-                                    <button class="btn btn-tool" id="userRolesPermissionsButton" value="{{$team->display_name}}">
+                                    <button class="btn btn-tool" id="userRolesPermissionsButton" data-user="{{$user->id}}" value="{{$team->id}}">
                                         <i class="fas fa-pen"></i>
                                     </button>
                                 </div>
@@ -119,16 +119,15 @@
                   'End date',
                   'Action'
                 ];
+                
                 $data = array();
 
-                //dd($companies);
                 foreach ($user->employees as $key=>$employee) {
                     $btn = '<a class="btn btn-outline-primary btn-sm mx-1 shadow" type="button" title="Agreement details" href="#"><i class="fas fa-info-circle fa-fw"></i></a>';
                     $mydata = [$key+1, $employee->pivot->myCompany->name, $employee->pivot->status==="FT"?"Full time":"Partial time", \Carbon\Carbon::parse($employee->pivot->start_date)->format('d F Y'), !empty($employee->pivot->end_date)?\Carbon\Carbon::parse($employee->pivot->end_date)->format('d F Y'):'', '<nobr>'.$btn.'</nobr>'];
-                    array_push($data, $mydata);
+                    $data[] = $mydata;
                 }
 
-                //dd($data);
                 $config = [
                   'data'=>$data,
                   'responsive'=> true,

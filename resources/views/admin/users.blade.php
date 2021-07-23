@@ -52,7 +52,7 @@
     }
 
     $mydata = [++$count, $user->name, $user->email, '<span class="badge bg-success">'.ucfirst($user->role_name).'</span>', $user->team_name ?? '', empty($user->last_login_at)? 'Never' :\Carbon\Carbon::parse($user->last_login_at)->format('d F Y \a\t H:i') ?? 'Never loged in', '<nobr>'.$btn.'</nobr>'];
-    array_push($data, $mydata);
+    $data[] = $mydata;
     
   }
   

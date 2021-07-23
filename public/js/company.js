@@ -25,6 +25,7 @@ $(function(){
   $('#user-permissions-form').select2({
     width: 'resolve',
     theme: 'bootstrap4',
+    placeholder: 'Select permissions',
     ajax : {
       type: 'POST',
       dataType: 'json',
@@ -655,7 +656,102 @@ $(function(){
   });
   
   $("#userRolesPermissionsButton").on('click', function (event) {
-    $('#myteam').val($(this).val())
+    
+    var userID = this.dataset.user;
+    let _token   = $('meta[name="csrf-token"]').attr('content');
+    let _url='/admin/users/'+userID+'/fillroleprofiles';
+    
+    $.ajax({
+      url:_url,
+      type: "POST",
+      cache: false,
+      data: {
+        _token: _token,
+        team_id: $(this).val(),
+        user_id: userID,
+      },
+      success: function(response) {
+        
+        $("#myteamID").val(response.team.id)
+        $("#myteamID").attr('data-user', response.user.id)
+        $("#myteam").val(response.team.name)
+
+        $.each(response.roles, function (key, value) {
+          //console.log(value)
+          // Set the value, creating a new option if necessary
+          if ($('#user-role-form').find("option[value='" + value.id + "']").length) {
+            $('#user-role-form').val(value.id).trigger('change');
+          } else { 
+            // Create a DOM Option and pre-select by default
+            var newOption = new Option(value.text, value.id, value.selected, true);
+            // Append it to the select
+            $('#user-role-form').append(newOption).trigger('change');
+          } 
+        });
+
+        $.each(response.permissions, function (key, value) {
+          //console.log(value)
+          // Set the value, creating a new option if necessary
+          if ($('#user-permissions-form').find("option[value='" + value.id + "']").length) {
+            $('#user-permissions-form').val(value.id).trigger('change');
+          } else { 
+            // Create a DOM Option and pre-select by default
+            var newOption = new Option(value.text, value.id, value.selected, true);
+            // Append it to the select
+            $('#user-permissions-form').append(newOption).trigger('change');
+          } 
+        });
+        
+      },
+      error: function(response){
+        console.log(response);
+        //$.each(response.responseJSON.errors, function(key, value){
+        //  toastr["error"](value);
+        //})
+      }
+    });
+    
+    $("#user-role-permissions-form").submit(function(event){
+      event.preventDefault();
+      
+      var userID = $("#myteamID").data('user');
+      //var roles = $("#user-role-form").val()
+      //var permissions = $("#user-permissions-form").val()
+      let _token   = $('meta[name="csrf-token"]').attr('content');
+      let _url='/admin/users/'+userID+'/update-roles-permissions'
+      //console.log(roles)
+      //console.log(permissions)
+      var formData = {
+        _token: _token,
+        user_id: userID,
+        team_id: $("#myteamID").val(),
+        roles: $("#user-role-form").val(),
+        permissions: $("#user-permissions-form").val()
+      }
+      //console.log(formData)
+      $.ajax({
+        url:_url,
+        type: "PATCH",
+        dataType: "json",
+        cache: false,
+        data: formData,
+        success: function(response) {
+          $("#modal-user-roles-permissions").modal('hide');
+          toastr.options.onHidden = function() { location.reload() }
+          toastr[response.type](response.message);
+          //setTimeout(function () { location.reload(); 5000});
+        },
+        error: function(response, textStatus){
+          //console.log(jqXHR)
+          //console.log(textStatus)
+          $.each(response.responseJSON.errors, function(key, value){
+            toastr[textStatus](value);
+          })
+        }
+      });
+      
+    });
+
     $("#modal-user-roles-permissions").modal('show');
   })
 
