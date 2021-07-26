@@ -15,6 +15,7 @@ class CreateApartmentTypesTable extends Migration
     {
         Schema::create('apartment_types', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('real_state_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('tag');
             $table->string('description')->nullable();

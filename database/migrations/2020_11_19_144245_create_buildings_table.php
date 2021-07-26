@@ -15,9 +15,9 @@ class CreateBuildingsTable extends Migration
     {
         Schema::create('buildings', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('real_state_id')->constrained();
             $table->string('lot');
             $table->string('alias')->nullable();
-            $table->foreignId('real_state_id')->constrained();
             $table->text('description')->nullable();
             $table->timestamps();
         });

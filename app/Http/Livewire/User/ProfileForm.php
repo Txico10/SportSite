@@ -13,7 +13,7 @@
 namespace App\Http\Livewire\User;
 
 use App\Rules\CustomPasswordCheck;
-use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -230,7 +230,8 @@ class ProfileForm extends Component
             }
 
             if (strcmp($user->email, $email)!=0) {
-                $user->sendEmailVerificationNotification();
+                event(new Registered($user));
+                
             }
 
             $message = "Profile updated successfully";

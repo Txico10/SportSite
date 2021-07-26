@@ -29,16 +29,26 @@ class ApartmentType extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'tag' ,'description'];
+    protected $fillable = ['real_state_id','name', 'tag' ,'description'];
     
     /**
      * Apartments
      *
-     * @return hasMany relationship
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function apartments()
     {
         return $this->hasMany(Apartment::class);
+    }
+    
+    /**
+     * Company of apartment settings 
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function company()
+    {
+        return $this->belongsTo(RealState::class);
     }
     
     /**

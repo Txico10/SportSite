@@ -43,6 +43,11 @@ $(function(){
     }
   });
   
+  $('#furniture_type').select2({
+    width: 'resolve',
+    theme: 'bootstrap4',
+  });
+
   $('#legalform').select2({
     width: 'resolve',
     theme: 'bootstrap4',
@@ -754,6 +759,82 @@ $(function(){
 
     $("#modal-user-roles-permissions").modal('show');
   })
+
+  $(".editApartmentTypeButton").on("click", function(event){
+    event.preventDefault();
+    var apartment_type_id = $(this).val();
+    var company_id = this.dataset.company
+    let _token   = $('meta[name="csrf-token"]').attr('content');
+    let _url='/company/'+company_id+'/apartments-setting/'+apartment_type_id+'/edit';
+    $.ajax({
+      url:_url,
+      type: "POST",
+      dataType: "json",
+      cache: false,
+      data:{
+        _token: _token,
+        company_id: company_id,
+        apartment_type_id:apartment_type_id 
+      },
+      success: function(response) {
+        //console.log(response.apartment_type)
+        $("#apart_type_id").val(response.apartment_type.id)
+        $("#name").val(response.apartment_type.name)
+        $("#tag").val(response.apartment_type.tag)
+        $("#description").val(response.apartment_type.description)
+        //toastr.options.onHidden = function() { location.reload() }
+        //toastr[response.type](response.message);
+        //setTimeout(function () { location.reload(); 5000});
+      },
+      error: function(response, textStatus){
+        $.each(response.responseJSON.errors, function(key, value){
+          toastr[textStatus](value);
+        })
+      }
+    });
+    //console.log(apartment_type_id)
+  });
+
+  $(".deleteApartmentTypeButton").on("click", function(event){
+    event.preventDefault();
+    var apartment_type_id = $(this).val();
+    var company_id = this.dataset.company
+    let _token   = $('meta[name="csrf-token"]').attr('content');
+    let _url='/company/'+company_id+'/apartments-setting/'+apartment_type_id;
+    Swal.fire({
+      title: 'The apartment type will be deleted!',
+      text: 'Are You Sure?',
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Delete!'
+    }).then((result) => {
+		//if user clicks on delete
+        if (result.value) {
+          $.ajax({
+            url:_url,
+            type: "DELETE",
+            dataType: "json",
+            cache: false,
+            data:{
+              _token: _token,
+              apartment_type_id:apartment_type_id 
+            },
+            success: function(response) {
+              toastr.options.onHidden = function() { location.reload() }
+              toastr[response.type](response.message);
+              //setTimeout(function () { location.reload(); 5000});
+            },
+            error: function(response, textStatus){
+              $.each(response.responseJSON.errors, function(key, value){
+                toastr[textStatus](value);
+              })
+            }
+          });
+        } 
+    });
+  });
 
   $("#showpasswd").on("click", function (event) {
     event.preventDefault();

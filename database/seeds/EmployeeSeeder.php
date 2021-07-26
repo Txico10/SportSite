@@ -42,11 +42,11 @@ class EmployeeSeeder extends Seeder
 
         foreach ($real_estates as $real_estate) {
             
-            $team = Team::where('name', $real_estate->id)->first();
+            //$team = Team::where('name', $real_estate->id)->first();
             
 
             factory(Employee::class, 5)->create()->each(
-                function ($employee, $key) use ($real_estate, $team, $roles) {
+                function ($employee, $key) use ($real_estate, $roles) {
                     
                     $employee->contact()->save(factory(Contact::class)->make());
 
@@ -68,7 +68,7 @@ class EmployeeSeeder extends Seeder
                         ]
                     );
                     
-                    $user->attachRole($role, $team);
+                    $user->attachRole($role, $real_estate->id);
 
                     $real_estate->employees()->attach(
                         $employee->id,

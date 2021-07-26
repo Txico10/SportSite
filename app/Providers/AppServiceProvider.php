@@ -111,13 +111,13 @@ class AppServiceProvider extends ServiceProvider
                             'role',
                             [
                                 'key' => 'configurations',
-                                'text' => 'Configurations',
+                                'text' => 'Settings',
                                 'icon' => 'fas fa-fw fa-cogs',
                                 'permission' => 'confugurationMenu-read',
                                 'submenu' => [
                                     [
                                         'key' => 'apartmentType',
-                                        'text' => 'Apartments Types',
+                                        'text' => 'Apartments',
                                         'route'  => ['company.apartment-setting', ['company' => $company]],
                                         'icon' => 'fas fa-fw fa-home',
                                     ],

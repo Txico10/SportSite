@@ -13,6 +13,8 @@
 namespace App\Http\Controllers\Management;
 
 use App\Http\Controllers\Controller;
+use App\Models\ApartmentType;
+use App\Models\RealState;
 use Illuminate\Http\Request;
 /**
  *  Apartment Type controller main Class
@@ -27,12 +29,16 @@ class ApartmentTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * 
+     * @param RealState $company Company
      *
      * @return View
      */
-    public function index()
+    public function index(RealState $company)
     {
-        return view('admin.apartments-type');
+        $company = $company->load('apartmentTypes.apartments');
+
+        return view('admin.apartments-type', compact('company'));
     }
 
     /**
@@ -49,12 +55,32 @@ class ApartmentTypeController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request Request
+     * @param RealState                $company Company
      * 
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, RealState $company)
     {
-        //
+
+        
+        $validatedData = $request->validate( 
+            [
+                'real_state_id' => ['required', 'numeric', 'exists:real_states,id'],
+                'name'=>['required', 'string','min:6','max:32','regex:/^[a-z ,.\'-]+$/i'],
+                'tag'=>['required'],
+                'description'=>['nullable', 'string', 'min:3', 'max:191']
+            ]
+        );
+        //dd($request);
+        $apartmentType = ApartmentType::updateOrCreate(
+            ['tag'=> $validatedData['tag'], 'real_state_id' => $validatedData['real_state_id']],
+            [
+                'name' => $validatedData['name'],
+                'description' => $validatedData['description']
+            ]
+        );
+
+        return redirect()->route('company.apartment-setting', ['company'=>$company])->with('success', 'Apartment type created succesfully');
     }
 
     /**
@@ -72,13 +98,29 @@ class ApartmentTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id ID
+     * @param \Illuminate\Http\Request $request     Request
+     * @param int                      $id          ID
+     * @param int                      $apartTypeId Apart Type ID
      * 
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, int $id, int $apartTypeId)
     {
-        //
+        if ($request->ajax()) {
+            
+            $request->validate(
+                [
+                    'company_id'=>['required', 'numeric', 'exists:real_states,id'],
+                    'apartment_type_id'=>['required', 'numeric', 'exists:apartment_types,id']
+                ]
+            );
+
+            $apartmentType = ApartmentType::find($request->apartment_type_id);
+
+            return response()->json(['type'=>"success", 'apartment_type'=>$apartmentType], 200);
+        }
+        return null;
+        
     }
 
     /**
@@ -97,12 +139,23 @@ class ApartmentTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id ID
+     * @param \Illuminate\Http\Request $request Request
+     * @param int                      $id      ID
      * 
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, int $id)
     {
-        //
+        if ($request->ajax()) {
+            $request->validate(
+                [
+                    'apartment_type_id'=> ['required', 'numeric', 'exists:apartment_types,id']
+                ]
+            );
+            
+            ApartmentType::destroy($request->apartment_type_id);
+
+            return response()->json(['type'=>"success", 'message'=>"Deleted successfully"], 200);
+        }
     }
 }

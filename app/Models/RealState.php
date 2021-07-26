@@ -38,7 +38,7 @@ class RealState extends Model
     /**
      * Buildings relationship
      * 
-     * @return hasMany relationship
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function buildings()
     {
@@ -48,13 +48,22 @@ class RealState extends Model
     /**
      * Apartments relationship
      * 
-     * @return void
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function apartments()
     {
         return $this->hasManyThrough(Apartment::class, Building::class);
     }
-
+    
+    /**
+     * Apartment Types
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function apartmentTypes()
+    {
+        return $this->hasMany(ApartmentType::class);
+    }
     /**
      * Contact relationship
      * 
@@ -64,7 +73,16 @@ class RealState extends Model
     {
         return $this->morphOne(Contact::class, 'contactable');
     }
-    
+        
+    /**
+     * Furniture Types
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function furnitureTypes()
+    {
+        return $this->hasMany(FurnitureType::class);
+    }
     /**
      * Furnitures
      *
@@ -72,7 +90,7 @@ class RealState extends Model
      */
     public function furnitures()
     {
-        return $this->hasMany(Furniture::class);
+        return $this->hasManyThrough(Furniture::class, FurnitureType::class);
     }
     
     /**

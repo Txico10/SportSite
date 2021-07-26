@@ -31,10 +31,20 @@ class FurnitureType extends Model
     /**
      * Furniture
      *
-     * @return void
+     * @return Illuminate\Database\Eloquent\Model
      */
-    public function furniture()
+    public function furnitures()
     {
         return $this->hasMany(Furniture::class);
+    }
+    
+    /**
+     * Company
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function company()
+    {
+        return $this->belongsTo(RealState::class);
     }
 }

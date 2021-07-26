@@ -11,7 +11,9 @@
  * @link     link()
  * */
 
+use App\Models\ApartmentType;
 use App\Models\Contact;
+use App\Models\FurnitureType;
 use App\Models\RealState;
 use App\Models\Team;
 
@@ -47,6 +49,47 @@ class RealStateSeeder extends Seeder
 
                     $real_state->contact()->save(factory(Contact::class)->make());
                     
+                    $apartmentsType = [
+                        '1 1/2'=>'Un et demi', 
+                        '2 1/2'=>'Deux et demi', 
+                        '3 1/2'=>'Trois et demi',
+                        '4 1/2'=>'Quatre et demi',
+                        '5 1/2'=>'Cinque et demi',
+                    ];
+
+                    foreach ($apartmentsType as $tag => $name) {
+                        $real_state->apartmentTypes()->save(
+                            factory(ApartmentType::class)->make(
+                                [
+                                    'tag'=> $tag,
+                                    'name'=>$name,
+                                ]
+                            )
+                        );
+                        $this->command->info('Apartment type '.$tag.' created.');
+                    }
+
+                    $furnituresType = [
+                        'refrigerator',
+                        'freezer',
+                        'oven',
+                        'microwave',
+                        'washing machine',
+                        'dryer',
+                        'dishwasher'
+                    ];
+
+                    foreach ($furnituresType as $key => $value) {
+                        $real_state->furnitureTypes()->save(
+                            factory(FurnitureType::class)->make(
+                                [
+                                    'description'=>$value,
+                                ]
+                            )
+                        );
+                        $this->command->info('Furniture type '.$value.' created.');
+                    }
+
                 }
             );
     }

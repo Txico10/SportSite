@@ -12,14 +12,12 @@
  * */
 namespace App\Http\Livewire\Admin;
 
-use App\Models\Permission;
-use App\Models\RealState;
 use App\Models\Role;
 use App\Notifications\UserUpdate;
-use App\Rules\PermissionRolesCheck;
+
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 /**
@@ -134,10 +132,10 @@ class UsersForm extends Component
 
         DB::beginTransaction();
         try {
-            $user = User::updateOrCreate(
-                ['email'=>$this->email],
+            $user = User::create(
                 [
                     'name'=> $this->name,
+                    'email'=>$this->email,
                     'password'=>bcrypt($this->password),
                     'status' => User::ACTIVE,
     
@@ -153,6 +151,9 @@ class UsersForm extends Component
             }
 
             DB::commit();
+
+            event(new Registered($user));
+
             $msgType = "success";
             $msg = "User created successfully";
         } catch (\Exception $ex) {

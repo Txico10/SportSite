@@ -66,10 +66,10 @@
 @endphp
 <div class="row">
   <div class="col-md-12">
-    <div class="card">
-      <div class="card-header bg-lightblue">
+    <div class="card card-lightblue card-outline">
+      <div class="card-header">
         @permission('users-create')
-          <button class="btn btn-sm bg-gradient-secondary" type="button" style="width: 98px" data-toggle="modal" data-target="#modal-userform"><i class="fas fa-plus fa-fw"></i> Add</button>
+          <button class="btn btn-sm btn-outline-primary shadow" type="button" style="width: 98px" data-toggle="modal" data-target="#modal-userform"><i class="fas fa-plus fa-fw"></i> Add</button>
         @endpermission
         <div class="card-tools">
           <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -78,7 +78,7 @@
           <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
             <i class="fas fa-times"></i>
           </button>
-      </div>
+        </div>
       </div>
       <div class="card-body table-responsive">
         <x-adminlte-datatable id="usersTable" :heads="$heads" :config="$config" compressed/>

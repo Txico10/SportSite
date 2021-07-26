@@ -32,12 +32,14 @@ class FurnitureSeeder extends Seeder
      */
     public function run()
     {
-        $real_estates = RealState::all();
+        $real_estates = RealState::with('furnitureTypes')->get();
 
         foreach ($real_estates as $real_estate) {
-            $real_estate->furnitures()->saveMany(
-                factory(Furniture::class, 5)->make()
-            );
+            foreach ($real_estate->furnitureTypes as $furnitureType) {
+                $furnitureType->furnitures()->createMany(
+                    factory(Furniture::class, 5)->make()->toArray()
+                );
+            }
         }  
     }
 }

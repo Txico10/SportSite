@@ -50,13 +50,7 @@
               <!-- /.tab-pane -->
               
               <div class="tab-pane" id="contact">
-                @if(!empty($user->contact))
-                  <livewire:management.contact-show :contacts="$user->contact"/>  
-                @elseif($user->employees->count()>0)
-                  <livewire:management.contact-show :contacts="$user->employees[0]->contact"/>  
-                @else
-                  <p>New Contact case</p>
-                @endif
+                
                 
               </div>
 

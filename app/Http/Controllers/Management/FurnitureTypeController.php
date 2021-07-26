@@ -13,6 +13,7 @@
 namespace App\Http\Controllers\Management;
 
 use App\Http\Controllers\Controller;
+use App\Models\RealState;
 use Illuminate\Http\Request;
 /**
  *  Furniture Type controller main Class
@@ -27,12 +28,16 @@ class FurnitureTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * 
+     * @param RealState $company Company
      *
      * @return View
      */
-    public function index()
+    public function index(RealState $company)
     {
-        return view('admin.furnitures-type');
+        $company = $company->loadMissing('furnitureTypes.furnitures');
+
+        return view('admin.furnitures-type', compact('company'));
     }
 
     /**
@@ -49,10 +54,11 @@ class FurnitureTypeController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request Request
+     * @param RealState                $company Company
      * 
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, RealState $company)
     {
         //
     }

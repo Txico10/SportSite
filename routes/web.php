@@ -74,12 +74,27 @@ Route::get('/users/{user:id}/profile', 'User\UserController@profile')
 Route::get('/company/{company:slug}/profile', 'Management\RealStateController@profile')
     ->middleware(['auth', 'verified', 'belong.company','permission:company-read'])
     ->name('company.profile');
+    
 Route::get('/company/{company:slug}/apartments-setting', 'Management\ApartmentTypeController@index')
     ->middleware(['auth', 'verified','role:superadministrator|administrator'])
     ->name('company.apartment-setting');
+Route::post('/company/{company:slug}/apartments-setting', 'Management\ApartmentTypeController@store')
+    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
+    ->name('company.apartment-setting.store');
+Route::post('/company/{id}/apartments-setting/{apartTypeId}/edit', 'Management\ApartmentTypeController@edit')
+    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
+    ->name('company.apartment-setting.edit');
+Route::delete('/company/{id}/apartments-setting/{apartTypeId}', 'Management\ApartmentTypeController@destroy')
+    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
+    ->name('company.apartment-setting.destroy');
+
 Route::get('/company/{company:slug}/furnitures-setting', 'Management\FurnitureTypeController@index')
     ->middleware(['auth', 'verified','role:superadministrator|administrator'])
-    ->name('company.furniture-setting');    
+    ->name('company.furniture-setting');
+Route::post('/company/{company:slug}/furniture-setting', 'Management\FurnitureTypeController@store')
+    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
+    ->name('company.furniture-setting.store');
+    
 Route::get('/company/{company:slug}/employees', 'Management\EmployeeController@index')
     ->middleware(['auth', 'verified', 'belong.company', 'permission:employee-read'])
     ->name('company.employees');

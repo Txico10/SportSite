@@ -3,7 +3,6 @@
 @section('title', 'Roles')
 
 @section('content_header')
-    <h1></h1>
     <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">

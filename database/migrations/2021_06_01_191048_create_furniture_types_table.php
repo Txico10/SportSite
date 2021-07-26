@@ -15,6 +15,7 @@ class CreateFurnitureTypesTable extends Migration
     {
         Schema::create('furniture_types', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('real_state_id')->constrained()->onDelete('cascade');
             $table->enum('type', ['F','A']);
             $table->string('description');
             $table->timestamps();

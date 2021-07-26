@@ -15,8 +15,7 @@ class CreateFurnitureTable extends Migration
     {
         Schema::create('furniture', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('furniture_type_id');
-            $table->unsignedBigInteger('real_state_id');
+            $table->foreignId('furniture_type_id')->constrained()->onDelete('cascade');
             $table->string('manufacturer');
             $table->string('model');
             $table->string('serial');
@@ -24,8 +23,6 @@ class CreateFurnitureTable extends Migration
             $table->date('salvage_at')->nullable();
             $table->string('qrcode')->nullable();
             $table->timestamps();
-            $table->foreign('furniture_type_id')->references('id')->on('furniture_types')->onDelete('cascade');
-            $table->foreign('real_state_id')->references('id')->on('real_states')->onDelete('cascade');
         });
     }
 

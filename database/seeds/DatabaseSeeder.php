@@ -34,8 +34,8 @@ class DatabaseSeeder extends Seeder
             [
                 LaratrustSeeder::class,
                 UserSeeder::class, 
-                ApartmentTypeSeeder::class,
-                FurnitureTypeSeeder::class,
+                //ApartmentTypeSeeder::class,
+                //FurnitureTypeSeeder::class,
                 RealStateSeeder::class,
                 FurnitureSeeder::class,
                 BuildingSeeder::class,

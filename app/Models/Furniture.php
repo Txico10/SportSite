@@ -29,15 +29,6 @@ class Furniture extends Model
         'model', 'serial', 'buy_at', 'salvage_at', 'qrcode',
     ];
     
-    /**
-     * Realstate
-     *
-     * @return Illuminate\Database\Eloquent\Model
-     */
-    public function realstate()
-    {
-        return $this->belongsTo(RealState::class, 'real_state_id');
-    }
         
     /**
      * FurnitureType
