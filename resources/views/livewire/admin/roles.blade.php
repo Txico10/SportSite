@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header">
-        @permission('roles-create')        
-        <button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#modal-roles"><i class="fas fa-plus"></i> Add Role</button>  
+        @permission('roles-create')
+        <button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#modal-roles"><i class="fas fa-plus"></i> Add Role</button>
         @endpermission
         <div class="card-tools">
             <div class="input-group input-group-sm" style="width: 150px;">
@@ -40,25 +40,49 @@
             <tbody>
                 @if($roles->count())
                     @foreach($roles as $key=>$role)
-                        <tr>
-                            <td>{{$key + $roles->firstItem()}}</td>
-                            <td>{{$role->display_name}}</td>
-                            <td>{{$role->description}}</td>
-                            <td>{{$role->name}}</td>
-                            <td>{{\Carbon\Carbon::parse($role->created_at)->diffForHumans()}}</td>
-                            <td>{{\Carbon\Carbon::parse($role->updated_at)->diffForHumans()}}</td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-outline-info" role="button" wire:click="$emit('infoRole',{{ $role->id }})"><i class="fas fa-info-circle"></i></button>
-                                    @permission('roles-update')
-                                    <button class="btn btn-outline-secondary" role="button" wire:click="$emit('editRole',{{ $role->id }})"><i class="fas fa-pencil-alt"></i></button>
-                                    @endpermission
-                                    @permission('roles-delete')
-                                    <button class="btn btn-outline-danger" role="button" wire:click.prevent="$emit('triggerDeleteRole',{{$role->id}})"><i class="fas fa-trash-alt"></i></button>
-                                    @endpermission
-                                </div>
-                            </td>
-                        </tr>
+                        @if(strcmp($role->name,"superadministrator")!=0)
+                            <tr>
+                                <td>{{$key + $roles->firstItem()}}</td>
+                                <td>{{$role->display_name}}</td>
+                                <td>{{$role->description}}</td>
+                                <td>{{$role->name}}</td>
+                                <td>{{\Carbon\Carbon::parse($role->created_at)->diffForHumans()}}</td>
+                                <td>{{\Carbon\Carbon::parse($role->updated_at)->diffForHumans()}}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-info" role="button" wire:click="$emit('infoRole',{{ $role->id }})"><i class="fas fa-info-circle"></i></button>
+                                        @permission('roles-update')
+                                        <button class="btn btn-outline-secondary" role="button" wire:click="$emit('editRole',{{ $role->id }})"><i class="fas fa-pencil-alt"></i></button>
+                                        @endpermission
+                                        @permission('roles-delete')
+                                        <button class="btn btn-outline-danger" role="button" wire:click.prevent="$emit('triggerDeleteRole',{{$role->id}})"><i class="fas fa-trash-alt"></i></button>
+                                        @endpermission
+                                    </div>
+                                </td>
+                            </tr>
+                        @else
+                            @if(\Laratrust::hasRole('superadministrator'))
+                                <tr>
+                                    <td>{{$key + $roles->firstItem()}}</td>
+                                    <td>{{$role->display_name}}</td>
+                                    <td>{{$role->description}}</td>
+                                    <td>{{$role->name}}</td>
+                                    <td>{{\Carbon\Carbon::parse($role->created_at)->diffForHumans()}}</td>
+                                    <td>{{\Carbon\Carbon::parse($role->updated_at)->diffForHumans()}}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-info" role="button" wire:click="$emit('infoRole',{{ $role->id }})"><i class="fas fa-info-circle"></i></button>
+                                            @permission('roles-update')
+                                            <button class="btn btn-outline-secondary" role="button" wire:click="$emit('editRole',{{ $role->id }})"><i class="fas fa-pencil-alt"></i></button>
+                                            @endpermission
+                                            @permission('roles-delete')
+                                            <button class="btn btn-outline-danger" role="button" wire:click.prevent="$emit('triggerDeleteRole',{{$role->id}})"><i class="fas fa-trash-alt"></i></button>
+                                            @endpermission
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endif
+                        @endif
                     @endforeach
                 @else
                     <p>No user registered</p>
@@ -94,5 +118,5 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-    <!-- /.modal -->    
+    <!-- /.modal -->
 

@@ -1,5 +1,4 @@
 @extends('adminlte::page')
-@section('plugins.BootstrapSelect', true)
 @section('plugins.Datatables', true)
 @section('title', 'Apartments Setting')
 
@@ -22,39 +21,23 @@
 
 @section('content')
 @php
-  $heads = [
-    '#',
-    'Name',
-    'Tag',
-    'Description',
-    'Creation date',
-    'Action',
-  ];
+    $heads = [
+      '#',
+      'Name',
+      'Tag',
+      'Description',
+      'Created',
+      'Action',
+    ];
 
-  //dd($company);
-  $data = array();
-  $btn = null;
-  foreach ($company->apartmentTypes as $key => $apartmentType) {
-      
-    $btn = '<a class="btn btn-outline-primary btn-sm mx-1 shadow" type="button" title="More details" href="#"><i class="fas fa-info-circle fa-fw"></i></a>';
-    
-    if(Auth::user()->isAbleTo('apartmentType-update')){
-        $btn = $btn.'<button class="btn btn-outline-secondary mx-1 shadow btn-sm editApartmentTypeButton" type="button" title="Edit Apartment Type" data-company="'.$company->id.'" value="'.$apartmentType->id.'"><i class="fas fa-pencil-alt fa-fw"></i></button>';
-    }
-    if(Auth::user()->isAbleTo('apartmentType-delete') && $apartmentType->apartments->count()==0){
-        $btn = $btn.'<button class="btn btn-outline-danger mx-1 shadow btn-sm deleteApartmentTypeButton" title="Delete Apartment Type" type="button" data-company="'.$company->id.'" value="'.$apartmentType->id.'"><i class="fas fa-trash-alt fa-fw"></i></button>';
-    }
-
-    $mydata = [$key+1, ucfirst($apartmentType->name), $apartmentType->tag, ucfirst($apartmentType->description), \Carbon\Carbon::parse($apartmentType->created_at)->format('d F Y'), '<nobr>'.$btn.'</nobr>'];
-    $data[]=$mydata;
-  }
-  
-  $config = [
-    'data'=>$data,
-    'responsive'=> true,
-    'order' => [[0,'asc']],
-    'columns' => [null, null, null, null, null, ['orderable' => false]],
-  ]
+    $config = [
+      'processing' => true,
+      'serverSide' => true,
+      'ajax' => ['headers'=> ['X-CSRF-TOKEN'=>csrf_token()], 'url'=> route('company.apartment-setting', ['company'=>$company])],
+      'responsive'=> true,
+      'order' => [[0,'asc']],
+      'columns' => [['data'=>'DT_RowIndex'], ['data'=>'name'], ['data'=>'tag'], ['data'=>'description'], ['data'=>'created_at'], ['data'=>'action', 'searchable'=>false,'orderable' => false]],
+    ]
 @endphp
 <div class="container-fluid">
     <div class="row">
@@ -110,16 +93,21 @@
                                         @csrf
                                         <div class="form-group">
                                             @error('name')
-                                                <label for="name" class="text-danger">{{ $message }}</label>
+                                                <label for="tag" class="text-danger">{{ $message }}</label>
                                             @enderror
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-fw fa-home"></i></span>
                                                 </div>
-                                                <input type="text" id="name" name="name" class="form-control {{$errors->has("name") ? 'is-invalid' : ''}}" placeholder="Enter name">
-                                                <input type="hidden" name="real_state_id" value="{{$company->id}}">
-                                                <input type="hidden" id="apart_type_id" name="apart_type_id" value="">
+                                                <input type="text" id="name" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Enter name">
                                             </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @error('apart_type_id')
+                                                <label for="tag" class="text-danger">{{ $message }}</label>
+                                            @enderror
+                                            <input class="form-control" type="hidden" name="real_state_id" value="{{$company->id}}">
+                                            <input class="form-control" type="hidden" id="apart_type_id" name="apart_type_id" value="">
                                         </div>
                                         <div class="form-group">
                                             @error('tag')
@@ -129,7 +117,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-fw fa-tag"></i></span>
                                                 </div>
-                                                <input type="text" id="tag" name="tag" class="form-control {{$errors->has("tag") ? 'is-invalid' : ''}}" placeholder="Enter tag">
+                                                <input type="text" id="tag" name="tag" class="form-control @error('tag') is-invalid @enderror" placeholder="Enter tag">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -140,10 +128,11 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-fw fa-comment"></i></span>
                                                 </div>
-                                                <textarea class="form-control {{$errors->has("description") ? 'is-invalid' : ''}}" id="description" name="description" placeholder="Apartment type" rows="3"></textarea>
+                                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" placeholder="Apartment type" rows="3"></textarea>
                                             </div>
                                         </div>
                                         <div class="form-group">
+                                            <x-adminlte-button class="shadow" type="reset" label="Reset" theme="outline-danger" icon="fas fa-lg fa-trash"/>
                                             <x-adminlte-button class="shadow float-right" type="submit" label="Save" theme="outline-primary" icon="fas fa-lg fa-save"/>
                                         </div>
                                     </form>
@@ -161,5 +150,76 @@
 @stop
 
 @section('js')
-    <script type="text/javascript" src="{{asset('js/company.js')}}"></script>
+    <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $("#apartmentTypesTable").on("click", ".editApartmentTypeButton", function(event){
+            event.preventDefault();
+            var apartment_type_id = $(this).val();
+
+            $.ajax({
+                url:"{{route('company.apartment-setting.edit', ['company'=>$company])}}",
+                type: "POST",
+                dataType: "json",
+                cache: false,
+                data:{
+                    apartment_type_id:apartment_type_id
+                },
+                success: function(response) {
+                    //console.log(response.apartment_type)
+                    $("#apart_type_id").val(response.apartment_type.id)
+                    $("#name").val(response.apartment_type.name)
+                    $("#tag").val(response.apartment_type.tag)
+                    $("#description").val(response.apartment_type.description)
+                },
+                error: function(response, textStatus){
+                    $.each(response.responseJSON.errors, function(key, value){
+                        toastr[textStatus](value);
+                    })
+                }
+            });
+          //console.log(apartment_type_id)
+        });
+
+        $("#apartmentTypesTable").on("click", ".deleteApartmentTypeButton", function(event){
+            event.preventDefault();
+            var apartment_type_id = $(this).val();
+            Swal.fire({
+                title: 'The apartment type will be deleted!',
+                text: 'Are You Sure?',
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Delete!'
+            }).then((result) => {
+        		//if user clicks on delete
+                if (result.value) {
+                    $.ajax({
+                        url:"{{route('company.apartment-setting.destroy', ['company'=>$company])}}",
+                        type: "DELETE",
+                        dataType: "json",
+                        cache: false,
+                        data:{
+                            apartment_type_id:apartment_type_id
+                        },
+                        success: function(response) {
+                            //toastr.options.onHidden = function() { location.reload() }
+                            $("#apartmentTypesTable").DataTable().ajax.reload();
+                            toastr[response.type](response.message);
+                        },
+                        error: function(response, textStatus){
+                            $.each(response.responseJSON.errors, function(key, value){
+                                toastr[textStatus](value);
+                            })
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 @stop

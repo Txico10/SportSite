@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Company Controller
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -16,7 +16,7 @@ use App\Models\RealState;
 use Illuminate\Http\Request;
 /**
  *  Company controller extends Controller Classe
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -39,7 +39,7 @@ class RealStateController extends Controller
      * Display Real estate profile.
      *
      * @param RealState $company company id
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function profile(RealState $company)

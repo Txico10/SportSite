@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Livewire User Component
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -34,7 +34,7 @@ Auth::routes(['verify' => true]);
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::middleware(['auth','verified','role:superadministrator|administrator'])
-    ->name('admin.')->prefix('/admin')->group( 
+    ->name('admin.')->prefix('/admin')->group(
         function () {
             //Route::get('/users', [Users::class,'render'])->name('users');
             Route::get('/users', 'User\UserController@index')->name('users');
@@ -52,6 +52,10 @@ Route::middleware(['auth','verified','role:superadministrator|administrator'])
                 ->name('clients')->middleware('permission:allCompanies-read');
         }
     );
+
+/**
+ * Admin User Management
+ */
 Route::patch('admin/users/{id}/changeStatus', 'User\UserController@changeStatus')
     ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
     ->name('users.changeStatus');
@@ -74,31 +78,38 @@ Route::get('/users/{user:id}/profile', 'User\UserController@profile')
 Route::get('/company/{company:slug}/profile', 'Management\RealStateController@profile')
     ->middleware(['auth', 'verified', 'belong.company','permission:company-read'])
     ->name('company.profile');
-    
-Route::get('/company/{company:slug}/apartments-setting', 'Management\ApartmentTypeController@index')
-    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
-    ->name('company.apartment-setting');
-Route::post('/company/{company:slug}/apartments-setting', 'Management\ApartmentTypeController@store')
-    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
-    ->name('company.apartment-setting.store');
-Route::post('/company/{id}/apartments-setting/{apartTypeId}/edit', 'Management\ApartmentTypeController@edit')
-    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
-    ->name('company.apartment-setting.edit');
-Route::delete('/company/{id}/apartments-setting/{apartTypeId}', 'Management\ApartmentTypeController@destroy')
-    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
-    ->name('company.apartment-setting.destroy');
 
-Route::get('/company/{company:slug}/furnitures-setting', 'Management\FurnitureTypeController@index')
-    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
-    ->name('company.furniture-setting');
-Route::post('/company/{company:slug}/furniture-setting', 'Management\FurnitureTypeController@store')
-    ->middleware(['auth', 'verified','role:superadministrator|administrator'])
-    ->name('company.furniture-setting.store');
-    
+/**
+ * Apartment Settings and Furniture Settings
+ */
+Route::middleware(['auth', 'verified','role:superadministrator|administrator'])
+    ->name('company.')->prefix('/company/{company:slug}')->group(
+        function () {
+            //apartment-setting
+            Route::get('/apartments-setting', 'Management\ApartmentTypeController@index')
+                ->name('apartment-setting');
+            Route::post('/apartments-setting', 'Management\ApartmentTypeController@store')
+                ->name('apartment-setting.store');
+            Route::post('/apartments-setting/edit', 'Management\ApartmentTypeController@edit')
+                ->name('apartment-setting.edit');
+            Route::delete('/apartments-setting/destroy', 'Management\ApartmentTypeController@destroy')
+                ->name('apartment-setting.destroy');
+            //furniture-setting
+            Route::get('/furnitures-setting', 'Management\FurnitureTypeController@index')
+                ->name('furniture-setting');
+            Route::post('/furniture-setting', 'Management\FurnitureTypeController@store')
+                ->name('furniture-setting.store');
+            Route::post('/furnitures-setting/edit', 'Management\FurnitureTypeController@edit')
+                ->name('furniture-setting.edit');
+            Route::delete('/furnitures-setting/destroy', 'Management\FurnitureTypeController@destroy')
+                ->name('furniture-setting.destroy');
+        }
+    );
+
 Route::get('/company/{company:slug}/employees', 'Management\EmployeeController@index')
     ->middleware(['auth', 'verified', 'belong.company', 'permission:employee-read'])
     ->name('company.employees');
-    
+
 Route::get('/company/{company:slug}/employees/create', 'Management\EmployeeController@create')
     ->middleware(['auth', 'verified', 'belong.company', 'permission:employee-create'])
     ->name('company.employees.create');

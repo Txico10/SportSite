@@ -1,10 +1,10 @@
 <?php
 
-/** 
+/**
  * Livewire Clients form Component
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -14,8 +14,10 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Events\CompanyCreatedEvent;
 use App\Models\Employee;
 use App\Models\RealState;
+use App\Models\Role;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -25,10 +27,12 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 use PragmaRX\Countries\Package\Countries;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Events\Registered;
 
 /**
  *  Livewire clients form component
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -100,8 +104,8 @@ class ClientsForm extends Component
     }
 
     /**
-     * Render de livewire client form 
-     * 
+     * Render de livewire client form
+     *
      * @return livewire_clientform
      */
     public function render()
@@ -116,7 +120,7 @@ class ClientsForm extends Component
 
     /**
      * Real time photo validation
-     * 
+     *
      * @return validated photo
      */
     public function updatedPhoto()
@@ -130,7 +134,7 @@ class ClientsForm extends Component
 
     /**
      * Real time photo validation
-     * 
+     *
      * @return validated name
      */
     public function updatedName()
@@ -144,7 +148,7 @@ class ClientsForm extends Component
 
     /**
      * Real time NEQ validation
-     * 
+     *
      * @return validated neq
      */
     public function updatedNeq()
@@ -158,7 +162,7 @@ class ClientsForm extends Component
 
     /**
      * Real time suite validation
-     * 
+     *
      * @return validated Suite
      */
     public function updatedSuite()
@@ -172,7 +176,7 @@ class ClientsForm extends Component
 
     /**
      * Real time Number validation
-     * 
+     *
      * @return validated number
      */
     public function updatedNumber()
@@ -186,7 +190,7 @@ class ClientsForm extends Component
 
     /**
      * Real time Number validation
-     * 
+     *
      * @return validated number
      */
     public function updatedStreet()
@@ -200,7 +204,7 @@ class ClientsForm extends Component
 
     /**
      * Real time City validation
-     * 
+     *
      * @return validated city
      */
     public function updatedCity()
@@ -226,7 +230,7 @@ class ClientsForm extends Component
 
     /**
      * Real time City validation
-     * 
+     *
      * @return validated city
      */
     public function updatedRegion()
@@ -250,7 +254,7 @@ class ClientsForm extends Component
 
     /**
      * Real time Country validation
-     * 
+     *
      * @return validated country
      */
     public function updatedCountry()
@@ -272,7 +276,7 @@ class ClientsForm extends Component
 
     /**
      * Real time Zip code validation
-     * 
+     *
      * @return validated Zip Code
      */
     public function updatedZip()
@@ -322,7 +326,7 @@ class ClientsForm extends Component
 
     /**
      * Real time Telephone number validation
-     * 
+     *
      * @return validated telephone number
      */
     public function updatedManagerMobile()
@@ -336,7 +340,7 @@ class ClientsForm extends Component
 
     /**
      * Real time Email validation
-     * 
+     *
      * @return validated email address
      */
     public function updatedManagerEmail()
@@ -351,7 +355,7 @@ class ClientsForm extends Component
 
     /**
      * Reset input fields
-     * 
+     *
      * @return input reseted
      */
     public function resetInputFields()
@@ -387,7 +391,7 @@ class ClientsForm extends Component
 
     /**
      * Rules for step 1
-     * 
+     *
      * @return validates rules
      */
     public function rules1()
@@ -411,7 +415,7 @@ class ClientsForm extends Component
 
     /**
      * Rules for step 2 - Company Address
-     * 
+     *
      * @return validation rules for step 2
      */
     public function rules2()
@@ -442,7 +446,7 @@ class ClientsForm extends Component
 
     /**
      * Rule for step 3
-     * 
+     *
      * @return validated manager data
      */
     public function rules3()
@@ -461,7 +465,7 @@ class ClientsForm extends Component
 
     /**
      * Back step
-     * 
+     *
      * @return previous step
      */
     public function myPreviousStep()
@@ -471,7 +475,7 @@ class ClientsForm extends Component
 
     /**
      * Fists step validation
-     * 
+     *
      * @return validated fields
      */
     public function myNextStep()
@@ -491,119 +495,158 @@ class ClientsForm extends Component
 
     /**
      * Submit form
-     * 
+     *
      * @return void
      */
     public function submitForm()
     {
         //Create enterprise -> with Contact
+        DB::beginTransaction();
+        try {
 
-        $filename = Str::random() . time() . '.' . $this->logo->extension();
+            /**
+             * Create new Company (RealState)
+             */
+            $filename = Str::random() . time() . '.' . $this->logo->extension();
 
-        $this->logo->storeAs('public/profile_images/companies', $filename);
+            $clientData = [
+                'name' => $this->name,
+                'neq' => $this->neq,
+                'legalform' => $this->legalform,
+                'logo'=> $filename,
+                'slug'=>Str::of($this->name)->slug('-'),
+            ];
 
-        $path = public_path('storage/profile_images/companies/' . $filename);
-        $width = 128;
-        $height = 128;
-        $img = Image::make($path)->resize(
-            $width,
-            $height,
-            function ($constraint) {
-                $constraint->aspectRatio();
-            }
-        );
+            $client = RealState::create($clientData);
 
-        $img->save($path);
-        
-        $clientData = [
-            'name' => $this->name,
-            'neq' => $this->neq,
-            'legalform' => $this->legalform,
-            'logo'=> $filename,
-        ];
-        
-        $client = RealState::create($clientData);
-
-        $clientContact = [
-            //'suite' => $this->suite,
-            'num' => $this->number,
-            'street' => $this->street,
-            'city' => $this->city,
-            //'region' => $this->region,
-            'country' => $this->country,
-            //'pc' => $this->zip,
-            'email' => $this->managerEmail,
-            'mobile' => $this->managerMobile,
-            'type' => 'primary'
-        ];
-
-        if (!empty($this->suite)) {
-            $clientContact['suite'] = $this->suite;
-        }
-
-        if (!empty($this->region)) {
-            $clientContact['region'] = $this->region;
-        }
-
-        if (!empty($this->zip)) {
-            $clientContact['pc'] = $this->zip;
-        }
-
-        $client->contact()->create($clientContact);
-
-        //create employee -> with contact but no emargency contact
-        $employee = [
-            'name' => $this->managerName,
-            'birthdate' => $this->managerBirth,
-            //'nas' => '',//remove NAS from database
-            'gender' => $this->managerGender,
-        ];
-
-        $newEmployee = Employee::create($employee);
-
-        
-        $employeeContact = [
-            'mobile' => $this->managerMobile,
-            'email'  => $this->managerEmail,
-            'type' => 'primary',
-        ];
-
-        $newEmployee->contacts()->create($employeeContact);
-
-        //Create User -> send registration confirmation info by email
-        $newUser = User::create(
-            [
-                'name' => $this->managerName,
+            /**
+             * Company Contact
+             */
+            $clientContact = [
+                //'suite' => $this->suite,
+                'num' => $this->number,
+                'street' => $this->street,
+                'city' => $this->city,
+                //'region' => $this->region,
+                'country' => $this->country,
+                //'pc' => $this->zip,
                 'email' => $this->managerEmail,
-                'password' => Hash::make($this->managerPassword),
-            ]
-        );
+                'mobile' => $this->managerMobile,
+                'type' => 'primary'
+            ];
 
-        $newUser->sendEmailVerificationNotification();
+            if (!empty($this->suite)) {
+                $clientContact['suite'] = $this->suite;
+            }
 
-        $newUser->attachRole(3);
-        //Register employee on enterprise and give role
-        $client->employees()->attach(
-            $newEmployee->id,
-            [
+            if (!empty($this->region)) {
+                $clientContact['region'] = $this->region;
+            }
+
+            if (!empty($this->zip)) {
+                $clientContact['pc'] = $this->zip;
+            }
+
+            $client->contact()->create($clientContact);
+
+            /**
+             * Create Team
+             */
+             $team = $client->team()->create(['display_name'=>$client->name]);
+
+             /**
+              * Create company first employee
+              */
+            $employee = [
+                'name' => $this->managerName,
+                'birthdate' => $this->managerBirth,
+                //'nas' => '',//remove NAS from database
+                'gender' => $this->managerGender,
+            ];
+
+            $newEmployee = Employee::create($employee);
+
+            /**
+             * Employee contact
+             */
+            $employeeContact = [
+                'mobile' => $this->managerMobile,
+                'email'  => Str::lower($this->managerEmail),
+                'type' => 'primary',
+            ];
+
+            $newEmployee->contact()->create($employeeContact);
+
+            /**
+             * Employee user
+             */
+            $newUser = User::create(
+                [
+                    'name' => $this->managerName,
+                    'email' => $this->managerEmail,
+                    'password' => Hash::make($this->managerPassword),
+                ]
+            );
+
+            /**
+             * Assign administrator role to user
+             */
+            $role = Role::where("name", "administrator")->first();
+
+            $newUser->attachRole($role, $team);
+
+            /**
+             * Contract registration
+             */
+            $contract = [
                 'user_id' => $newUser->id,
                 'start_date' => Carbon::now()->format('Y-m-d'),
-                'end_date' => Carbon::now()->addMonth(12)->format('Y-m-d'),
+                'api_token' => bin2hex(openssl_random_pseudo_bytes(16)),
                 'status' => 'FT'
-            ]
-        );
-        
-        //close form, reset vars
-        //$this->resetInputFields();
-        // Success message
+            ];
+
+            //Register employee on enterprise and give role
+            $client->employees()->attach($newEmployee->id, $contract);
+
+            DB::commit();
+
+            /**
+             * Save Company image
+             */
+            $this->logo->storeAs('public/profile_images/companies', $filename);
+            $path = public_path('storage/profile_images/companies/' . $filename);
+            $width = 128;
+            $height = 128;
+            $img = Image::make($path)->resize(
+                $width,
+                $height,
+                function ($constraint) {
+                    $constraint->aspectRatio();
+                }
+            );
+
+            $img->save($path);
+
+            event(new Registered($newUser));
+            event(new CompanyCreatedEvent($client));
+
+            $msgtype = "success";
+            $msg = "Client created successfully";
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $msgtype = "error";
+            $msg = $th->getMessage();
+        }
+
         $this->dispatchBrowserEvent('closeClientModal');
         $this->emit('refreshClient');
         $this->emit(
-            'alert', 
+            'alert',
             [
-                'type' => 'success',
-                'message' => 'Client created successfully'
-                ]
+                'type' => $msgtype,
+                'message' => $msg
+            ]
         );
 
     }

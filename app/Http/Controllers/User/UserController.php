@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * The User Controller
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -27,7 +27,7 @@ use Laratrust\LaratrustFacade;
 
 /**
  *  The User controller main Class
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -37,67 +37,118 @@ use Laratrust\LaratrustFacade;
 
 class UserController extends Controller
 {
-    
+
     /**
      * Show the list of users
-     * 
+     *
      * @param Request $request Request
-     * 
+     *
      * @return Illuminate\Support\Facades\View
      */
-    public function index(Request $request) 
+    public function index(Request $request)
     {
-        
-        if (LaratrustFacade::hasRole('administrator')) {
-            
-            $users= User::select(['users.*', 'roles.display_name AS role_name', 'teams.display_name AS team_name'])
-                ->join('role_user', 'role_user.user_id', '=', 'users.id')
-                ->join('roles', 'role_user.role_id', '=', 'roles.id')
-                ->join('teams', 'role_user.team_id', '=', 'teams.id')
-                ->where('teams.name', '=', $request->session()->get('companyID'))
-                ->withLastLoginDate()
-                ->get();
-        } else {
-            $roles_teams = DB::table('role_user')
-                ->select(['roles.display_name AS role_name', 'role_user.user_id AS userID', 'teams.display_name AS team_name'])
-                ->join('roles', 'role_user.role_id', '=', 'roles.id')
-                ->leftJoin('teams', 'role_user.team_id', '=', 'teams.id');
+        if ($request->ajax()) {
+            if (LaratrustFacade::hasRole('administrator')) {
 
-            $users = User::select(['users.*', 'roles_teams.role_name', 'roles_teams.team_name'])
-                ->leftJoinSub(
-                    $roles_teams, 
-                    'roles_teams', 
-                    function ($join) {
-                        $join->on('users.id', '=', 'roles_teams.userID');
+                $users= User::select(['users.*', 'roles.display_name AS role_name', 'teams.display_name AS team_name'])
+                    ->join('role_user', 'role_user.user_id', '=', 'users.id')
+                    ->join('roles', 'role_user.role_id', '=', 'roles.id')
+                    ->join('teams', 'role_user.team_id', '=', 'teams.id')
+                    ->where('teams.name', '=', $request->session()->get('companyID'))
+                    ->withLastLoginDate()
+                    ->orderBy('users.name', 'asc')
+                    ->get();
+            } else {
+                $roles_teams = DB::table('role_user')
+                    ->select(['roles.display_name AS role_name', 'role_user.user_id AS userID', 'teams.display_name AS team_name'])
+                    ->join('roles', 'role_user.role_id', '=', 'roles.id')
+                    ->leftJoin('teams', 'role_user.team_id', '=', 'teams.id');
+
+                $users = User::select(['users.*', 'roles_teams.role_name', 'roles_teams.team_name'])
+                    ->leftJoinSub(
+                        $roles_teams,
+                        'roles_teams',
+                        function ($join) {
+                            $join->on('users.id', '=', 'roles_teams.userID');
+                        }
+                    )
+                    ->withLastLoginDate()
+                    ->orderBy('users.name', 'asc')
+                    //->limit(3)
+                    ->get();
+            }
+
+            return datatables()->of($users)
+                ->addIndexColumn()
+                ->editColumn(
+                    'last_login_at',
+                    function ($request) {
+                        return !empty($request->last_login_at)?$request->last_login_at->format('d F Y'):'Never';
                     }
                 )
-                ->withLastLoginDate()
-                //->limit(3)
-                ->get();
+                ->editColumn(
+                    'role_name',
+                    function ($request) {
+                        return '<span class="badge bg-success">'.$request->role_name.'</span>';
+                    }
+                )
+                ->addColumn(
+                    'action',
+                    function ($user) {
+                        $btn = '<nobr>';
+                        $btn = '<a class="btn btn-sm btn-outline-primary mx-1 shadow" type="button" title="More details" href="'.route('admin.users.show', ['user'=>$user]).'"><i class="fas fa-user-cog fa-fw"></i></a>';
+                        if (Auth::id()!=$user->id) {
+                            if (LaratrustFacade::isAbleTo('users-delete') && !$user->hasRole('superadministrator')) {
+                                $btn = $btn.'<button class="btn btn-sm btn-outline-danger mx-1 shadow userDelete" type="button" value="'.$user->id.'" title="Delete User"><i class="fas fa-trash-alt fa-fw"></i></button>';
+                            }
+                            if ($user->status==0) {
+                                $btn = $btn.'<button class="btn btn-sm btn-outline-secondary mx-1 shadow changeStatus" type="button" value = "'.$user->id.'" title="Inactive User"><i class="fas fa-toggle-off fa-fw"></i></button>';
+                            } else {
+                                $btn = $btn.'<button class="btn btn-sm btn-outline-success mx-1 shadow changeStatus" type="button" value = "'.$user->id.'" title="Active User"><i class="fas fa-toggle-on fa-fw"></i></button>';
+                            }
+                        }
+
+                        $btn = $btn.'</nobr>';
+
+                        return $btn;
+                    }
+                )
+                ->rawColumns(['role_name', 'action'])
+                ->removeColumn('id')
+                ->removeColumn('email_verified_at')
+                ->removeColumn('password')
+                ->removeColumn('status')
+                ->removeColumn('image')
+                ->removeColumn('api_token')
+                ->removeColumn('remember_token')
+                ->removeColumn('created_at')
+                ->removeColumn('updated_at')
+                ->make();
+
         }
 
         //dd($users);
-        return view('admin.users', compact('users'));
+        return view('admin.users');
     }
-    
+
     /**
      * Create new User
      *
      * @param Request $request route request
-     * 
+     *
      * @return Illuminate\Support\Facades\View
      */
     public function create(Request $request)
     {
         return view('admin.users-create');
     }
-    
+
     /**
      * Show user
      *
      * @param Request $request route request
      * @param User    $user    User informations
-     * 
+     *
      * @return Illuminate\Support\Facades\View
      */
     public function show(Request $request, User $user)
@@ -114,12 +165,12 @@ class UserController extends Controller
     }
     /**
      * Show user profile
-     * 
-     * @param User $user user id 
-     * 
+     *
+     * @param User $user user id
+     *
      * @return Illuminate\Support\Facades\View
      */
-    public function profile(User $user) 
+    public function profile(User $user)
     {
         //$user = User::with(['contact', 'employees.contact'])->findOrFail($id);
         //dd($user);
@@ -129,15 +180,15 @@ class UserController extends Controller
             //dd($user);
             return view('user.profile', compact('user'));
         }
-        
+
     }
-    
+
     /**
      * Change Status
      *
      * @param Request $request Request
      * @param int     $id      User ID
-     * 
+     *
      * @return ajax
      */
     public function changeStatus(Request $request, int $id)
@@ -148,9 +199,9 @@ class UserController extends Controller
                     'user_id' => 'required|numeric|exists:users,id',
                 ]
             );
-            
+
             $user= User::findOrFail($id);
-            
+
             if ($user->status==User::ACTIVE) {
                 $user->status = User::INACTIVE;
             } else {
@@ -159,21 +210,21 @@ class UserController extends Controller
             $user->save();
             return response()->json(['type'=>"success", 'message'=> "User status updated successfully"], 200);
         }
-        return null;    
+        return null;
     }
-        
+
     /**
      * Get Roles
      *
      * @param Request $request Request
      * @param int     $id      User ID
-     * 
+     *
      * @return Response json
      */
     public function getRoles(Request $request, int $id)
     {
         if ($request->ajax()) {
-            
+
             $search = $request->search;
 
             //$user = User::findOrFail($id);
@@ -208,11 +259,11 @@ class UserController extends Controller
                         'selected' => true
                     );
                 } else {
-                    
+
                 }
                 */
             }
-            
+
             return response()->json($response, 200);
         }
         return null;
@@ -223,13 +274,13 @@ class UserController extends Controller
      *
      * @param Request $request Request
      * @param int     $id      User ID
-     * 
+     *
      * @return Response json
      */
     public function getPermissions(Request $request, int $id)
     {
         if ($request->ajax()) {
-            
+
             $search = $request->search;
 
             //$user = User::findOrFail($id);
@@ -238,12 +289,12 @@ class UserController extends Controller
 
             if ($search == '') {
                 $permissions = Permission::select('id', 'display_name')
-                    ->limit(8)
+                    ->limit(6)
                     ->get();
             } else {
                 $permissions = Permission::select('id', 'display_name')
                     ->where('display_name', 'like', '%'.$search.'%')
-                    ->limit(8)
+                    ->limit(6)
                     ->get();
             }
 
@@ -255,18 +306,18 @@ class UserController extends Controller
                     'text' => $permission->display_name,
                 );
             }
-            
+
             return response()->json($response, 200);
         }
         return null;
     }
-        
+
     /**
      * Fill User Roles and Profiles
      *
      * @param Request $request Request
      * @param int     $id      User ID
-     * 
+     *
      * @return Response json
      */
     public function fillRolesProfiles(Request $request, int $id)
@@ -333,19 +384,19 @@ class UserController extends Controller
         }
         return null;
     }
-    
+
     /**
      * Update Roles and Permissions
      *
      * @param Request $request Request
      * @param int     $id      User ID
-     * 
+     *
      * @return void
      */
     public function updateRolesPermissions(Request $request, int $id)
     {
         if ($request->ajax()) {
-            
+
             $request->validate(
                 [
                     'user_id'=>['required','numeric','exists:users,id'],
@@ -357,13 +408,13 @@ class UserController extends Controller
                         ]
                 ]
             );
-            
+
             $user = User::find($request->user_id);
             $user->syncRoles($request->roles, $request->team_id);
 
             $mypermissions = $user->permissions;
-            
-            if (empty($request->permissions)) {    
+
+            if (empty($request->permissions)) {
                 if ($mypermissions->count()>0) {
                     $user->detachPermissions($mypermissions, $request->team_id);
                 }
@@ -375,7 +426,7 @@ class UserController extends Controller
                 }
 
             }
-            
+
             $msg="Roles and permissions updated successfuly!!!";
 
             return response()->json(["type"=>"success", "message"=>$msg]);
@@ -388,19 +439,19 @@ class UserController extends Controller
      *
      * @param Request $request Http Request
      * @param int     $id      User ID
-     * 
+     *
      * @return Response|null
      */
     public function destroy(Request $request, int $id)
     {
         if ($request->ajax()) {
-            
+
             $request->validate(
                 [
                     'user_id' => 'required|numeric|exists:users,id',
                 ]
             );
-            
+
             DB::beginTransaction();
             try {
 
@@ -410,19 +461,19 @@ class UserController extends Controller
                     ->distinct()
                     ->where('user_id', $user->id)
                     ->select('employee_id AS id')
-                    ->get();           
+                    ->get();
 
                 if ($user_employees->count()>0) {
-                    
+
                     foreach ($user_employees as $value) {
                         $employee = Employee::findOrFail($value->id);
                         $employee->contact->delete();
                         $employee->delete();
                     }
-                    
+
                 }
-                
-                
+
+
                 $permissions = $user->permissions;
                 if ($permissions->count()>0) {
                     $user->detachPermissions($permissions);
@@ -431,13 +482,13 @@ class UserController extends Controller
 
                 $roles = $user->roles;
                 $user->detachRoles($roles);
-                
+
 
                 $user->delete();
                 //$msg = $msg." Etapa3";
 
                 DB::commit();
-                
+
                 $msgType = "success";
                 $msg = "User deleted successfully";
                 $code = 200;
@@ -447,10 +498,10 @@ class UserController extends Controller
                 $msg = $th->getMessage();
                 $code = 422;
             }
-            
+
             return response()->json(['type'=>$msgType, 'message'=> $msg], $code);
         }
         return null;
-        
+
     }
 }

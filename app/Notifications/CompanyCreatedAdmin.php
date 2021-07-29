@@ -1,6 +1,6 @@
 <?php
 /**
- * Notification Update user
+ * Company Created Notification for superadministrators
  *
  * PHP version 7.4
  *
@@ -12,13 +12,13 @@
  * */
 namespace App\Notifications;
 
-use App\Models\Role;
+use App\Models\RealState;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 /**
- *  UserUpdate Notification class
+ *  Company Created Admin Notification class
  *
  * @category MyCategory
  * @package  MyPackage
@@ -26,27 +26,32 @@ use Illuminate\Notifications\Notification;
  * @license  MIT treino.localhost
  * @link     link()
  * */
-class UserUpdate extends Notification
+class CompanyCreatedAdmin extends Notification implements ShouldQueue
 {
     use Queueable;
-    public $field;
+    /**
+     * Company
+     *
+     * @var $company
+     */
+    public $company;
 
     /**
      * Create a new notification instance.
      *
-     * @param $myfields my role
+     * @param RealState $company Company
      *
      * @return void
      */
-    public function __construct($myfields)
+    public function __construct(RealState $company)
     {
-        $this->field = $myfields;
+        $this->company = $company;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param mixed $notifiable notifiable
+     * @param mixed $notifiable Notifiable
      *
      * @return array
      */
@@ -58,42 +63,23 @@ class UserUpdate extends Notification
     /**
      * Get the mail representation of the notification.
      *
-     * @param mixed $notifiable notification
+     * @param mixed $notifiable Notifiable
      *
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
     {
-
-        //dd($this->field);
-        $message = '';
-
-        foreach ($this->field as $key => $value) {
-            $message = $message.$key.' ';
-            if (strcmp($value, 'password')!=0) {
-                $message = $message.': '.$value.' ';
-            } else {
-                $message = $message.': updated ';
-            }
-            $message = $message.', ';
-        }
-
-
-        //dd($this->field);
         return (new MailMessage)
-            ->subject('Profile update notification')
-            ->greeting('Hi '.$notifiable->name)
-            ->line('The following fields of your profile have been updated.')
-            ->line($message)
-            ->line('If you did not do it, please contact the system administrator.')
-            ->action('Notification Action', url('/'))
+            ->subject('New company registred')
+            ->line('The company '.$this->company->name.' as been registred.')
+            ->action('Notification Action', route('company.profile', ['company'=>$this->company]))
             ->line('Thank you for using our application!');
     }
 
     /**
      * Get the array representation of the notification.
      *
-     * @param mixed $notifiable notification
+     * @param mixed $notifiable Notifiable
      *
      * @return array
      */

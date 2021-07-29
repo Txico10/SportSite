@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Events\CompanyCreatedEvent;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -21,6 +22,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Login::class => [
             \App\Listeners\AddToSessionAfterLogin::class,
+        ],
+        CompanyCreatedEvent::class => [
+            \App\Listeners\CompanyCreatedListener::class,
         ],
     ];
 

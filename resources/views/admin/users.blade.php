@@ -32,36 +32,14 @@
     'Action',
   ];
 
-  $data = array();
-  $count = 0;
-  //dd($companies);
-  foreach ($users as $user) {
-    $btn = null;
-    
-    $btn = '<a class="btn btn-sm btn-outline-primary mx-1 shadow" type="button" title="More details" href="'.route('admin.users.show', ['user'=>$user]).'"><i class="fas fa-user-cog fa-fw"></i></a>';
-    
-    if(Auth::id()!=$user->id) {
-      if(Auth::user()->isAbleTo('users-delete') && !$user->hasRole('superadministrator')){
-        $btn = $btn.'<button class="btn btn-sm btn-outline-danger mx-1 shadow userDelete" type="button" value="'.$user->id.'" title="Delete User"><i class="fas fa-trash-alt fa-fw"></i></button>';
-      }
-      if($user->status==0){
-        $btn = $btn.'<button class="btn btn-sm btn-outline-secondary mx-1 shadow changeStatus" type="button" value = "'.$user->id.'" title="Inactive User"><i class="fas fa-toggle-off fa-fw"></i></button>';
-      }else {
-        $btn = $btn.'<button class="btn btn-sm btn-outline-success mx-1 shadow changeStatus" type="button" value = "'.$user->id.'" title="Active User"><i class="fas fa-toggle-on fa-fw"></i></button>';
-      }
-    }
-
-    $mydata = [++$count, $user->name, $user->email, '<span class="badge bg-success">'.ucfirst($user->role_name).'</span>', $user->team_name ?? '', empty($user->last_login_at)? 'Never' :\Carbon\Carbon::parse($user->last_login_at)->format('d F Y \a\t H:i') ?? 'Never loged in', '<nobr>'.$btn.'</nobr>'];
-    $data[] = $mydata;
-    
-  }
-  
-  //dd($data);
   $config = [
-    'data'=>$data,
+    'processing' => true,
+    'serverSide' => true,
+    'ajax' => ['headers'=> ['X-CSRF-TOKEN'=>csrf_token()], 'url'=> route('admin.users')],
+    //'data'=>$data,
     'responsive'=> true,
     'order' => [[1,'asc']],
-    'columns' => [null, null, null, null, null, null, ['orderable' => false]],
+    'columns' => [['data'=>'DT_RowIndex'], ['data'=>'name'], ['data'=>'email'], ['data'=>'role_name'], ['data'=>'team_name'], ['data'=>'last_login_at'], [ 'data'=>'action', 'searchable'=>false, 'orderable' => false]],
   ]
 @endphp
 <div class="row">
@@ -86,9 +64,11 @@
       <!-- /.card-body -->
     </div>
     <!-- /.card -->
+    @if(Auth::user()->hasRole('superadministrator'))
     <x-modal title="Create User" id="modal-userform" type="" icon="fas fa-user-plus">
       <livewire:admin.users-form/>
   </x-modal>
+  @endif
   </div>
 </div>
 @stop
@@ -99,4 +79,87 @@
 
 @section('js')
   <script type="text/javascript" src="{{asset('js/company.js')}}"></script>
+    <script type="text/javascript">
+        $(function(){
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $("#usersTable").on("click", ".userDelete", function(event){
+                event.preventDefault();
+                var userID = $(this).val();
+                //console.log(userID);
+                let _url='users/'+userID
+                Swal.fire({
+                    title: 'The user will be permanently deleted!!!',
+                    text: 'If you are not sure please click on cancel',
+                    type: "error",
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Delete!'
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            url:_url,
+                            type: "DELETE",
+                            cache: false,
+                            data: {
+                                user_id: userID,
+                            },
+                            success: function(response) {
+                                $("#usersTable").DataTable().ajax.reload();
+                                toastr[response.type](response.message);
+                            },
+                            error: function(response){
+                                $.each(response.responseJSON.message, function(key, value){
+                                    toastr.error(value)
+                                    //toastr["error"](value);
+                                })
+                            }
+                        });
+                    }
+                });
+            });
+
+            $("#usersTable").on("click", ".changeStatus", function(event){
+                event.preventDefault();
+                var userID = $(this).val();
+                //console.log(userID);
+                let _url='users/'+userID+'/changeStatus'
+                Swal.fire({
+                    title: 'Are You Sure?',
+                    text: 'The user status will be changed!!!',
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Save!'
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            url:_url,
+                            type: "PATCH",
+                            cache: false,
+                            data: {
+                                user_id: userID,
+                            },
+                            success: function(response) {
+                                $("#usersTable").DataTable().ajax.reload();
+                                toastr.success(response.message);
+                            },
+                            error: function(response){
+                                $.each(response.responseJSON.errors, function(key, value){
+                                    toastr.error(value)
+                                    //toastr["error"](value);
+                                })
+                            }
+                        });
+                    }
+                });
+            });
+        })
+    </script>
 @stop

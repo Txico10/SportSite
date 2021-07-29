@@ -60,7 +60,7 @@
           var formID = document.getElementById("myclient-form");
           Livewire.find(formID.getAttribute('wire:id')).set('neq', null);
           $(this).addClass('is-invalid').removeClass('is-valid');
-        }        
+        }
       },
 
     });
@@ -84,6 +84,8 @@
         showClose: true,
       },
       allowInputToggle:true,
+      debug:true,
+      position: 'relative'
     });
 
     //$(".myBirth").inputmask(undefined,{
@@ -104,7 +106,7 @@
           $(".managerBirth").addClass('is-invalid').removeClass('is-valid');
           //console.log("birthdate = null");
         } else {
-          mybdate = moment(mybdate, "DD MM YYYY").format('YYYY-MM-DD'); 
+          mybdate = moment(mybdate, "DD MM YYYY").format('YYYY-MM-DD');
           Livewire.find(formID.getAttribute('wire:id')).set('managerBirth', birthdate);
           $(".managerBirth").addClass('is-valid').removeClass('is-invalid')
           //console.log(birthdate);
@@ -112,7 +114,7 @@
       } else {
         $(".managerBirth").removeClass('is-valid')
       }
-      
+
     });
 
     $("#zip").inputmask({
@@ -137,7 +139,7 @@
           $(this).addClass('is-invalid').removeClass('is-valid');
         }
       },
-    });  
+    });
 
     $("#managerMobile").inputmask({
       mask: "(999) 999-9999",
@@ -157,10 +159,10 @@
           var formID = document.getElementById("myclient-form");
           Livewire.find(formID.getAttribute('wire:id')).set('managerMobile', null);
           $(this).addClass('is-invalid').removeClass('is-valid');
-        } 
+        }
       },
     });
-    
+
     $("#modal-createcompany").on('hidden.bs.modal', function(){
         Livewire.emit('resetNewCompanyInputFields');
         $("#neq").val("").trigger('change');
@@ -227,7 +229,7 @@
           //CAN, USA, GBR
     }
   );
-  
+
   $("#managerGender").on('select2:select', function(event){
           var data = $(this).select2("val");
           var formID = document.getElementById("myclient-form");

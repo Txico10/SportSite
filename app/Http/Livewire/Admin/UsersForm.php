@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Livewire User Component
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -22,7 +22,7 @@ use Livewire\Component;
 
 /**
  *  Livewire Users component
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -40,24 +40,24 @@ class UsersForm extends Component
     public $confirm_password;
     public $role;
 
-    protected $listeners = [ 
+    protected $listeners = [
                             'editUser'=>'edit',
                             'resetUserInputFields' => 'resetInputFields',
                            ];
 
     /**
      * Mount function
-     * 
+     *
      * @return monted component
      */
     public function mount()
     {
-        
+
         $this->role = Role::where('name', 'superadministrator')->first();
     }
     /**
      * Render the livewire users form view
-     * 
+     *
      * @return livewire_users
      */
     public function render()
@@ -67,10 +67,10 @@ class UsersForm extends Component
         );
     }
 
-    
+
     /**
      * Rules validation
-     * 
+     *
      * @return array rules
      */
     protected function rules()
@@ -92,14 +92,14 @@ class UsersForm extends Component
 
     /**
      * Reset form fields
-     * 
+     *
      * @return fields reseted
      */
     public function resetInputFields()
     {
         $this->reset(
             [
-                'name','email','password','confirm_password',  
+                'name','email','password','confirm_password',
             ]
         );
         $this->resetErrorBag();
@@ -109,9 +109,9 @@ class UsersForm extends Component
 
     /**
      * Livetime validation
-     * 
+     *
      * @param $propertyName to validate specific field
-     * 
+     *
      * @return real time validation
      */
     public function updated($propertyName)
@@ -121,7 +121,7 @@ class UsersForm extends Component
 
     /**
      * Form create and update user
-     * 
+     *
      * @return admin.user
      */
     public function saveUserForm()
@@ -138,14 +138,14 @@ class UsersForm extends Component
                     'email'=>$this->email,
                     'password'=>bcrypt($this->password),
                     'status' => User::ACTIVE,
-    
+
                 ]
             );
-            
+
             if (empty($user->contact)) {
                 $user->contact()->create(['type' => 'primary']);
             }
-    
+
             if ($user->roles->count()==0) {
                 $user->attachRole($this->role);
             }
@@ -156,16 +156,16 @@ class UsersForm extends Component
 
             $msgType = "success";
             $msg = "User created successfully";
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
             DB::rollBack();
             $msgType = "error";
             $msg = $ex->getMessage();
         }
-        
+
 
         $this->dispatchBrowserEvent('closeUserModal');
         $this->emit(
-            'newUserSpeciaCreate', 
+            'newUserSpeciaCreate',
             [
                 'type'=>$msgType,
                 'message'=>$msg,
@@ -173,12 +173,12 @@ class UsersForm extends Component
         );
     }
 
-    /** 
+    /**
      * Edit users
-     * 
+     *
      * @param $id user
-     * 
-     * @return view|user 
+     *
+     * @return view|user
      */
     /*
     public function edit($id)
@@ -186,7 +186,7 @@ class UsersForm extends Component
         $this->resetInputFields();
 
         $user = User::findOrFail($id);
-        
+
         $this->form_title = "Edit User";
 
         $this->submit_btn_title = "Update";
@@ -197,9 +197,9 @@ class UsersForm extends Component
         $this->email = $user->email;
         $this->role = $user->role;
         //$this->permissions = $user->permissions;
-        
+
         $this->dispatchBrowserEvent(
-            'openUserModal', 
+            'openUserModal',
             [
                 'roles' => $this->role,
                 //'permissions'=>$this->permissions,

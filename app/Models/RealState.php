@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Laratrust Roles Component
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  *  Extended Laratrust Roles Classe
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -32,29 +32,39 @@ class RealState extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'neq', 'legalform', 'logo'
+        'name', 'neq', 'legalform', 'logo', 'slug'
     ];
-    
+
+    /**
+     * Team
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function team()
+    {
+        return $this->hasOne(Team::class, 'name', 'id');
+    }
+
     /**
      * Buildings relationship
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Model
      */
     public function buildings()
     {
         return $this->hasMany(Building::class);
     }
-    
+
     /**
      * Apartments relationship
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Model
      */
     public function apartments()
     {
         return $this->hasManyThrough(Apartment::class, Building::class);
     }
-    
+
     /**
      * Apartment Types
      *
@@ -66,14 +76,14 @@ class RealState extends Model
     }
     /**
      * Contact relationship
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Model
      */
     public function contact()
     {
         return $this->morphOne(Contact::class, 'contactable');
     }
-        
+
     /**
      * Furniture Types
      *
@@ -92,12 +102,12 @@ class RealState extends Model
     {
         return $this->hasManyThrough(Furniture::class, FurnitureType::class);
     }
-    
+
     /**
      * Searche for Real State/clients information
-     * 
+     *
      * @param $query receive query format
-     * 
+     *
      * @return query
      */
     public static function search($query)
@@ -109,7 +119,7 @@ class RealState extends Model
 
     /**
      * Searche for Real State/clients information
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Model
      */
     public function employees()
@@ -118,7 +128,7 @@ class RealState extends Model
             ->withPivot(['user_id', 'start_date', 'end_date', 'agreement' ,'status'])
             ->withTimestamps();
     }
-    
+
     /**
      * Users
      *
@@ -132,5 +142,5 @@ class RealState extends Model
             ->orWherePivot('end_date', '>=', now())
             ->withTimestamps();
     }
-    
+
 }

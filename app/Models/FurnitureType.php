@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Furniture Type Model
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -15,7 +15,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 /**
  *  Extended Furniture Type Model
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -25,9 +25,9 @@ use Illuminate\Database\Eloquent\Model;
 class FurnitureType extends Model
 {
     protected $fillable = [
-        'type', 'description',
+        'real_state_id','type', 'description',
     ];
-    
+
     /**
      * Furniture
      *
@@ -37,7 +37,7 @@ class FurnitureType extends Model
     {
         return $this->hasMany(Furniture::class);
     }
-    
+
     /**
      * Company
      *

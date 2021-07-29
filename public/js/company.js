@@ -42,11 +42,6 @@ $(function(){
       cache: true,
     }
   });
-  
-  $('#furniture_type').select2({
-    width: 'resolve',
-    theme: 'bootstrap4',
-  });
 
   $('#legalform').select2({
     width: 'resolve',
@@ -61,7 +56,7 @@ $(function(){
     theme: 'bootstrap4',
   });
   $('#myBuildings').selectpicker();
-  
+
   $('#apart_building').select2({
     width: 'resolve',
     theme: 'bootstrap4',
@@ -82,7 +77,7 @@ $(function(){
     width: 'resolve',
     theme: 'bootstrap4',
   });
-  
+
   $('#employee-role').select2({
     width: 'resolve',
     theme: 'bootstrap4',
@@ -103,8 +98,8 @@ $(function(){
     width: 'resolve',
     theme: 'bootstrap4',
   });
-  
-  
+
+
   $("#lot").inputmask({
     mask: "9 999 999",
     //placeholder: "*",
@@ -190,7 +185,7 @@ $(function(){
     },
     allowInputToggle:true,
   });
-  
+
   $('#furnitute-assignement-date').datetimepicker({
     format: 'DD/MM/YYYY',
     useCurrent: false,
@@ -265,21 +260,21 @@ $(function(){
         Livewire.find(formID.getAttribute('wire:id')).set('startDate', null);
         $(".employee-start").addClass('is-invalid').removeClass('is-valid');
         //console.log("birthdate = null");
-      } else { 
+      } else {
         Livewire.find(formID.getAttribute('wire:id')).set('startDate', startdate);
         $(".employee-start").addClass('is-valid').removeClass('is-invalid')
         //console.log("Final value "+startdate);
       }
     } else {
       $(".employee-start").removeClass('is-valid')
-    }  
+    }
   });
 
   $('#employee-endDate').datetimepicker({
     format: 'DD/MM/YYYY, HH:mm',
     useCurrent: true,
     sideBySide: true,
-    icons: {        
+    icons: {
       up: 'fas fa-arrow-up',
       down: 'fas fa-arrow-down',
       previous: 'fas fa-chevron-left',
@@ -320,7 +315,7 @@ $(function(){
   $("#tcontract").on('change', function(event){
 
     var formID = document.getElementById("myEmployeeForm");
-        
+
     if(this.checked){
       $("#employee-endDate").hide();
       $(".employee-endDate").val("");
@@ -338,7 +333,7 @@ $(function(){
 
   $("#modal-profile").on('hidden.bs.modal', function(){
     Livewire.emit('resetProfileInputFields');
-    
+
   });
   $("#modal-userform").on('hidden.bs.modal', function(){
     Livewire.emit('resetUserInputFields');
@@ -346,14 +341,14 @@ $(function(){
     //$("#select2Permission").val([]).trigger('change');
   });
   $("#modal-company").on('hidden.bs.modal', function(){
-      Livewire.emit('resetCompanyInputFields');      
+      Livewire.emit('resetCompanyInputFields');
     }
   );
   $("#modal-user-roles-permissions").on('hidden.bs.modal', function(){
-    //Livewire.emit('resetUserRPInputFields');      
+    //Livewire.emit('resetUserRPInputFields');
   });
   $("#modal-contact").on('hidden.bs.modal', function(){
-      Livewire.emit('resetContactInputFiels');      
+      Livewire.emit('resetContactInputFiels');
     }
   );
   $("#modal-building").on('hidden.bs.modal', function(){
@@ -361,16 +356,16 @@ $(function(){
       $('#lot').removeClass('is-valid');
       $('#lot').removeClass('is-invalid');
       //$('#lot').removeAttr("disabled");
-      Livewire.emit('resetBuildingInputFields');      
+      Livewire.emit('resetBuildingInputFields');
     }
   );
   $("#modal-apartment").on('hidden.bs.modal', function(){
-      Livewire.emit('resetApartmentInputFiels');      
+      Livewire.emit('resetApartmentInputFiels');
     }
   );
 
   $("#modal-editEmployee").on('hidden.bs.modal', function(){
-      Livewire.emit('resetEditEmployeeInputFields');      
+      Livewire.emit('resetEditEmployeeInputFields');
     }
   );
 
@@ -379,7 +374,7 @@ $(function(){
     $(".furniture-aquisition-date").val("");
     $(".furniture-aquisition-date").removeClass('is-valid');
     $(".furniture-aquisition-date").removeClass('is-invalid');
-    Livewire.emit('resetFurnitureInputFields');      
+    Livewire.emit('resetFurnitureInputFields');
   });
 
   $("#modal-furnitureAssignement").on('hidden.bs.modal', function(){
@@ -387,7 +382,7 @@ $(function(){
     $(".furnitute-assignement-date").val("");
     $(".furnitute-assignement-date").removeClass('is-valid');
     $(".furnitute-assignement-date").removeClass('is-invalid');
-    Livewire.emit('resetFurnitureAssignementInputFields');      
+    Livewire.emit('resetFurnitureAssignementInputFields');
   });
 
   $("#user-role").on('select2:select', function(event){
@@ -396,7 +391,7 @@ $(function(){
     Livewire.find(formID.getAttribute('wire:id')).set('role', data);
     //console.log(data);
   });
-  
+
   $("#employee-role").on('select2:select', function(event){
     var data = $(this).select2("val");
     var formID = document.getElementById("myEmployeeForm");
@@ -415,7 +410,7 @@ $(function(){
     Livewire.find(formID.getAttribute('wire:id')).set('city', data);
     //console.log(data);
   });
-  
+
   $("#apart_building").on('select2:select', function(event){
         var data = $(this).select2("val");
         var formID = document.getElementById("apartmentform");
@@ -487,7 +482,7 @@ $(function(){
         Livewire.find(formID.getAttribute('wire:id')).set('birthdate', null);
         $(".employee-birthdate").addClass('is-invalid').removeClass('is-valid');
         //console.log("birthdate = null");
-      } else { 
+      } else {
         Livewire.find(formID.getAttribute('wire:id')).set('birthdate', birthdate);
         $(".employee-birthdate").addClass('is-valid').removeClass('is-invalid')
         //console.log(birthdate);
@@ -507,14 +502,14 @@ $(function(){
         Livewire.find(formID.getAttribute('wire:id')).set('birthdate', null);
         $(".edit-employee-birth").addClass('is-invalid').removeClass('is-valid');
         //console.log("birthdate = null");
-      } else { 
+      } else {
         Livewire.find(formID.getAttribute('wire:id')).set('birthdate', birthdate);
         $(".edit-employee-birth").addClass('is-valid').removeClass('is-invalid')
         //console.log(birthdate);
       }
     } else {
       $(".edit-employee-birth").removeClass('is-valid')
-    } 
+    }
   });
   $('#furniture-aquisition-date').on('hide.datetimepicker', function(e) {
     e.preventDefault();
@@ -527,7 +522,7 @@ $(function(){
         Livewire.find(formID.getAttribute('wire:id')).set('buy_at', null);
         $(".furniture-aquisition-date").addClass('is-invalid').removeClass('is-valid');
         //console.log("birthdate = null");
-      } else { 
+      } else {
         Livewire.find(formID.getAttribute('wire:id')).set('buy_at', buydate);
         $(".furniture-aquisition-date").addClass('is-valid').removeClass('is-invalid')
         //console.log(birthdate);
@@ -536,7 +531,7 @@ $(function(){
       $(".furniture-aquisition-date").removeClass('is-valid')
       //console.log("NULL")
     }
-     
+
   });
 
   $('#furnitute-assignement-date').on('hide.datetimepicker', function(e) {
@@ -550,7 +545,7 @@ $(function(){
         Livewire.find(formID.getAttribute('wire:id')).set('assigned_at', null);
         $(".furnitute-assignement-date").addClass('is-invalid').removeClass('is-valid');
         //console.log("birthdate = null");
-      } else { 
+      } else {
         Livewire.find(formID.getAttribute('wire:id')).set('assigned_at', assigndate);
         $(".furnitute-assignement-date").addClass('is-valid').removeClass('is-invalid')
         //console.log(birthdate);
@@ -559,7 +554,7 @@ $(function(){
       $(".furnitute-assignement-date").removeClass('is-valid')
       //console.log("NULL")
     }
-     
+
   });
 
   $("#modal-employee").on('hidden.bs.modal', function(){
@@ -571,10 +566,10 @@ $(function(){
 
     $("#employee-zip").val('');
     $("#employee-zip").addClass('').removeClass('is-valid');
-    
+
     $("#employee-mobile").val("");
     $("#employee-mobile").removeClass('is-valid');
-    
+
     $(".employee-start").val("");
     //$("#employee-startDate").datetimepicker('clear');
     $(".employee-start").removeClass('is-valid')
@@ -608,7 +603,7 @@ $(function(){
         var formID = document.getElementById("myEmployeeForm");
         Livewire.find(formID.getAttribute('wire:id')).set('mobile', null);
         $(this).addClass('is-invalid').removeClass('is-valid');
-      } 
+      }
     },
   });
 
@@ -630,7 +625,7 @@ $(function(){
         var formID = document.getElementById("contact-form");
         Livewire.find(formID.getAttribute('wire:id')).set('telephone', null);
         $(this).addClass('is-invalid').removeClass('is-valid');
-      } 
+      }
     },
   });
 
@@ -652,20 +647,20 @@ $(function(){
         var formID = document.getElementById("contact-form");
         Livewire.find(formID.getAttribute('wire:id')).set('mobile', null);
         $(this).addClass('is-invalid').removeClass('is-valid');
-      } 
+      }
     },
   });
 
   $("#editProfileButton").on('click', function(){
     Livewire.emit('editProfile');
   });
-  
+
   $("#userRolesPermissionsButton").on('click', function (event) {
-    
+
     var userID = this.dataset.user;
     let _token   = $('meta[name="csrf-token"]').attr('content');
     let _url='/admin/users/'+userID+'/fillroleprofiles';
-    
+
     $.ajax({
       url:_url,
       type: "POST",
@@ -676,7 +671,7 @@ $(function(){
         user_id: userID,
       },
       success: function(response) {
-        
+
         $("#myteamID").val(response.team.id)
         $("#myteamID").attr('data-user', response.user.id)
         $("#myteam").val(response.team.name)
@@ -686,12 +681,12 @@ $(function(){
           // Set the value, creating a new option if necessary
           if ($('#user-role-form').find("option[value='" + value.id + "']").length) {
             $('#user-role-form').val(value.id).trigger('change');
-          } else { 
+          } else {
             // Create a DOM Option and pre-select by default
             var newOption = new Option(value.text, value.id, value.selected, true);
             // Append it to the select
             $('#user-role-form').append(newOption).trigger('change');
-          } 
+          }
         });
 
         $.each(response.permissions, function (key, value) {
@@ -699,14 +694,14 @@ $(function(){
           // Set the value, creating a new option if necessary
           if ($('#user-permissions-form').find("option[value='" + value.id + "']").length) {
             $('#user-permissions-form').val(value.id).trigger('change');
-          } else { 
+          } else {
             // Create a DOM Option and pre-select by default
             var newOption = new Option(value.text, value.id, value.selected, true);
             // Append it to the select
             $('#user-permissions-form').append(newOption).trigger('change');
-          } 
+          }
         });
-        
+
       },
       error: function(response){
         console.log(response);
@@ -715,10 +710,10 @@ $(function(){
         //})
       }
     });
-    
+
     $("#user-role-permissions-form").submit(function(event){
       event.preventDefault();
-      
+
       var userID = $("#myteamID").data('user');
       //var roles = $("#user-role-form").val()
       //var permissions = $("#user-permissions-form").val()
@@ -754,87 +749,11 @@ $(function(){
           })
         }
       });
-      
+
     });
 
     $("#modal-user-roles-permissions").modal('show');
   })
-
-  $(".editApartmentTypeButton").on("click", function(event){
-    event.preventDefault();
-    var apartment_type_id = $(this).val();
-    var company_id = this.dataset.company
-    let _token   = $('meta[name="csrf-token"]').attr('content');
-    let _url='/company/'+company_id+'/apartments-setting/'+apartment_type_id+'/edit';
-    $.ajax({
-      url:_url,
-      type: "POST",
-      dataType: "json",
-      cache: false,
-      data:{
-        _token: _token,
-        company_id: company_id,
-        apartment_type_id:apartment_type_id 
-      },
-      success: function(response) {
-        //console.log(response.apartment_type)
-        $("#apart_type_id").val(response.apartment_type.id)
-        $("#name").val(response.apartment_type.name)
-        $("#tag").val(response.apartment_type.tag)
-        $("#description").val(response.apartment_type.description)
-        //toastr.options.onHidden = function() { location.reload() }
-        //toastr[response.type](response.message);
-        //setTimeout(function () { location.reload(); 5000});
-      },
-      error: function(response, textStatus){
-        $.each(response.responseJSON.errors, function(key, value){
-          toastr[textStatus](value);
-        })
-      }
-    });
-    //console.log(apartment_type_id)
-  });
-
-  $(".deleteApartmentTypeButton").on("click", function(event){
-    event.preventDefault();
-    var apartment_type_id = $(this).val();
-    var company_id = this.dataset.company
-    let _token   = $('meta[name="csrf-token"]').attr('content');
-    let _url='/company/'+company_id+'/apartments-setting/'+apartment_type_id;
-    Swal.fire({
-      title: 'The apartment type will be deleted!',
-      text: 'Are You Sure?',
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Delete!'
-    }).then((result) => {
-		//if user clicks on delete
-        if (result.value) {
-          $.ajax({
-            url:_url,
-            type: "DELETE",
-            dataType: "json",
-            cache: false,
-            data:{
-              _token: _token,
-              apartment_type_id:apartment_type_id 
-            },
-            success: function(response) {
-              toastr.options.onHidden = function() { location.reload() }
-              toastr[response.type](response.message);
-              //setTimeout(function () { location.reload(); 5000});
-            },
-            error: function(response, textStatus){
-              $.each(response.responseJSON.errors, function(key, value){
-                toastr[textStatus](value);
-              })
-            }
-          });
-        } 
-    });
-  });
 
   $("#showpasswd").on("click", function (event) {
     event.preventDefault();
@@ -852,7 +771,7 @@ $(function(){
   });
 
   $("#DeleteAssignFurniture").on("click", function(event){
-    var assign = $(this).val() 
+    var assign = $(this).val()
     //console.log(assign);
     Swal.fire({
       title: 'Are You Sure?',
@@ -869,7 +788,7 @@ $(function(){
         Livewire.emit('deleteFurnitureAssign', assign);
         //console.log(assign);
 
-        } 
+        }
     });
   });
 
@@ -915,9 +834,9 @@ $(function(){
               })
             }
           });
-        } 
+        }
     });
-    
+
   });
 
   $("#furnitureTable").on("click", '.deleteFurnitureButton',function(event){
@@ -957,95 +876,7 @@ $(function(){
               })
             }
           });
-        } 
-    });
-
-  });
-
-  $("#usersTable").on("click", ".changeStatus", function(event){
-    //event.preventDefault();
-    var userID = $(this).val();
-    console.log(userID);
-    let _token   = $('meta[name="csrf-token"]').attr('content');
-    let _url='users/'+userID+'/changeStatus'
-    Swal.fire({
-      title: 'Are You Sure?',
-      text: 'The user status will be changed!!!',
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Save!'
-    }).then((result) => {
-        if (result.value) {
-          $.ajax({
-            url:_url,
-            type: "PATCH",
-            cache: false,
-            data: {
-              _token: _token,
-              user_id: userID,
-            },
-            success: function(response) {
-              toastr.options.onHidden = function() { location.reload() }
-              toastr.success(response.message);
-              //toastr[response.type](response.message);
-              //setTimeout(function () { location.reload(); 5000});
-            },
-            error: function(response){
-              $.each(response.responseJSON.errors, function(key, value){
-                toastr.error(value)
-                //toastr["error"](value);
-              })
-            }
-          });
-        } 
-    });
-
-  });
-
-  $("#usersTable").on("click", ".userDelete", function(event){
-    //event.preventDefault();
-    var userID = $(this).val();
-    //console.log(userID);
-    let _token   = $('meta[name="csrf-token"]').attr('content');
-    let _url='users/'+userID
-    Swal.fire({
-      title: 'The user will be permanently deleted!!!',
-      text: 'If you are not sure please click on cancel',
-      type: "error",
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Delete!'
-    }).then((result) => {
-        if (result.value) {
-          $.ajax({
-            url:_url,
-            type: "DELETE",
-            cache: false,
-            data: {
-              _token: _token,
-              user_id: userID,
-            },
-            success: function(response) {
-              toastr.options.onHidden = function() { location.reload() }
-              toastr[response.type](response.message);
-              //toastr[response.type](response.message);
-              //setTimeout(function () { location.reload(); 5000});
-            },
-            error: function(response){
-              toastr.error(response.responseJSON.message)
-              /*
-              $.each(response.responseJSON.message, function(key, value){
-                toastr.error(value)
-                //toastr["error"](value);
-              })
-              */
-             //console.log(response)
-            }
-          });
-        } 
+        }
     });
 
   });
@@ -1063,7 +894,7 @@ document.addEventListener("livewire:load", () => {
         width: 'resolve',
         theme: 'bootstrap4',
       });
-        
+
       $('#contactCountry').select2({
         width: 'resolve',
         theme: 'bootstrap4',
@@ -1084,7 +915,7 @@ document.addEventListener("livewire:load", () => {
         width: 'resolve',
         theme: 'bootstrap4',
       });
-  
+
       $('#employeeCountry').select2({
         width: 'resolve',
         theme: 'bootstrap4',
@@ -1113,8 +944,8 @@ document.addEventListener("livewire:load", () => {
         width: 'resolve',
         theme: 'bootstrap4',
       });
-        
-    }); 
+
+    });
   }
 );
 
@@ -1158,7 +989,7 @@ window.addEventListener('openContactModal', event => {
       $("#modal-contact").modal('show');
     }
 );
-  
+
   window.addEventListener('closeContactModal', event => {
       $("#modal-contact").modal('hide');
     }
@@ -1181,7 +1012,7 @@ window.addEventListener('openContactModal', event => {
       $("#modal-building").modal('show');
     }
   );
-  
+
   window.addEventListener('closeBuildingModal', event => {
       $("#modal-building").modal('hide');
     }
@@ -1243,4 +1074,4 @@ window.addEventListener('openContactModal', event => {
   $("#DeleteAssignFurniture").click(function(){
     console.log("Hello");
   });
-  
+

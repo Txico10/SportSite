@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Laravel Users
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -22,7 +22,7 @@ use Laratrust\Traits\LaratrustUserTrait;
 
 /**
  *  Users class
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -33,7 +33,7 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use LaratrustUserTrait;
     use Notifiable;
-    
+
     const ACTIVE = 1;
     const INACTIVE = 0;
 
@@ -43,7 +43,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'image'
+        'name', 'email', 'password', 'image',
     ];
 
     /**
@@ -67,7 +67,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $appends = [
         'active_company'
     ];
-    
+
     /**
      * Get Active Company Attribute
      *
@@ -86,12 +86,12 @@ class User extends Authenticatable implements MustVerifyEmail
             )
             ->value('real_state_id');
     }
-    
+
     /**
      * Scope With Last Login Date
      *
      * @param mixed $query Query
-     * 
+     *
      * @return void
      */
     public function scopeWithLastLoginDate($query)
@@ -107,16 +107,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Render the livewire users view
-     * 
+     *
      * @return $photo URL
      */
-    public function adminlte_image() 
+    public function adminlte_image()
     {
         $photo = Auth::user()->image;
-        
+
         if (empty($photo)) {
             $photo = 'https://picsum.photos/300/300';
-            
+
         } else {
             $photo = asset(Storage::url('profile_images/'.$photo));
         }
@@ -125,7 +125,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Render the livewire users view
-     * 
+     *
      * @return $photo URL
      */
     public function adminlte_desc()
@@ -135,7 +135,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Render the livewire users view
-     * 
+     *
      * @return profile URL
      */
     public function adminlte_profile_url()
@@ -145,9 +145,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Render the livewire users view
-     * 
+     *
      * @param $query receive query format
-     * 
+     *
      * @return query
      */
     public static function search($query)
@@ -156,11 +156,11 @@ class User extends Authenticatable implements MustVerifyEmail
             : static::where('name', 'like', '%'.$query.'%')
                 ->orWhere('email', 'like', '%'.$query.'%');
     }
-        
+
     /**
      * Logins
      *
-     * @return void
+     * @return Illuminate\Database\Eloquent\Model
      */
     public function logins()
     {
@@ -169,15 +169,15 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Render the livewire users view
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Model
      */
-    public function contact() 
+    public function contact()
     {
 
         return $this->morphOne(Contact::class, 'contactable');
     }
-    
+
     /**
      * Employees
      *
@@ -196,7 +196,7 @@ class User extends Authenticatable implements MustVerifyEmail
             )
             ->withTimestamps();
     }
-    
+
     /**
      * Companies
      *
