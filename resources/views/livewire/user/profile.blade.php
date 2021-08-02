@@ -1,10 +1,10 @@
 <div class="card card-primary card-outline">
   <div class="card-body box-profile">
     <div class="text-center">
-      @if(!empty($user->employees->last()->image))
-      <img class="profile-user-img img-fluid img-circle" src="{{asset('storage/profile_images/'.$user->employees->last()->image)}}" alt="{{$user->name}}">
+      @if(!empty($user->image))
+      <img class="profile-user-img img-fluid img-circle" src="{{asset('storage/profile_images/employees/'.$user->image)}}" alt="{{$user->name}}">
       @else
-      <img class="profile-user-img img-fluid img-circle" src="{{$user->image ? asset('storage/profile_images/'.$user->image) : 'https://picsum.photos/128/128'}}" alt="{{$user->image ? $user->name:'User profile picture'}}">
+      <img class="profile-user-img img-fluid img-circle" src="https://picsum.photos/128/128" alt="User profile picture">
       @endif
     </div>
     <h3 class="profile-username text-center">{{$user->name}}</h3>

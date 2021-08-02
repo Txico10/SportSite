@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Employee form
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -23,7 +23,7 @@ use Intervention\Image\Facades\Image;
 
 /**
  *  Employee form class
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -39,12 +39,13 @@ class EmployeesEdit extends Component
     public $name;
     public $birthdate;
     public $gender;
+    public $nas;
 
     protected $listeners = [
         'editEmployee'=> 'edit',
-        'resetEditEmployeeInputFields' => 'resetInputFields' 
+        'resetEditEmployeeInputFields' => 'resetInputFields'
     ];
-        
+
     /**
      * Rules
      *
@@ -56,9 +57,10 @@ class EmployeesEdit extends Component
             'image' => ['required','image','mimes:jpg,png,jpeg,gif,svg','max:2048','dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'],
             'name' => ['required','string','min:3','max:191'],
             'birthdate' => ['required','date', 'before:today'],
+            'nas' => ['required', 'numeric', 'digits:9'],
             'gender' => Rule::in('M', 'F', 'O')
         ];
-    } 
+    }
     /**
      * Render
      *
@@ -68,12 +70,12 @@ class EmployeesEdit extends Component
     {
         return view('livewire.management.employees-edit');
     }
-    
+
     /**
      * Updated
      *
      * @param mixed $propertyName validation field
-     * 
+     *
      * @return void
      */
     public function updated($propertyName)
@@ -84,16 +86,18 @@ class EmployeesEdit extends Component
     /**
      * Edit
      *
-     * @param Employee $employee the employee
-     * 
+     * @param mixed $employee_id the employee
+     *
      * @return void
      */
-    public function edit(Employee $employee)
+    public function edit($employee_id)
     {
+        $employee = Employee::findOrFail($employee_id);
         $this->myEmployee = $employee;
         $this->image = $employee->image;
         $this->old_image = $employee->image;
         $this->name = $employee->name;
+        $this->nas = $employee->nas;
         $this->birthdate = $employee->birthdate;
         if (strcmp($employee->gender, "male")==0) {
             $this->gender = "M";
@@ -108,7 +112,7 @@ class EmployeesEdit extends Component
         $formatedDate = Carbon::parse($this->birthdate)->format('d-m-Y');
         $this->dispatchBrowserEvent('openEmployeeEditModal', ['birthdate' => $formatedDate]);
     }
-    
+
     /**
      * ResetInputFields
      *
@@ -119,7 +123,7 @@ class EmployeesEdit extends Component
         $this->reset();
         $this->resetErrorBag();
     }
-        
+
     /**
      * SaveEmployeeEdit
      *
@@ -131,6 +135,7 @@ class EmployeesEdit extends Component
         $this->myEmployee->name = $data['name'];
         $this->myEmployee->birthdate = $data['birthdate'];
         $this->myEmployee->gender = $data['gender'];
+        $this->myEmployee->nas = $data['nas'];
         //remove existing image
         if (strcmp($this->image, $this->old_image)!=0) {
             Storage::delete('public/profile_images/employees/'.$this->old_image);
@@ -138,12 +143,12 @@ class EmployeesEdit extends Component
             $this->myEmployee->image = $filename;
             $this->_storeImage($filename);
         }
-        
+
         $this->myEmployee->save();
         $this->dispatchBrowserEvent('closeEmployeeEditModal');
             $this->emit('refreshEmployees');
             $this->emit(
-                'alert', 
+                'alert',
                 [
                     'type' => 'success',
                     'message' => 'Employee updated successfuly',
@@ -154,16 +159,16 @@ class EmployeesEdit extends Component
      * StoreImage
      *
      * @param mixed $filename file name
-     * 
+     *
      * @return void
      */
     private function _storeImage($filename)
     {
-        $this->image->storeAs('public/profile_images/employees', $filename);
+        $this->image->storeAs('public/profile_images/employees/', $filename);
         $path = public_path('storage/profile_images/employees/' . $filename);
         $width = 128;
         $height = 128;
-        
+
         $img = Image::make($path)->resize(
             $width,
             $height,

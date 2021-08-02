@@ -1,7 +1,6 @@
 @extends('adminlte::page')
 @section('title', 'Furnitures')
 @section('plugins.Datatables', true)
-@section('plugins.BootstrapSelect', true)
 @section('content_header')
     <div class="container-fluid">
         <div class="row mb-2">
@@ -92,7 +91,7 @@
           'Withdraw',
           'Action'
         ];
-        
+
         $data = array();
         foreach ($furniture->apartments as $key => $apartment) {
           $withdraw = null;

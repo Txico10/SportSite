@@ -1,6 +1,5 @@
 @extends('adminlte::page')
 @section('plugins.Datatables', true)
-@section('plugins.BootstrapSelect', true)
 @section('title', 'Users')
 @section('content_header')
     <h1></h1>
@@ -58,7 +57,7 @@
           </button>
         </div>
       </div>
-      <div class="card-body table-responsive">
+      <div class="card-body">
         <x-adminlte-datatable id="usersTable" :heads="$heads" :config="$config" compressed/>
       </div>
       <!-- /.card-body -->
@@ -79,87 +78,85 @@
 
 @section('js')
   <script type="text/javascript" src="{{asset('js/company.js')}}"></script>
-    <script type="text/javascript">
-        $(function(){
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+<script type="text/javascript">
+    $(function(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $("#usersTable").on("click", ".userDelete", function(event){
+            event.preventDefault();
+            var userID = $(this).val();
+            //console.log(userID);
+            let _url='users/'+userID
+            Swal.fire({
+                title: 'The user will be permanently deleted!!!',
+                text: 'If you are not sure please click on cancel',
+                type: "error",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Delete!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url:_url,
+                        type: "DELETE",
+                        cache: false,
+                        data: {
+                            user_id: userID,
+                        },
+                        success: function(response) {
+                            $("#usersTable").DataTable().ajax.reload();
+                            toastr[response.type](response.message);
+                        },
+                        error: function(response){
+                            $.each(response.responseJSON.message, function(key, value){
+                                toastr.error(value)
+                                //toastr["error"](value);
+                            })
+                        }
+                    });
                 }
             });
-
-            $("#usersTable").on("click", ".userDelete", function(event){
-                event.preventDefault();
-                var userID = $(this).val();
-                //console.log(userID);
-                let _url='users/'+userID
-                Swal.fire({
-                    title: 'The user will be permanently deleted!!!',
-                    text: 'If you are not sure please click on cancel',
-                    type: "error",
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Delete!'
-                }).then((result) => {
-                    if (result.value) {
-                        $.ajax({
-                            url:_url,
-                            type: "DELETE",
-                            cache: false,
-                            data: {
-                                user_id: userID,
-                            },
-                            success: function(response) {
-                                $("#usersTable").DataTable().ajax.reload();
-                                toastr[response.type](response.message);
-                            },
-                            error: function(response){
-                                $.each(response.responseJSON.message, function(key, value){
-                                    toastr.error(value)
-                                    //toastr["error"](value);
-                                })
-                            }
-                        });
-                    }
-                });
+        });
+        $("#usersTable").on("click", ".changeStatus", function(event){
+            event.preventDefault();
+            var userID = $(this).val();
+            //console.log(userID);
+            let _url='users/'+userID+'/changeStatus'
+            Swal.fire({
+                title: 'Are You Sure?',
+                text: 'The user status will be changed!!!',
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Save!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url:_url,
+                        type: "PATCH",
+                        cache: false,
+                        data: {
+                            user_id: userID,
+                        },
+                        success: function(response) {
+                            $("#usersTable").DataTable().ajax.reload();
+                            toastr.success(response.message);
+                        },
+                        error: function(response){
+                            $.each(response.responseJSON.errors, function(key, value){
+                                toastr.error(value)
+                                //toastr["error"](value);
+                            })
+                        }
+                    });
+                }
             });
-
-            $("#usersTable").on("click", ".changeStatus", function(event){
-                event.preventDefault();
-                var userID = $(this).val();
-                //console.log(userID);
-                let _url='users/'+userID+'/changeStatus'
-                Swal.fire({
-                    title: 'Are You Sure?',
-                    text: 'The user status will be changed!!!',
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Save!'
-                }).then((result) => {
-                    if (result.value) {
-                        $.ajax({
-                            url:_url,
-                            type: "PATCH",
-                            cache: false,
-                            data: {
-                                user_id: userID,
-                            },
-                            success: function(response) {
-                                $("#usersTable").DataTable().ajax.reload();
-                                toastr.success(response.message);
-                            },
-                            error: function(response){
-                                $.each(response.responseJSON.errors, function(key, value){
-                                    toastr.error(value)
-                                    //toastr["error"](value);
-                                })
-                            }
-                        });
-                    }
-                });
-            });
-        })
-    </script>
+        });
+    })
+</script>
 @stop

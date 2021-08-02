@@ -1,7 +1,5 @@
 @extends('adminlte::page')
 
-@section('plugins.BootstrapSelect', true)
-
 @section('title', 'Company profile')
 
 @section('content_header')
@@ -13,7 +11,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
-              <li class="breadcrumb-item active">Real Estate</li>
+              <li class="breadcrumb-item active">Company</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->

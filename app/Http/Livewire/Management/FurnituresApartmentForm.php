@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Furniture Assignement Form on Livewire Controller
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 /**
  *  Furniture Assignement Form on Livewire component
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -35,7 +35,7 @@ class FurnituresApartmentForm extends Component
     public $building_id;
     public $apartment_id;
     public $assigned_at;
-    
+
     protected $listeners = [
         'resetFurnitureAssignementInputFields' => 'resetInputFields',
         'deleteFurnitureAssign'=>'delete',
@@ -46,7 +46,7 @@ class FurnituresApartmentForm extends Component
      *
      * @param mixed $company   Company ID
      * @param mixed $furniture Furniture
-     * 
+     *
      * @return void
      */
     public function mount($company, $furniture)
@@ -55,9 +55,9 @@ class FurnituresApartmentForm extends Component
         $this->company = $company;
         $this->buildings = $this->company->buildings;
         $this->furniture = $furniture;
-        
+
     }
-        
+
     /**
      * Render furniture apartment form
      *
@@ -73,7 +73,7 @@ class FurnituresApartmentForm extends Component
             ]
         );
     }
-        
+
     /**
      * Updated Building Id
      *
@@ -83,7 +83,7 @@ class FurnituresApartmentForm extends Component
     {
         $this->apartments = Apartment::where('building_id', $this->building_id)->get();
     }
-    
+
     /**
      * Reset Input Fields
      *
@@ -106,14 +106,14 @@ class FurnituresApartmentForm extends Component
      * Live validation
      *
      * @param mixed $propertyName validation field
-     * 
+     *
      * @return void
      */
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName);
     }
-    
+
     /**
      * Validation rules
      *
@@ -125,7 +125,7 @@ class FurnituresApartmentForm extends Component
         return [
             'apartment_id' => ['required', 'exists:apartments,id'],
             'assigned_at' => [
-                'required', 'date',  
+                'required', 'date',
                 new FurnitureAssignDate($this->furniture->furnitureUnassigned()),
             ],
         ];
@@ -138,32 +138,32 @@ class FurnituresApartmentForm extends Component
      */
     public function saveAssignForm()
     {
-        
+
         $data = $this->validate();
-        
+
         $this->furniture->apartments()->attach($data['apartment_id'], ['assigned_at'=>$data['assigned_at']]);
-        
+
         $this->dispatchBrowserEvent('closeFurnitureAssignementModal');
-        
+
         session()->flash('status', 'Furniture assined successfully.');
-        
-        return redirect()->route('company.furnitures.show', ['id'=>$this->company->id, 'furniture'=>$this->furniture]);
+
+        return redirect()->route('company.furnitures.show', ['company'=>$this->company, 'furniture'=>$this->furniture]);
 
     }
-    
+
     /**
      * Delete
      *
      * @param mixed $id ID
-     * 
+     *
      * @return void
      */
     public function delete($id)
     {
         DB::table('furniture_apartment')->where('id', $id)->delete();
-        
+
         session()->flash('status', 'Furniture assinement deleted successfully.');
-        
+
         return redirect()->route('company.furnitures.show', ['id'=>$this->company->id, 'furniture'=>$this->furniture]);
 
     }

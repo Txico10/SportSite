@@ -600,6 +600,7 @@ class ClientsForm extends Component
              */
             $contract = [
                 'user_id' => $newUser->id,
+                'role_id' => $role->id,
                 'start_date' => Carbon::now()->format('Y-m-d'),
                 'api_token' => bin2hex(openssl_random_pseudo_bytes(16)),
                 'status' => 'FT'

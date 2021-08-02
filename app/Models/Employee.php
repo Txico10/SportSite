@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Employee Model
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -13,9 +13,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+
 /**
  *  Extended Model
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -24,19 +26,38 @@ use Illuminate\Database\Eloquent\Model;
  * */
 class Employee extends Model
 {
-    
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'birthdate', 'gender'
+        'name', 'birthdate', 'gender', 'nas'
+    ];
+
+    protected $appends = [
+        'image'
     ];
 
     /**
+     * Get Image Attribute
+     *
+     * @return void
+     */
+    public function getImageAttribute()
+    {
+        return DB::table('users')
+            ->join('employee_contracts', 'employee_contracts.user_id', 'users.id')
+            ->where('employee_contracts.employee_id', $this->id)
+            ->latest('employee_contracts.created_at')
+            ->value('users.image');
+
+    }
+
+    /**
      * Contact relationship
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Model
      */
     public function contact()
@@ -46,9 +67,9 @@ class Employee extends Model
 
     /**
      * Searche for Real State/clients information
-     * 
+     *
      * @param $query receive query format
-     * 
+     *
      * @return query
      */
     public static function search($query)
@@ -62,7 +83,7 @@ class Employee extends Model
 
     /**
      * Searche for Real State/clients information
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Model
      */
     public function company()
@@ -83,17 +104,17 @@ class Employee extends Model
 
     /**
      * Local scope Company
-     * 
+     *
      * @param $query The query
      * @param $id    Company ID
-     * 
+     *
      * @return company filter
      */
     public function scopeOfCompany($query, $id)
     {
         return $query->join(
             'employee_contracts',
-            'employees.id', 
+            'employees.id',
             'employee_contracts.employee_id',
         )
             ->where('employee_contracts.real_state_id', '=', $id);
@@ -101,9 +122,9 @@ class Employee extends Model
 
     /**
      * Local scope Company
-     * 
+     *
      * @param $query The query
-     * 
+     *
      * @return company filter
      */
     public function scopeOfUserRole($query)
@@ -117,9 +138,9 @@ class Employee extends Model
 
     /**
      * Local scope role
-     * 
+     *
      * @param $query The query
-     * 
+     *
      * @return company filter
      */
     public function scopeOfRole($query)
@@ -131,12 +152,12 @@ class Employee extends Model
         )
             ->select('employees.*', 'roles.display_name');
     }
-    
+
     /**
      * SetGenderAttribute
      *
      * @param mixed $value value
-     * 
+     *
      * @return void
      */
     public function setGenderAttribute($value)

@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Company contact form
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -18,7 +18,7 @@ use Livewire\Component;
 use PragmaRX\Countries\Package\Countries;
 /**
  *  Company contact form class
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -44,10 +44,10 @@ class ContactForm extends Component
     public $countryCities;
 
     protected $listeners = [
-        'editContact'=> 'edit', 
+        'editContact'=> 'edit',
         'resetContactInputFiels' => 'resetInputFields',
     ];
-    
+
     /**
      * Mount
      *
@@ -55,8 +55,11 @@ class ContactForm extends Component
      */
     public function mount()
     {
-        $this->allCountries = Countries::all()->pluck('name.common', 'cca3')->toArray();
+        $this->allCountries = Countries::all()
+            ->pluck('name.common', 'cca3')
+            ->toArray();
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -65,7 +68,7 @@ class ContactForm extends Component
     public function render()
     {
         return view(
-            'livewire.management.contact-form', 
+            'livewire.management.contact-form',
             [
                 'allCountries'=>$this->allCountries,
             ]
@@ -121,7 +124,7 @@ class ContactForm extends Component
             $contact->save();
             $type = 'success';
             $op = "Contact updated successfully";
-            
+
         } else {
             $type = "warning";
             $op = "The contact was not been updated";
@@ -132,21 +135,21 @@ class ContactForm extends Component
         $this->emit('refreshBuildings');
         $this->emit('refreshContactShow');
         $this->emit(
-            'alert', 
+            'alert',
             [
                 'type'=>$type,
                 'message'=> $op,
             ]
         );
-        
+
     }
 
     /**
      * Livetime validation
-     * 
+     *
      * @return validation rules
      */
-    public function rules() 
+    public function rules()
     {
         return [
             'telephone' => [
@@ -185,16 +188,16 @@ class ContactForm extends Component
     }
     /**
      * Livetime validation
-     * 
+     *
      * @param $propertyName to validate specific field
-     * 
+     *
      * @return real time validation
      */
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName, $this->rules());
     }
-    
+
     /**
      * Updated Country
      *
@@ -217,7 +220,7 @@ class ContactForm extends Component
             ]
         );
     }
-    
+
     /**
      * Updated City
      *
@@ -232,12 +235,12 @@ class ContactForm extends Component
             ->first()
             ->adm1name;
         $this->region = utf8_decode($myRegion);
-        
+
     }
 
     /**
      * Reset form fields
-     * 
+     *
      * @return void
      */
     public function resetInputFields()
@@ -246,11 +249,11 @@ class ContactForm extends Component
             [
                 'oldContact',
                 'suite',
-                'num', 
+                'num',
                 'street' ,
                 'city',
                 'region',
-                'country', 
+                'country',
                 'pc',
                 'telephone',
                 'mobile',
@@ -263,9 +266,9 @@ class ContactForm extends Component
 
     /**
      * Edit Contact
-     * 
+     *
      * @param Contact $newContact the new contact
-     * 
+     *
      * @return Contact
      */
     public function edit(Contact $newContact)
@@ -290,7 +293,7 @@ class ContactForm extends Component
                 ->pluck('name', 'nameascii')
                 ->toArray();
         }
-        
+
         $this->dispatchBrowserEvent('openContactModal', ['telephone'=>$this->telephone, 'mobile' =>$this->mobile]);
     }
 }

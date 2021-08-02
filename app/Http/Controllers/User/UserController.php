@@ -153,13 +153,28 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user)
     {
-        //dd($user->roles->count());
-        $user = $user->load('roles', 'permissions', 'employees.contact');
+        if ($request->ajax()) {
+            $logins = DB::table('logins')
+                ->where('user_id', $user->id)
+                ->select(['ip_address', 'created_at'])
+                ->get();
+
+            return datatables()->of($logins)
+                ->addIndexColumn()
+                ->editColumn(
+                    'created_at',
+                    function ($login) {
+                        return \Carbon\Carbon::parse($login->created_at)->format('d F Y \- H:i:s');
+                    }
+                )
+                ->make();
+        }
+
+        $user = $user->load('roles', 'permissions');
         $teamID = [];
         foreach ($user->roles as $key => $role) {
             array_push($teamID, $role->pivot->team_id);
         }
-        //dd($teamID);
         $teams = Team::whereIn('id', $teamID)->get();
         return view('admin.users-show', compact('user', 'teams'));
     }
@@ -217,11 +232,11 @@ class UserController extends Controller
      * Get Roles
      *
      * @param Request $request Request
-     * @param int     $id      User ID
+     * @param User    $user    User
      *
      * @return Response json
      */
-    public function getRoles(Request $request, int $id)
+    public function getRoles(Request $request, User $user)
     {
         if ($request->ajax()) {
 
@@ -273,11 +288,11 @@ class UserController extends Controller
      * Permissions list
      *
      * @param Request $request Request
-     * @param int     $id      User ID
+     * @param User    $user    User
      *
      * @return Response json
      */
-    public function getPermissions(Request $request, int $id)
+    public function getPermissions(Request $request, User $user)
     {
         if ($request->ajax()) {
 
@@ -316,25 +331,24 @@ class UserController extends Controller
      * Fill User Roles and Profiles
      *
      * @param Request $request Request
-     * @param int     $id      User ID
+     * @param User    $user    User ID
      *
      * @return Response json
      */
-    public function fillRolesProfiles(Request $request, int $id)
+    public function fillRolesProfiles(Request $request, User $user)
     {
         if ($request->ajax()) {
             $request->validate(
                 [
                     'team_id' => 'required|numeric|exists:teams,id',
-                    'user_id' => 'required|numeric|exists:users,id'
                 ]
             );
+
             $myteam_id = $request->team_id;
 
-            $myuser = User::findOrFail($request->user_id);
-            $myteam = Team::findOrFail($myteam_id);
+            $myteam = Team::findOrFail($request->team_id);
 
-            $myroles = $myuser->roles->filter(
+            $myroles = $user->roles->filter(
                 function ($value, $key) use ($myteam_id) {
                     if ($value->pivot->team_id == $myteam_id) {
                         return $value;
@@ -342,7 +356,7 @@ class UserController extends Controller
                 }
             );
 
-            $mypermissions = $myuser->permissions->filter(
+            $mypermissions = $user->permissions->filter(
                 function ($value, $key) use ($myteam_id) {
                     if ($value->pivot->team_id == $myteam_id) {
                         return $value;
@@ -373,14 +387,7 @@ class UserController extends Controller
                 'name' => $myteam->display_name,
             );
 
-            $user = array(
-                'id' => $myuser->id,
-                'name' => $myuser->name,
-            );
-
-
-
-            return response()->json(['type'=>'success', 'user'=>$user ,'team'=>$team, 'roles'=> $roles, 'permissions'=> $permissions], 200);
+            return response()->json(['type'=>'success', 'team'=>$team, 'roles'=> $roles, 'permissions'=> $permissions], 200);
         }
         return null;
     }
@@ -389,17 +396,17 @@ class UserController extends Controller
      * Update Roles and Permissions
      *
      * @param Request $request Request
-     * @param int     $id      User ID
+     * @param User    $user    User ID
      *
      * @return void
      */
-    public function updateRolesPermissions(Request $request, int $id)
+    public function updateRolesPermissions(Request $request, User $user)
     {
         if ($request->ajax()) {
 
             $request->validate(
                 [
-                    'user_id'=>['required','numeric','exists:users,id'],
+                    //'user_id'=>['required','numeric','exists:users,id'],
                     'team_id'=>['required','numeric','exists:teams,id'],
                     'roles'=>['required','array','min:1','exists:roles,id'],
                     'permissions'=>[
@@ -409,7 +416,7 @@ class UserController extends Controller
                 ]
             );
 
-            $user = User::find($request->user_id);
+            //$user = User::find($request->user_id);
             $user->syncRoles($request->roles, $request->team_id);
 
             $mypermissions = $user->permissions;

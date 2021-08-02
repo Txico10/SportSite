@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Laravel Users
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -23,7 +23,7 @@ use Livewire\WithFileUploads;
 
 /**
  *  Profile form class
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -45,15 +45,15 @@ class ProfileForm extends Component
     public $submit_btn_title;
 
     protected $listeners = [
-        'editProfile', 
+        'editProfile',
         'resetProfileInputFields' => 'resetInputFields'
     ];
 
     /**
      * Mount profile form
-     * 
+     *
      * @param $user user id
-     * 
+     *
      * @return profile form
      */
     public function mount($user)
@@ -70,7 +70,7 @@ class ProfileForm extends Component
 
     /**
      * Photo validation
-     * 
+     *
      * @return profile form
      */
     public function updatedPhoto()
@@ -81,7 +81,7 @@ class ProfileForm extends Component
             ]
         );
     }
-    
+
     /**
      * Rules
      *
@@ -96,36 +96,36 @@ class ProfileForm extends Component
         if (strcmp($this->email, $this->old_email)!=0) {
             if (Auth::id()==$this->user->id) {
                 $validatedFields = array_merge(
-                    $validatedFields, 
+                    $validatedFields,
                     [
                         'email' => ['required','email:rfc,dns','max:255','unique:users'],
                         'password' => [
-                            'required', 
-                            'string', 
+                            'required',
+                            'string',
                             'min:6',
                             new CustomPasswordCheck($this->hashed_password),
-    
+
                         ],
                     ]
                 );
             } else {
                 $validatedFields = array_merge(
-                    $validatedFields, 
+                    $validatedFields,
                     [
                         'email' => ['required','email:rfc,dns','max:255','unique:users'],
                     ]
                 );
             }
-            
+
         }
 
         return $validatedFields;
     }
     /**
      * Fields validation
-     * 
+     *
      * @param $propertyName input field
-     * 
+     *
      * @return profile form
      */
     public function updated($propertyName)
@@ -135,7 +135,7 @@ class ProfileForm extends Component
 
     /**
      * Render the livewire profile form view
-     * 
+     *
      * @return profile form
      */
     public function render()
@@ -145,7 +145,7 @@ class ProfileForm extends Component
 
     /**
      * Render the livewire contact view
-     * 
+     *
      * @return user_contact
      */
     public function editProfile()
@@ -158,12 +158,12 @@ class ProfileForm extends Component
         $this->dispatchBrowserEvent(
             'openModalProfile'
         );
-        
+
     }
 
     /**
      * Reset input filds
-     * 
+     *
      * @return void
      */
     public function resetInputFields()
@@ -174,7 +174,7 @@ class ProfileForm extends Component
 
     /**
      * Save form data
-     * 
+     *
      * @return void
      */
     public function saveForm()
@@ -183,36 +183,36 @@ class ProfileForm extends Component
 
         $user = $this->user;
 
-        
+
         if (strcmp($this->name, $user->name)!=0) {
             $user->name = $this->name;
-            
+
         }
 
         if (strcmp($this->email, $user->email)!=0) {
             $user->email = $this->email;
             $user->email_verified_at = null;
         }
-        
+
         if (strcmp($this->photo, $this->old_photo)) {
 
             if ($user->image) {
                 //dd($user->getOriginal('image'));
-                Storage::delete('public/profile_images/'.$user->image);
+                Storage::delete('public/profile_images/employees/'.$user->image);
             }
 
             $filename = Str::random().time().'.'.$this->photo->extension();
 
-            $this->photo->storeAs('public/profile_images', $filename);
+            $this->photo->storeAs('public/profile_images/employees/', $filename);
 
 
             $user->image = $filename;
 
-            $path = public_path('storage/profile_images/'.$filename);
+            $path = public_path('storage/profile_images/employees/'.$filename);
             $width = 128;
             $height = 128;
             $img = Image::make($path)->resize(
-                $width, $height, 
+                $width, $height,
                 function ($constraint) {
                     $constraint->aspectRatio();
                 }
@@ -221,7 +221,7 @@ class ProfileForm extends Component
         }
 
         if ($user->isDirty()) {
-            $email = $user->getOriginal('email'); 
+            $email = $user->getOriginal('email');
             $user->save();
 
             if (strcmp($user->image, $this->old_photo)!=0) {
@@ -231,7 +231,7 @@ class ProfileForm extends Component
 
             if (strcmp($user->email, $email)!=0) {
                 event(new Registered($user));
-                
+
             }
 
             $message = "Profile updated successfully";
@@ -241,11 +241,11 @@ class ProfileForm extends Component
             $type = "warning";
         }
 
-        
+
         $this->dispatchBrowserEvent('closeModalProfile');
         $this->emit('refreshProfile');
         $this->emit(
-            'alert', 
+            'alert',
             [
                 'type'=>$type,
                 'message'=>$message

@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * ApartmentType seeder
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -17,7 +17,7 @@ use Illuminate\Support\Arr;
 
 /**
  *  ApartmentType seeder extend seeder
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -33,7 +33,7 @@ class ApartmentTypeSeeder extends Seeder
      */
     public function run()
     {
-        
+
         $apartmentTypes = [
             [
                 'name' => 'Un et demi',
@@ -62,10 +62,10 @@ class ApartmentTypeSeeder extends Seeder
             ],
         ]
         ;
-        
+
         foreach ($apartmentTypes as $key => $value) {
             ApartmentType::create($value);
-            $this->command->info('Type '.$value['name'].' created.');
+            //$this->command->info('Type '.$value['name'].' created.');
         }
 
     }

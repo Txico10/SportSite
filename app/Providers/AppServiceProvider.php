@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * App service provider
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -22,7 +22,7 @@ use Laratrust\LaratrustFacade;
 
 /**
  *  AppServiceProvider Class
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -45,21 +45,21 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      *
      * @param Dispatcher $events listening event
-     * 
+     *
      * @return void
      */
     public function boot(Dispatcher $events)
     {
         //Database settings
         Schema::defaultStringLength(191);
-            
+
         // Menu bilder
         $events->listen(
             BuildingMenu::class, function (BuildingMenu $event) {
                 // Add some items to the menu...
-               
+
                 if (LaratrustFacade::hasRole(['superadministrator','administrator'])) {
-                
+
                     $event->menu->add(
                         [
                             'header' => 'ADMINISTRATION',
@@ -76,7 +76,7 @@ class AppServiceProvider extends ServiceProvider
                         ],
                     );
                     $event->menu->addBefore(
-                        'role', 
+                        'role',
                         [
                             'key' => 'user',
                             'text' => 'Users',
@@ -87,7 +87,7 @@ class AppServiceProvider extends ServiceProvider
                         ]
                     );
                     $event->menu->addAfter(
-                        'role', 
+                        'role',
                         [
                             'key' => 'enterprises',
                             'text' => 'Clients',
@@ -97,16 +97,16 @@ class AppServiceProvider extends ServiceProvider
                         ]
                     );
                 }
-            
+
 
                 if (LaratrustFacade::hasRole(['administrator', 'manager', 'janitor'])) {
-                    
+
                     $companyID = Auth::user()->active_company;
 
                     if (!empty($companyID)) {
 
                         $company = RealState::findOrFail($companyID);
-                        
+
                         $event->menu->addAfter(
                             'role',
                             [
@@ -122,6 +122,12 @@ class AppServiceProvider extends ServiceProvider
                                         'icon' => 'fas fa-fw fa-home',
                                     ],
                                     [
+                                        'key' => 'contractType',
+                                        'text' => 'Contracts',
+                                        'route'  => ['company.contract-setting', ['company' => $company]],
+                                        'icon' => 'fas fa-fw fa-file-contract',
+                                    ],
+                                    [
                                         'key' => 'furnitureConfig',
                                         'text' => 'Appliances & Furniture',
                                         'route'  => ['company.furniture-setting', ['company' => $company]],
@@ -133,7 +139,7 @@ class AppServiceProvider extends ServiceProvider
 
                         $event->menu->add(
                             [
-                                'header' => 'COMPANY MANAGEMENT', 
+                                'header' => 'COMPANY MANAGEMENT',
                                 'permission' => 'companyMenu-read',
                             ]
                         );
@@ -198,10 +204,10 @@ class AppServiceProvider extends ServiceProvider
                     }
                 }
 
-            
+
                 $event->menu->add(
                     [
-                        'header' => 'LEASE MANAGEMENT', 
+                        'header' => 'LEASE MANAGEMENT',
                         'permission' => 'leaseMenu-read'
                     ],
                 );
@@ -234,7 +240,7 @@ class AppServiceProvider extends ServiceProvider
                 );
                 $event->menu->add(
                     [
-                        'header' => 'MAINTENANCE', 
+                        'header' => 'MAINTENANCE',
                         'permission' => 'manteinanceMenu-read'
                     ],
                 );
@@ -246,8 +252,8 @@ class AppServiceProvider extends ServiceProvider
                         'icon' => 'fas fa-fw fa-ticket-alt',
                         'permission' => 'ticket-read',
                     ],
-                ); 
-            
+                );
+
             }
         );
     }

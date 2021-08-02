@@ -27,7 +27,7 @@
                 @enderror
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-building"></i></span>
+                        <span class="input-group-text"><i class="fas fa-fw fa-user"></i></span>
                     </div>
                     <input type="text" id="name" class="form-control {{$errors->has("name") ? 'is-invalid' : (  strlen($name)>0 ? 'is-valid':'')}}" wire:model.lazy="name" placeholder="Employee name">
                 </div>
@@ -42,6 +42,18 @@
                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                   </div>
                   <input type="text" class="form-control datetimepicker-input edit-employee-birth {{$errors->has("birthdate") ? 'is-invalid' : (strlen($birthdate)>0 ? 'is-valid':'')}}" placeholder="Employee Birthdate" data-target="#edit-employee-birthdate" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                </div>
+              </div>
+              <!-- Employee NAS -->
+              <div class="form-group">
+                @error('nas')
+                    <label for="name" class="text-danger">{{ $message }}</label>
+                @enderror
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-fw fa-hashtag"></i></span>
+                    </div>
+                    <input type="text" id="name" class="form-control {{$errors->has("nas") ? 'is-invalid' : (  strlen($nas)>0 ? 'is-valid':'')}}" wire:model.lazy="nas" placeholder="Employee NAS">
                 </div>
               </div>
               <!-- Employee gender -->

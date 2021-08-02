@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 @section('title', 'Employees')
-@section('plugins.BootstrapSelect', true)
+@section('plugins.Datatables', true)
 @section('content_header')
     <div class="container-fluid">
         <div class="row mb-2">
@@ -21,11 +21,46 @@
 @stop
 
 @section('content')
-<div class="row">
-  <div class="col-md-12">
-    <livewire:management.employees :company="$company"/>
-  </div>
+@php
+    $heads = [
+        '#',
+        'Name',
+        'Birthdate',
+        'NAS',
+        'Gender',
+        'Role',
+        'Action',
+    ];
+
+    $config = [
+        'processing' => true,
+        'serverSide' => true,
+        'ajax' => ['headers'=> ['X-CSRF-TOKEN'=>csrf_token()], 'url'=> route('company.employees', ['company'=>$company])],
+        'responsive'=> true,
+        'order' => [[1,'asc']],
+        'columns' => [['data'=>'DT_RowIndex'], ['data'=>'name'], ['data'=>'birthdate'], ['data'=>'nas'], ['data'=>'gender'], ['data'=>'role_name'], [ 'data'=>'action', 'searchable'=>false, 'orderable' => false]],
+    ]
+@endphp
+<!-- Default box -->
+<div class="card card-lightblue card-outline">
+    <div class="card-header">
+        <h3 class="card-title">
+            <a type="button" class="btn btn-tool" href="{{route('company.employees.create', ['company'=>$company])}}">
+                <i class="fas fa-fw fa-plus-square"></i>
+            </a>
+            New Employee
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <x-adminlte-datatable id="employeesTable" :heads="$heads" :config="$config"/>
+            </div>
+        </div>
+    </div>
+    <!-- /.card-body -->
 </div>
+<!-- /.card -->
 @stop
 
 @section('footer')

@@ -1,5 +1,4 @@
 @extends('adminlte::page')
-
 @section('title', 'Apartments')
 @section('plugins.BootstrapSelect', true)
 @section('content_header')
@@ -36,4 +35,7 @@
 
 @section('js')
   <script type="text/javascript" src="{{asset('js/company.js')}}"></script>
+  <script type="text/javascript">
+    $('#myBuildings').selectpicker();
+  </script>
 @stop

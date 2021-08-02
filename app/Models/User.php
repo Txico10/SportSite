@@ -118,7 +118,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $photo = 'https://picsum.photos/300/300';
 
         } else {
-            $photo = asset(Storage::url('profile_images/'.$photo));
+            $photo = asset(Storage::url('profile_images/employees/'.$photo));
         }
         return $photo;
     }

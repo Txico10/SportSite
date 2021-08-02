@@ -104,17 +104,13 @@ class RealState extends Model
     }
 
     /**
-     * Searche for Real State/clients information
+     * Contract Types
      *
-     * @param $query receive query format
-     *
-     * @return query
+     * @return Illuminate\Database\Eloquent\Model
      */
-    public static function search($query)
+    public function contractTypes()
     {
-        return empty($query) ? static::query()
-            : static::where('name', 'like', '%'.$query.'%');
-                //->orWhere('email', 'like', '%'.$query.'%');
+        return $this->hasMany(ContractType::class);
     }
 
     /**
@@ -125,7 +121,7 @@ class RealState extends Model
     public function employees()
     {
         return $this->belongsToMany(Employee::class, EmployeeContract::class)
-            ->withPivot(['user_id', 'start_date', 'end_date', 'agreement' ,'status'])
+            ->withPivot(['user_id', 'role_id','start_date', 'end_date', 'agreement' ,'status'])
             ->withTimestamps();
     }
 
@@ -141,6 +137,20 @@ class RealState extends Model
             ->wherePivotNull('end_date')
             ->orWherePivot('end_date', '>=', now())
             ->withTimestamps();
+    }
+
+    /**
+     * Searche for Real State/clients information
+     *
+     * @param $query receive query format
+     *
+     * @return query
+     */
+    public static function search($query)
+    {
+        return empty($query) ? static::query()
+            : static::where('name', 'like', '%'.$query.'%');
+                //->orWhere('email', 'like', '%'.$query.'%');
     }
 
 }

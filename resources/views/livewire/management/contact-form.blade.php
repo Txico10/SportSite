@@ -13,7 +13,7 @@
                         @error('suite')
                             <label class="text-danger">{{ $message }}</label>
                         @enderror
-                    </div>            
+                    </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
@@ -88,9 +88,11 @@
                             </div>
                             <select class="form-control" name="country" id="contactCountry" wire:model="country" style="width: 80.5%" data-placeholder="Select country" data-allow-clear="true">
                                 <option value=""></option>
+                                @if(!empty($allCountries))
                                 @foreach($allCountries as $key => $newCountry)
-                                    <option value="{{$key}}">{{$newCountry}}</option>  
+                                    <option value="{{$key}}">{{$newCountry}}</option>
                                 @endforeach
+                                @endif
                             </select>
                         </div>
                         @error('country')

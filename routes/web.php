@@ -56,28 +56,29 @@ Route::middleware(['auth','verified','role:superadministrator|administrator'])
 /**
  * Admin User Management
  */
-Route::patch('admin/users/{id}/changeStatus', 'User\UserController@changeStatus')
-    ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
-    ->name('users.changeStatus');
-Route::post('admin/users/{id}/permissions', 'User\UserController@getPermissions')
-    ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
-    ->name('users.permissions.list');
-Route::post('admin/users/{id}/roles', 'User\UserController@getRoles')
-    ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
-    ->name('users.roles.list');
-Route::post('admin/users/{id}/fillroleprofiles', 'User\UserController@fillRolesProfiles')
-    ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
-    ->name('users.rolesprofiles.fill');
-Route::patch('admin/users/{id}/update-roles-permissions', 'User\UserController@updateRolesPermissions')
-    ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
-    ->name('users.rolesprofiles.update');
-
 Route::get('/users/{user:id}/profile', 'User\UserController@profile')
     ->middleware(['auth', 'verified'])->name('user.profile');
+Route::patch('/admin/users/{id}/changeStatus', 'User\UserController@changeStatus')
+    ->middleware(['auth', 'verified', 'role:superadministrator|administrator'])
+    ->name('users.changeStatus');
 
-Route::get('/company/{company:slug}/profile', 'Management\RealStateController@profile')
-    ->middleware(['auth', 'verified', 'belong.company','permission:company-read'])
-    ->name('company.profile');
+Route::middleware(['auth', 'verified'])->name('users.')->prefix('/admin/users/{user}')
+    ->group(
+        function () {
+            Route::post('/permissions', 'User\UserController@getPermissions')
+                ->middleware('role:superadministrator|administrator')
+                ->name('permissions.list');
+            Route::post('/roles', 'User\UserController@getRoles')
+                ->middleware('role:superadministrator|administrator')
+                ->name('roles.list');
+            Route::post('/fillroleprofiles', 'User\UserController@fillRolesProfiles')
+                ->middleware('role:superadministrator|administrator')
+                ->name('rolesprofiles.fill');
+            Route::patch('/update-roles-permissions', 'User\UserController@updateRolesPermissions')
+                ->middleware('role:superadministrator|administrator')
+                ->name('rolesprofiles.update');
+        }
+    );
 
 /**
  * Apartment Settings and Furniture Settings
@@ -103,43 +104,66 @@ Route::middleware(['auth', 'verified','role:superadministrator|administrator'])
                 ->name('furniture-setting.edit');
             Route::delete('/furnitures-setting/destroy', 'Management\FurnitureTypeController@destroy')
                 ->name('furniture-setting.destroy');
+            //contract-settings
+            Route::get('/contract-setting', 'Management\ContractTypeController@index')
+                ->name('contract-setting');
+        }
+    );
+/**
+ * Company
+ */
+Route::middleware(['auth', 'verified', 'belong.company'])
+    ->name('company.')->prefix('/company/{company:slug}')->group(
+        function () {
+            //Company profile
+            Route::get('/profile', 'Management\RealStateController@profile')
+                ->middleware('permission:company-read')
+                ->name('profile');
+            //Employees CRUD
+            Route::get('/employees', 'Management\EmployeeController@index')
+                ->middleware('permission:employee-read')
+                ->name('employees');
+            Route::get('/employees/create', 'Management\EmployeeController@create')
+                ->middleware('permission:employee-create')
+                ->name('employees.create');
+            Route::get('/employees/{employee}', 'Management\EmployeeController@show')
+                ->middleware('permission:employee-read')
+                ->name('employees.show');
+            //Building CRUD
+            Route::get('/buildings', 'Management\BuildingController@index')
+                ->middleware('permission:building-read')
+                ->name('buildings');
+            //Apartments CRUD
+            Route::get('/apartments', 'Management\ApartmentController@index')
+                ->middleware('permission:apartment-read')
+                ->name('apartments');
+            //Furnitures CRUD
+            Route::get('/furnitures', 'Management\FurnitureController@index')
+                ->middleware('permission:furniture-read')
+                ->name('furnitures');
+            Route::get('/furnitures/{furniture}', 'Management\FurnitureController@show')
+                ->middleware('permission:furniture-read')
+                ->name('furnitures.show');
+            //Apartments furnitures
+            //READ
+            Route::get('/apartment/{apartment}/furnitures', 'Management\ApartmentController@furnitureList')
+                ->middleware('permission:apartment-read')
+                ->name('apartment.furnitures');
+            //withdraw
+            Route::post('/furnitures/{furniture}/apartment/{apartment}', 'Management\FurnitureController@withdraw')
+                ->middleware('permission:furniture-read')
+                ->name('furniture.withdraw');
+            //Salvage
+            Route::patch('/furnitures/{furniture}/salvage', 'Management\FurnitureController@salvage')
+                ->middleware('permission:furniture-delete')
+                ->name('furniture.salvage');
+            //Delete
+            Route::delete('/furnitures/{furniture}', 'Management\FurnitureController@destroy')
+                ->middleware('permission:furniture-delete')
+                ->name('furniture.destroy');
         }
     );
 
-Route::get('/company/{company:slug}/employees', 'Management\EmployeeController@index')
-    ->middleware(['auth', 'verified', 'belong.company', 'permission:employee-read'])
-    ->name('company.employees');
-
-Route::get('/company/{company:slug}/employees/create', 'Management\EmployeeController@create')
-    ->middleware(['auth', 'verified', 'belong.company', 'permission:employee-create'])
-    ->name('company.employees.create');
-
-Route::get('/company/{company:slug}/buildings', 'Management\BuildingController@index')
-    ->middleware(['auth', 'verified', 'belong.company', 'permission:building-read'])
-    ->name('company.buildings');
-
-Route::get('/company/{company:slug}/apartments', 'Management\ApartmentController@index')
-    ->middleware(['auth', 'verified', 'belong.company', 'permission:apartment-read'])
-    ->name('company.apartments');
-Route::get('/company/{company:slug}/furnitures', 'Management\FurnitureController@index')
-    ->middleware(['auth','verified', 'belong.company', 'permission:furniture-read'])
-    ->name('company.furnitures');
-
-Route::get('/company/{company:slug}/furnitures/{furniture}', 'Management\FurnitureController@show')
-    ->middleware(['auth','verified','belong.company', 'permission:furniture-read'])
-    ->name('company.furnitures.show');
-Route::get('/company/{company:slug}/apartment/{apartment}/furnitures', 'Management\ApartmentController@furnitureList')
-    ->middleware(['auth','verified', 'belong.company', 'permission:apartment-read'])
-    ->name('company.apartment.furnitures');
-Route::post('/company/{company:slug}/furnitures/{furniture}/apartment/{apartment}', 'Management\FurnitureController@withdraw')
-    ->middleware(['auth','verified', 'belong.company', 'permission:furniture-read'])
-    ->name('company.furniture.withdraw');
-Route::patch('/company/{id}/furnitures/{furniture}/salvage', 'Management\FurnitureController@salvage')
-    ->middleware(['auth','verified', 'permission:furniture-delete'])
-    ->name('company.furniture.salvage');
-Route::delete('/company/{id}/furnitures/{furniture}', 'Management\FurnitureController@destroy')
-    ->middleware(['auth','verified','permission:furniture-delete'])
-    ->name('company.furniture.destroy');
 /*
 Route::get('send', 'NotifyController@index');
 

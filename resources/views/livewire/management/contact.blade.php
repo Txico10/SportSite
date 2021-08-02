@@ -17,7 +17,7 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-        
+
         <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
 
         <p class="text-muted">

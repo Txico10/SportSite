@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Furniture Form Livewire Controller
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -18,7 +18,7 @@ use Carbon\Carbon;
 use Livewire\Component;
 /**
  *  Furniture Form Livewire component
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -39,15 +39,15 @@ class FurnituresForm extends Component
     public $furniture_id;
     public $real_state_id;
     public $company;
-    
+
     protected $listeners = [
-        'editFurniture' => 'edit', 
+        'editFurniture' => 'edit',
         'resetFurnitureInputFields' => 'resetInputFields'
     ];
 
     /**
      * Mount
-     * 
+     *
      * @param $company Furnitures
      *
      * @return void
@@ -67,7 +67,7 @@ class FurnituresForm extends Component
     public function render()
     {
         return view(
-            'livewire.management.furnitures-form', 
+            'livewire.management.furnitures-form',
             [
                 'furnitureList' => $this->furnitureList,
                 'company' => $this->company,
@@ -83,7 +83,7 @@ class FurnituresForm extends Component
     protected function rules()
     {
         return [
-            'real_state_id' => 'required|exists:real_states,id',
+            //'real_state_id' => 'required|exists:real_states,id',
             'furniture_type_id' => 'required|exists:furniture_types,id',
             'manufacturer' => 'required|string|min:3|max:255',
             'model' => 'required|alpha_num',
@@ -98,14 +98,14 @@ class FurnituresForm extends Component
      * Updated
      *
      * @param mixed $propertyName validation field
-     * 
+     *
      * @return void
      */
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName);
     }
-    
+
     /**
      * Save Furniture Form
      *
@@ -122,27 +122,27 @@ class FurnituresForm extends Component
             ['id' => $this->furniture_id],
             $validatedData
         );
-        
+
         if (strcmp($this->submit_btn_title, "save")!=0) {
             $msg = "Furniture updated successfuly";
         }
 
         $this->dispatchBrowserEvent('closeFurnitureModal');
         session()->flash('status', $msg);
-        return redirect()->route('company.furnitures', ['id'=>$this->real_state_id]);
+        return redirect()->route('company.furnitures', ['company'=>$this->company]);
     }
-    
+
     /**
      * Edit
      *
      * @param $furniture furniture id
-     * 
+     *
      * @return void
      */
     public function edit(Furniture $furniture)
     {
         //$furniture = $this->company->furnitures->where('id', $id)->first();
-        
+
         $this->furniture_id = $furniture->id;
         $this->furniture_type_id = $furniture->furniture_type_id;
         $this->manufacturer = $furniture->manufacturer;
@@ -154,13 +154,13 @@ class FurnituresForm extends Component
         $this->submit_btn_title = "update";
         $formatedDate = Carbon::parse($this->buy_at)->format('d-m-Y');
         $this->dispatchBrowserEvent(
-            'openFurnitureModal', 
+            'openFurnitureModal',
             [
                 'buy_at' => $formatedDate
             ]
         );
     }
-    
+
     /**
      * Reset Input Fields
      *

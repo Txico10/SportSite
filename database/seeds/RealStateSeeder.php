@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * Real Estate seeder
- * 
+ *
  * PHP version 7.4
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -20,7 +20,7 @@ use App\Models\Team;
 use Illuminate\Database\Seeder;
 /**
  *  Real Estate seeder extend seeder
- * 
+ *
  * @category MyCategory
  * @package  MyPackage
  * @author   Stefan Monteiro <stefanmonteiro@gmail.com>
@@ -39,19 +39,19 @@ class RealStateSeeder extends Seeder
         factory(RealState::class, 20)->create()
             ->each(
                 function ($real_state) {
-                    
+
                     $team = Team::create(
                         [
-                            'name'=> strval($real_state->id), 
+                            'name'=> strval($real_state->id),
                             'display_name'=> $real_state->name
                         ]
                     );
 
                     $real_state->contact()->save(factory(Contact::class)->make());
-                    
+
                     $apartmentsType = [
-                        '1 1/2'=>'Un et demi', 
-                        '2 1/2'=>'Deux et demi', 
+                        '1 1/2'=>'Un et demi',
+                        '2 1/2'=>'Deux et demi',
                         '3 1/2'=>'Trois et demi',
                         '4 1/2'=>'Quatre et demi',
                         '5 1/2'=>'Cinque et demi',
@@ -66,7 +66,7 @@ class RealStateSeeder extends Seeder
                                 ]
                             )
                         );
-                        $this->command->info('Apartment type '.$tag.' created.');
+                        //$this->command->info('Apartment type '.$tag.' created.');
                     }
 
                     $furnituresType = [
@@ -87,7 +87,7 @@ class RealStateSeeder extends Seeder
                                 ]
                             )
                         );
-                        $this->command->info('Furniture type '.$value.' created.');
+                        //$this->command->info('Furniture type '.$value.' created.');
                     }
 
                 }
