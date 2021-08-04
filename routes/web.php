@@ -107,6 +107,8 @@ Route::middleware(['auth', 'verified','role:superadministrator|administrator'])
             //contract-settings
             Route::get('/contract-setting', 'Management\ContractTypeController@index')
                 ->name('contract-setting');
+            Route::post('/contract-setting', 'Management\ContractTypeController@store')
+                ->name('contract-setting.store');
         }
     );
 /**

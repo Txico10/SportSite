@@ -33,10 +33,23 @@ class ContractTypeController extends Controller
      * @param Request   $request Request
      * @param RealState $company Company
      *
-     * @return void
+     * @return Illuminate\Http\Response
      */
     public function index(Request $request, RealState $company)
     {
         return view('admin.contracts-type', compact('company'));
+    }
+
+    /**
+     * Store
+     *
+     * @param Request   $request request
+     * @param RealState $company Company
+     *
+     * @return Illuminate\Http\Response
+     */
+    public function store(Request $request, RealState $company)
+    {
+        dd($request->description);
     }
 }

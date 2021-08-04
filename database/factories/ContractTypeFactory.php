@@ -7,6 +7,8 @@ use Faker\Generator as Faker;
 
 $factory->define(ContractType::class, function (Faker $faker) {
     return [
-        //
+        'tag' => '',
+        'name' => '',
+        //'description' => ''
     ];
 });
